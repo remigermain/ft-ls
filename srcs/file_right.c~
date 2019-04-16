@@ -39,21 +39,24 @@ void	file_link(t_stat filestat)
 void	file_group(t_stat filestat)
 {
 	t_passwd	*uid;
-	t_passwd	*gid;
+	t_group		*gid;
 
 	if ((uid = getpwuid(filestat.st_uid)))
 		ft_printf("%s ", uid->pw_name);
 	else
 		ft_printf("%-8d ", filestat.st_uid);
-	if ((gid = getpwuid(filestat.st_gid)))
-		ft_printf("%s ", gid->pw_name);
+	if ((gid = getgrgid(filestat.st_gid)))
+		ft_printf("%s ", gid->gr_name);
 	else
 		ft_printf("%-8d ", filestat.st_gid);
 }
 
 void	file_size(t_stat filestat)
 {
-	ft_printf(" %d ", filestat.st_size);
+	if (S_ISBLK(filestat.st_mode) || S_ISCHR(filestat.st_mode))
+		ft_printf(" %lld, %lld ", MAJOR(filestat.st_rdev), MINOR(filestat.st_rdev));
+	else
+		ft_printf(" %d ", filestat.st_size);
 }
 
 void	file_date(t_stat filestat)

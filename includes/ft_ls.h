@@ -11,9 +11,13 @@
 #include <time.h>
 #include <stdio.h>
 
+#define MAJOR(dev) ((int)(((unsigned int) (dev) >> 8) & 0xff))
+#define MINOR(dev) ((int)((dev) & 0xff))
+
 typedef	struct dirent	t_dir;
 typedef	struct stat	t_stat;
 typedef	struct passwd	t_passwd;
+typedef	struct group	t_group;
 
 typedef	struct	s_ls
 {
