@@ -50,7 +50,7 @@ CHEADER = $(addprefix $(DHEADER),$(HEADER))
 # 								ALL  SCRS									   #
 # *****************************************************************************#
 
-SRC = main.c file_right.c ft_lserror.c
+SRC = main.c file_right.c ft_lserror.c free_ftls.c
 
 COUNT = "1"
 SPACE = "                    "
@@ -87,7 +87,7 @@ $(DOBJ)%.o : $(DSRC)%.c $(CHEADER) $(LIBFT)
 	@gcc $(CFLAGS) $(INCLUDE) -c $< -o $@
 	@echo $(SPACE)"compilation de la fonction \033[38;5;326m"$< "\033[0m\033[K\033[1A"
 
-clean: LIBFT_C PSCHECKER_C print_name
+clean: LIBFT_C print_name
 	@rm -rf $(DOBJ)
 	@echo $(SPACE)"Suppresion des \033[38;5;265mobjects\033[0m"
 
@@ -95,7 +95,7 @@ clean_f: print_name
 	@rm -rf $(DOBJ)
 	@echo $(SPACE)"Suppresion des \033[38;5;265mobjects\033[0m"
 
-fclean: LIBFT_FC PSCHECKER_FC clean_f
+fclean: LIBFT_FC clean_f
 	@rm -f $(NAME)
 	@echo $(SPACE)"Suppresion "$(TYPE) "\033[38;5;265m"$(NAME) "\033[0m"
 

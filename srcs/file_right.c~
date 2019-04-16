@@ -4,8 +4,21 @@
 void	file_right(t_stat fileStat)
 {
 	char	right[10];
-	
-	right[0] = (S_ISDIR(fileStat.st_mode)) ? 'd' : '-';
+
+	if (S_ISDIR(fileStat.st_mode))
+		right[0] = 'd';
+	else if (S_ISCHR(fileStat.st_mode))
+		right[0] = 'c';
+	else if (S_ISBLK(fileStat.st_mode))
+		right[0] = 'b';
+	else if (S_ISFIFO(fileStat.st_mode))
+		right[0] = 'p';
+	else if (S_ISLNK(fileStat.st_mode))
+		right[0] = 'l';
+	else if (S_ISSOCK(fileStat.st_mode))
+		right[0] = 's';
+	else
+		right[0] = '-';
 	right[1] = (fileStat.st_mode & S_IRUSR) ? 'r' : '-';
 	right[2] = (fileStat.st_mode & S_IWUSR) ? 'w' : '-';
 	right[3] = (fileStat.st_mode & S_IXUSR) ? 'x' : '-';
@@ -26,12 +39,16 @@ void	file_link(t_stat filestat)
 void	file_group(t_stat filestat)
 {
 	t_passwd	*uid;
+	t_passwd	*gid;
 
-	uid = getpwuid(filestat.st_uid);
-	ft_printf("%s ", uid->pw_name);
-	uid = getpwuid(filestat.st_gid);
-	ft_printf("%s ", uid->pw_name);
-
+	if ((uid = getpwuid(filestat.st_uid)))
+		ft_printf("%s ", uid->pw_name);
+	else
+		ft_printf("%-8d ", filestat.st_uid);
+	if ((gid = getpwuid(filestat.st_gid)))
+		ft_printf("%s ", gid->pw_name);
+	else
+		ft_printf("%-8d ", filestat.st_gid);
 }
 
 void	file_size(t_stat filestat)
@@ -41,5 +58,8 @@ void	file_size(t_stat filestat)
 
 void	file_date(t_stat filestat)
 {
-	ft_printf(" time ", ctime(&(filestat.st_ctime)));
+	char	*time;
+
+	time = ctime(&(filestat.st_ctime));
+	ft_printf(" %.*s ", ft_strlen(time) - 1, time);
 }

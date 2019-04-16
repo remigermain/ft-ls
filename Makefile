@@ -50,7 +50,7 @@ CHEADER = $(addprefix $(DHEADER),$(HEADER))
 # 								ALL  SCRS									   #
 # *****************************************************************************#
 
-SRC = main.c file_right.c ft_lserror.c
+SRC = main.c file_right.c ft_lserror.c utils.c
 
 COUNT = "1"
 SPACE = "                    "

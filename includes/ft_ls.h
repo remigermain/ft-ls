@@ -9,6 +9,7 @@
 #include <grp.h>
 //#include <attr/xattr.h>
 #include <time.h>
+#include <stdio.h>
 
 typedef	struct dirent	t_dir;
 typedef	struct stat	t_stat;
@@ -21,9 +22,10 @@ typedef	struct	s_ls
 
 	t_dir	*dir;
 	t_stat	stat;
+	char	*name;
+	char	indice;
 
 }		t_ls;
-
 
 /*
 **	right_file
@@ -35,5 +37,10 @@ void	file_size(t_stat filestat);
 void	file_date(t_stat filestat);
 
 void	ft_lserror(t_ls *st, char *name);
+void	free_ftls(t_ls *st);
+
+
+void	read_file(t_ls *st, char *base, char *path);
+void	read_dir(t_ls *st, char *base, char *path);
 
 #endif

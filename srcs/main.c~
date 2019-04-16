@@ -19,7 +19,7 @@ static	int	put_flags(t_ls *st, int argc, char **argv)
 
 	i = -1;
 	ft_bzero(st, sizeof(t_ls));
-	while (argc > 2 && argv[1][0] == '-' && argv[1][++i])
+	while (argc > 1 && argv[1][0] == '-' && argv[1][++i])
 	{
 		if (argv[1][i] == 'l')
 			set_bit(&(st->flag), 0);
@@ -45,48 +45,82 @@ static	int	put_flags(t_ls *st, int argc, char **argv)
 	return (i == -1 ? 1 : 2);
 }
 
-static	void	read_file(t_ls *st, int argc, int i)
+void	read_dir(t_ls *st, char *base, char *path)
 {
-	while ((st->dir = readdir(st->dir_ptr)))
+	t_stat	stat_dir;
+	t_dir	*dir;
+	void	*dir_ptr;
+	char	*name;
+
+	name = ft_strjoin(path, base);
+	if ((dir_ptr = opendir(name)))
 	{
-		stat(st->dir->d_name, &(st->stat));
-		if (test_bit(&(st->flag), 0)) 
-		{
-			file_right(st->stat);
-			file_link(st->stat);
-			file_group(st->stat);
-			file_size(st->stat);
-			file_date(st->stat);
-		}
-		ft_printf("%s", st->dir->d_name);
-		if (test_bit(&(st->flag), 0) && (i + 1)  < argc)
+		if (st->indice)
 			ft_printf("\n");
-		else
-			ft_printf("  ");
+		st->indice = 1;
+		if (test_bit(&(st->flag), 1))
+			ft_printf("%s:\ntotal:  \n", base);
+		while ((dir = readdir(dir_ptr)))
+		{
+			if (test_bit(&(st->flag), 1) && opendir(ft_strjoin(ft_strjoin(name, "/"), dir->d_name)) &&
+					ft_strcmp("..", dir->d_name) && ft_strcmp(".", dir->d_name))
+				read_dir(st, dir->d_name, ft_strjoin(name, "/"));
+			else
+				read_file(st, dir->d_name, ft_strjoin(name, "/"));
+		}
+		closedir(dir_ptr);
+	}
+	else
+		read_file(st, base, path);
+	st->indice = 1;
+	ft_memdel((void**)&name);
+}
+
+void	read_file(t_ls *st, char *base, char *path)
+{
+	t_stat	stat_file;
+	char	*name;
+
+	name = ft_strjoin(path, base);
+	if (test_bit(&(st->flag), 2) || (base[0] && base[0] != '.'))
+	{
+		stat(name, &(stat_file));
+		if (test_bit(&(st->flag), 0))
+		{
+			file_right(stat_file);
+			file_link(stat_file);
+			file_group(stat_file);
+			file_size(stat_file);
+			file_date(stat_file);
+		}
+		ft_printf("%s", base);
+		if (test_bit(&(st->flag), 0))
+			ft_printf("\n");
 	}
 }
+
 
 int main(int argc, char **argv)
 {
 	t_ls	st;
 	int	i;
-	char	multi;
+	int	j;
+	char	*name;
 
 	i = put_flags(&st, argc, argv);
+	j = 0;
+	if (i == argc && (argc++))
+		j = 1;
 	while (i < argc)
 	{
-		if ((st.dir_ptr = opendir(argv[i])))
-		{
-			if (i < argc)
-				ft_printf("%s:\n", argv[i]);
-		}
-		if (st.dir_ptr)
-			read_file(&st, argc, i);
+		if (j)
+			st.name = strdup(".");
 		else
-			ft_lserror(&st, argv[i]);
-		i++;
-		//if (++i < argc)
-		//	ft_printf("\n");
+			st.name = ft_strdup(argv[i]);
+		read_dir(&st, st.name, "");
+		if (++i != argc)
+			ft_printf("\n");
 	}
+	free_ftls(&st);
 	return (0);
 }
