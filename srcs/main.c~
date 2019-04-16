@@ -62,16 +62,19 @@ void	read_dir(t_ls *st, char *base, char *path)
 			ft_printf("%s:\ntotal:  \n", base);
 		while ((dir = readdir(dir_ptr)))
 		{
-			if (test_bit(&(st->flag), 1) && opendir(ft_strjoin(ft_strjoin(name, "/"), dir->d_name)) &&
-					ft_strcmp("..", dir->d_name) && ft_strcmp(".", dir->d_name))
+			stat(ft_strjoin(ft_strjoin(name, "/"), dir->d_name), &(stat_dir));
+			if (test_bit(&(st->flag), 1) && S_ISDIR(stat_dir.st_mode) &&
+					ft_strcmp(".", dir->d_name) && ft_strcmp("..", dir->d_name))
 				read_dir(st, dir->d_name, ft_strjoin(name, "/"));
 			else
 				read_file(st, dir->d_name, ft_strjoin(name, "/"));
+			if (!st->flag)
+				ft_printf("  ");
 		}
 		closedir(dir_ptr);
 	}
 	else
-		read_file(st, base, path);
+		ft_lserror(st, name);
 	st->indice = 1;
 	ft_memdel((void**)&name);
 }
@@ -97,6 +100,7 @@ void	read_file(t_ls *st, char *base, char *path)
 		if (test_bit(&(st->flag), 0))
 			ft_printf("\n");
 	}
+	ft_memdel((void**)&name);
 }
 
 
@@ -113,12 +117,9 @@ int main(int argc, char **argv)
 		j = 1;
 	while (i < argc)
 	{
-		if (j)
-			st.name = strdup(".");
-		else
-			st.name = ft_strdup(argv[i]);
+		st.name = strdup((j ? "." : argv[i]));
 		read_dir(&st, st.name, "");
-		if (++i != argc)
+		if (++i != argc || !st.flag)
 			ft_printf("\n");
 	}
 	free_ftls(&st);
