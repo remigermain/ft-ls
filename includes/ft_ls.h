@@ -47,15 +47,18 @@ typedef	struct	s_infols
 
 typedef	struct	s_ls
 {
+	t_bool	error;
 	short	flag;
 	char	*name;
+	int		i;
+	int		argc;
 	t_infols *st;
 }		t_ls;
 
 /*
 **	right_file
 */
-void	sort_ls(t_ls *data, t_lsop **op, t_page *pad);
+void	sort_ls(t_ls *data, t_lsop **mem);
 void	file_right(t_stat filestat, t_page *pad);
 void	file_link(t_stat filestat, t_page *pad);
 void	file_group(t_stat filestat, t_page *pad);
