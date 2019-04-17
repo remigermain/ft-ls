@@ -54,7 +54,8 @@ void	sort_ls(t_ls *data, t_lsop **op, t_page *padding)
 	mem = (*op);
 	while (mem->next)
 	{
-		read_file(data, mem, padding);
+		if (test_bit(&(data->flag), 2) || mem->dir->d_name[0] != '.')
+			read_file(data, mem, padding);
 		mem = mem->next;
 	}
 }
@@ -165,19 +166,21 @@ int	read_file(t_ls *data, t_lsop *op, t_page *padding)
 	{
 		if (S_ISDIR(op->file.st_mode))
 		{
-			if (op->dir->d_name && op->dir->d_name[0] == '.')
+			if (op->dir->d_name[0] == '.')
 				ft_printf("%s", T_YELLOW);
 			else
 				ft_printf("%s", T_BLUE);
 		}
-		else if (op->dir->d_name && op->dir->d_name[0] == '.')
+		else if (op->dir->d_name[0] == '.')
 			ft_printf("%s", T_CYAN);
-	}	
-	ft_printf(" %s", op->dir->d_name);
+	}
+	if (test_bit(&(data->flag), 2) || op->dir->d_name[0] != '.')
+		ft_printf(" %s", op->dir->d_name);
 	if (test_bit(&(data->flag), 9))
 		ft_printf("%s", T_WHITE);
 	if (test_bit(&(data->flag), 0))
 		ft_printf("\n");
+	return (0);
 }
 
 
