@@ -199,8 +199,9 @@ void	read_dir(t_ls *data, char *base, char *path)
 			op = op->next;
 			op->next = NULL;
 		}
-		if (test_bit(&(data->flag), 1) || test_bit(&(data->flag), 11))
+		if ((test_bit(&(data->flag), 1) || test_bit(&(data->flag), 11)) && data->indi)
 			ft_printf("\n%s:\n", name);
+		data->indi = 1;
 		if (test_bit(&(data->flag), 0))
 			ft_printf("total %d\n", (total / 512) / 2);
 		print_ls(data, &mem, &page);
@@ -209,7 +210,8 @@ void	read_dir(t_ls *data, char *base, char *path)
 			if (test_bit(&(data->flag), 1) && S_ISDIR(mem->file.st_mode) && ft_strlen(mem->dir->d_name)
 				&& ft_strcmp(".", mem->dir->d_name) && ft_strcmp("..", mem->dir->d_name))
 			{
-				read_dir(data, mem->dir->d_name, ft_strjoin(name, "/"));
+				if (ft_strlen(mem->dir->d_name))
+					read_dir(data, mem->dir->d_name, ft_strjoin(name, "/"));
 			}
 			op = mem;
 			mem = mem->next;
@@ -253,7 +255,7 @@ int	read_file(t_ls *data, t_lsop *op, t_page *padding)
 	if (test_bit(&(data->flag), 10) || data->flag == 0)
 		ft_printf("%-*s", padding->name + 1, op->dir->d_name);
 	else if (test_bit(&(data->flag), 2) || op->dir->d_name[0] != '.')
-		ft_printf(" %s", op->dir->d_name);
+		ft_printf("%-*s", padding->name + 1, op->dir->d_name);
 	if (test_bit(&(data->flag), 9))
 		ft_printf("%s", T_WHITE);
 	if (test_bit(&(data->flag), 0) && op->next && op->next->next)

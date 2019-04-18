@@ -52,6 +52,7 @@ typedef	struct	s_ls
 	char	*name;
 	int		i;
 	int		argc;
+	char	indi;
 	t_infols *st;
 }		t_ls;
 

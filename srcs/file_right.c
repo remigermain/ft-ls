@@ -62,7 +62,6 @@ void	file_date(t_stat filestat, t_page *pad)
 {
 	char	*time;
 
-
 	time = ctime(&(filestat.st_ctime));
-	ft_printf(" %.*s", ft_strlen(time) - 1, time);
+	ft_printf(" %.*s ", ft_strlen(time) - 1, time);
 }
