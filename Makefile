@@ -6,7 +6,7 @@
 #    By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+      #
 #                                                  #+#   #+    #+    #+#       #
 #    Created: 2018/10/01 15:39:03 by rgermain     #+#   ##    ##    #+#        #
-#    Updated: 2019/03/11 11:32:59 by rgermain    ###    #+. /#+    ###.fr      #
+#    Updated: 2019/04/18 22:03:20 by rgermain    ###    #+. /#+    ###.fr      #
 #                                                          /                   #
 #                                                         /                    #
 # **************************************************************************** #
@@ -50,7 +50,9 @@ CHEADER = $(addprefix $(DHEADER),$(HEADER))
 # 								ALL  SCRS									   #
 # *****************************************************************************#
 
-SRC = main.c file_right.c ft_lserror.c utils.c
+SRC = main.c main_ls.c flag_init.c \
+	  sort_lst.c \
+	 file_right.c ft_lserror.c utils.c tools_bits.c
 
 COUNT = "1"
 SPACE = "                    "
