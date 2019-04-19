@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:27 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/19 09:54:18 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/19 11:01:22 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -58,13 +58,13 @@ void	file_group(t_ls *data, t_stat filestat, t_padding *pad)
 				!test_bit(&(data->flag), LS_N))
 			ft_printf(" %-*s ", pad->group, uid->pw_name);
 		else
-			ft_printf(" %-*d ", pad->group_i, filestat.st_uid);
+			ft_printf(" %-*d ", pad->group, filestat.st_uid);
 	}
 	if ((gid = getgrgid(filestat.st_gid)) &&
 			!test_bit(&(data->flag), LS_N))
 		ft_printf(" %-*s", pad->group2, gid->gr_name);
 	else
-		ft_printf(" %-*d", pad->group2_i, filestat.st_gid);
+		ft_printf(" %-*d", pad->group2, filestat.st_gid);
 }
 
 void	file_size(t_ls *data, t_stat filestat, t_padding *pad)

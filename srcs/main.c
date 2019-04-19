@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:41 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/19 09:41:42 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/19 10:41:30 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -55,6 +55,8 @@ int			main(int argc, char **argv)
 		read_dir(&(data), name, "");
 		if (data.i < data.argc && !data.error)
 			ft_printf("\n");
+		ft_memdel((void**)&(name));
+
 	}
 	free_ftls(&data);
 	return (0);

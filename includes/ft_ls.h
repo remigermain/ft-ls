@@ -49,8 +49,6 @@ typedef	struct	s_padding
 	int	link;
 	int	group;
 	int	group2;
-	int	group_i;
-	int	group2_i;
 	int	size;
 	int	size2;
 	int	name;

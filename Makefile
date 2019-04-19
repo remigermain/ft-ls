@@ -6,7 +6,7 @@
 #    By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+      #
 #                                                  #+#   #+    #+    #+#       #
 #    Created: 2018/10/01 15:39:03 by rgermain     #+#   ##    ##    #+#        #
-#    Updated: 2019/04/19 10:13:07 by rgermain    ###    #+. /#+    ###.fr      #
+#    Updated: 2019/04/19 10:34:34 by rgermain    ###    #+. /#+    ###.fr      #
 #                                                          /                   #
 #                                                         /                    #
 # **************************************************************************** #
@@ -27,6 +27,7 @@ LIBFT_R :
 
 
 #CFLAGS = -Wall -Werror -Wextra
+CFLAGS = -g
 
 INCLUDE = -Iincludes
 

@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:09 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/19 09:49:45 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/19 10:45:17 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -36,6 +36,8 @@ void	read_dir(t_ls *data, char *base, char *path)
 	void	*dir_ptr;
 	char	*name;
 	long	total;
+	char	*rep;
+	char	*rep2;
 
 	ft_bzero(&(pad), sizeof(t_padding));
 	name = ft_strjoin(path, base);
@@ -46,9 +48,11 @@ void	read_dir(t_ls *data, char *base, char *path)
 	if ((dir_ptr = opendir(name)))
 	{
 		total = 0;
+		rep2 = ft_strjoin(name, "/");
 		while ((op->dir = readdir(dir_ptr)))
 		{
-			stat(ft_strjoin(ft_strjoin(name, "/"), op->dir->d_name), &(op->file));
+			rep = ft_strjoin(rep2 , op->dir->d_name);
+			stat(rep, &(op->file));
 			if (test_bit(&(data->flag), 2) || op->dir->d_name[0] != '.')
 				padding_ls(data, &pad, op);
 			total += op->file.st_blocks;
@@ -56,7 +60,9 @@ void	read_dir(t_ls *data, char *base, char *path)
 				ftls_error(data);
 			op = op->next;
 			op->next = NULL;
+			ft_memdel((void**)&rep);
 		}
+		ft_memdel((void**)&rep2);
 		if ((test_bit(&(data->flag), 1) || test_bit(&(data->flag), 11)) && data->indi)
 			ft_printf("\n%s:\n", name);
 		data->indi = 1;
@@ -81,6 +87,9 @@ void	read_dir(t_ls *data, char *base, char *path)
 	else
 		ft_lserror(data, name);
 	ft_memdel((void**)&name);
+	if (path && path[0])
+		ft_memdel((void**)&path);
+	ft_memdel((void**)&op);
 }
 
 int	read_file(t_ls *data, t_lsop *op, t_padding *padding)
