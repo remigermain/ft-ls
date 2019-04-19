@@ -102,8 +102,10 @@ int		read_file(t_ls *data, t_lsop *op, t_padding *pad);
 /*
 **	sort_ls
 */
-void	ls_sort_alpha(t_ls *data, t_lsop **op);
 void	ls_sort(t_ls *data, t_lsop **op);
+void	swap_elem2(t_lsop **mem, t_lsop **mem2);
+void	swap_elem(t_ls *data, t_lsop **op, t_lsop ***mem, t_lsop ***mem2);
+void	ls_sort_ascii(t_ls *data, t_lsop **op, t_lsop ***mem, t_lsop ***mem2);
 
 /*
 **	tools.c
