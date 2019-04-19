@@ -44,7 +44,7 @@ typedef	struct stat	t_stat;
 typedef	struct passwd	t_passwd;
 typedef	struct group	t_group;
 
-typedef	struct	s_page
+typedef	struct	s_padding
 {
 	int	link;
 	int	group;
@@ -54,7 +54,7 @@ typedef	struct	s_page
 	int	size;
 	int	size2;
 	int	name;
-}		t_page;
+}		t_padding;
 
 typedef	struct	s_lsop
 {
@@ -87,17 +87,17 @@ typedef	struct	s_ls
 **	right_file
 */
 void	sort_ls(t_ls *data, t_lsop **mem);
-void	file_right(t_ls *data, t_stat filestat, t_page *pad);
-void	file_link(t_ls *data, t_stat filestat, t_page *pad);
-void	file_group(t_ls *data, t_stat filestat, t_page *pad);
-void	file_size(t_ls *data, t_stat filestat, t_page *pad);
-void	file_date(t_ls *data, t_stat filestat, t_page *pad);
+void	file_right(t_ls *data, t_stat filestat, t_padding *pad);
+void	file_link(t_ls *data, t_stat filestat, t_padding *pad);
+void	file_group(t_ls *data, t_stat filestat, t_padding *pad);
+void	file_size(t_ls *data, t_stat filestat, t_padding *pad);
+void	file_date(t_ls *data, t_stat filestat, t_padding *pad);
 
 /*
 **	read-file && dir
 */
 void	read_dir(t_ls *data, char *base, char *path);
-int		read_file(t_ls *data, t_lsop *op, t_page *pad);
+int		read_file(t_ls *data, t_lsop *op, t_padding *pad);
 
 /*
 **	sort_ls
@@ -115,6 +115,7 @@ t_bool	test_bit(long *st, int i);
 void	ft_lserror(t_ls *st, char *name);
 void	ftls_error(t_ls *data);
 void	free_ftls(t_ls *st);
+void	padding_ls(t_ls *data, t_padding *pad, t_lsop *op);
 
 
 #endif

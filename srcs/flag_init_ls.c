@@ -1,8 +1,21 @@
+/* ************************************************************************** */
+/*                                                          LE - /            */
+/*                                                              /             */
+/*   flag_init.c                                      .::    .:/ .      .::   */
+/*                                                 +:+:+   +:    +:  +:+:+    */
+/*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
+/*                                                 #+#   #+    #+    #+#      */
+/*   Created: 2019/04/19 09:41:21 by rgermain     #+#   ##    ##    #+#       */
+/*   Updated: 2019/04/19 09:41:24 by rgermain    ###    #+. /#+    ###.fr     */
+/*                                                         /                  */
+/*                                                        /                   */
+/* ************************************************************************** */
+
 #include "ft_ls.h"
 
 static	void	ls_finalflags(t_ls *data)
 {
-	if (test_bit(&(data->flag), LS_M))
+	if (test_bit(&(data->flag), LS_M) && test_bit(&(data->flag), LS_L))
 		clear_bit(&(data->flag), LS_L);
 	if (test_bit(&(data->flag), LS_A_MAJ))
 		set_bit(&(data->flag), LS_A);

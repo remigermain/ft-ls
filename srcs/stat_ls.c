@@ -1,6 +1,19 @@
+/* ************************************************************************** */
+/*                                                          LE - /            */
+/*                                                              /             */
+/*   file_right.c                                     .::    .:/ .      .::   */
+/*                                                 +:+:+   +:    +:  +:+:+    */
+/*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
+/*                                                 #+#   #+    #+    #+#      */
+/*   Created: 2019/04/19 09:41:27 by rgermain     #+#   ##    ##    #+#       */
+/*   Updated: 2019/04/19 09:49:11 by rgermain    ###    #+. /#+    ###.fr     */
+/*                                                         /                  */
+/*                                                        /                   */
+/* ************************************************************************** */
+
 #include "ft_ls.h"
 
-void	file_right(t_ls *data, t_stat fileStat, t_page *pad)
+void	file_right(t_ls *data, t_stat fileStat, t_padding *pad)
 {
 	char	right[10];
 
@@ -30,12 +43,12 @@ void	file_right(t_ls *data, t_stat fileStat, t_page *pad)
 	write(1, right, 10);
 }
 
-void	file_link(t_ls *data, t_stat filestat, t_page *pad)
+void	file_link(t_ls *data, t_stat filestat, t_padding *pad)
 {
 	ft_printf("  %*d", pad->link, filestat.st_nlink);
 }
 
-void	file_group(t_ls *data, t_stat filestat, t_page *pad)
+void	file_group(t_ls *data, t_stat filestat, t_padding *pad)
 {
 	t_passwd	*uid;
 	t_group		*gid;
@@ -55,7 +68,7 @@ void	file_group(t_ls *data, t_stat filestat, t_page *pad)
 		ft_printf(" %-*d", pad->group2_i, filestat.st_gid);
 }
 
-void	file_size(t_ls *data, t_stat filestat, t_page *pad)
+void	file_size(t_ls *data, t_stat filestat, t_padding *pad)
 {
 	if (S_ISBLK(filestat.st_mode) || S_ISCHR(filestat.st_mode))
 		ft_printf(" %*lld, %*lld", pad->size, MAJOR(filestat.st_rdev), pad->size2, MINOR(filestat.st_rdev));
@@ -63,7 +76,7 @@ void	file_size(t_ls *data, t_stat filestat, t_page *pad)
 		ft_printf("%*d", pad->size + pad->size2 + 2, filestat.st_size);
 }
 
-void	file_date(t_ls *data, t_stat filestat, t_page *pad)
+void	file_date(t_ls *data, t_stat filestat, t_padding *pad)
 {
 	char	*time;
 	int		i;
