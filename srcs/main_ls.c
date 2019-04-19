@@ -6,18 +6,18 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:09 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/19 11:36:42 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/19 13:47:28 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-void	print_ls(t_ls *data, t_lsop **op, t_padding *padding, int nb)
+void	print_ls(t_ls *data, t_lsop **op, t_padding *padding, int len)
 {
 	t_lsop	*mem;
 
-	ls_sort(data, op, nb);
+	ls_sort(data, op, len);
 	mem = (*op);
 	while (mem->next)
 	{
@@ -56,7 +56,7 @@ void	read_dir(t_ls *data, char *base, char *path)
 		{
 			if (!(rep = ft_strjoin(rep2 , op->dir->d_name)))
 				error_ls(data);
-			stat(rep, &(op->file));
+			lstat(rep, &(op->file));
 			if (test_bit(&(data->flag), 2) || op->dir->d_name[0] != '.')
 				padding_ls(data, &pad, op);
 			total += op->file.st_blocks;
@@ -76,12 +76,9 @@ void	read_dir(t_ls *data, char *base, char *path)
 		print_ls(data, &mem, &pad, len);
 		while (mem->next)
 		{
-			if (test_bit(&(data->flag), 1) && S_ISDIR(mem->file.st_mode) && ft_strlen(mem->dir->d_name)
+			if (test_bit(&(data->flag), 1) && (S_ISDIR(mem->file.st_mode) || (S_ISLNK(mem->file.st_mode)))
 				&& ft_strcmp(".", mem->dir->d_name) && ft_strcmp("..", mem->dir->d_name))
-			{
-				if (ft_strlen(mem->dir->d_name))
-					read_dir(data, mem->dir->d_name, ft_strjoin(name, "/"));
-			}
+				read_dir(data, mem->dir->d_name, ft_strjoin(name, "/"));
 			op = mem;
 			mem = mem->next;
 			ft_memdel((void**)&op);
@@ -90,7 +87,15 @@ void	read_dir(t_ls *data, char *base, char *path)
 		closedir(dir_ptr);
 	}
 	else
-		ft_lserror(data, name);
+	{
+		if ((test_bit(&(data->flag), 1) || test_bit(&(data->flag), 11)) && data->indi)
+		{
+			ft_printf("\n%s:\n", name);
+			ft_lserror(data, base);
+		}
+		else
+			ft_lserror(data, name);
+	}
 	ft_memdel((void**)&name);
 	if (path && path[0])
 		ft_memdel((void**)&path);
@@ -114,6 +119,8 @@ int	read_file(t_ls *data, t_lsop *op, t_padding *padding)
 	{
 		if (S_ISDIR(op->file.st_mode))
 				ft_printf("%s", F_BOLD);
+		else if (S_ISLNK(op->file.st_mode))
+				ft_printf("%s", T_PURPLE);
 		else if (op->file.st_mode & S_IXUSR || op->file.st_mode & S_IXGRP || 
 				op->file.st_mode & S_IXOTH)
 			ft_printf("%s", T_RED);

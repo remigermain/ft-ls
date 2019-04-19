@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:48 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/19 12:04:35 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/19 13:40:07 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -36,11 +36,10 @@ int		swap_elem(t_ls *data, t_lsop **op, t_lsop ***mem, t_lsop ***mem2)
 		swap_elem2((*mem), (*mem2));
 	else if (!test_bit(&(data->flag), LS_R))
 		swap_elem2((*mem2), (*mem));
-	return (0);
+	return (-1);
 }
 
-int		ls_sort_ascii(t_ls *data, t_lsop **op, t_lsop ***mem,
-		t_lsop ***mem2)
+int		ls_sort_ascii(t_ls *data, t_lsop **op, t_lsop ***mem, t_lsop ***mem2)
 {
 	int	i;
 
@@ -57,6 +56,7 @@ int		ls_sort_ascii(t_ls *data, t_lsop **op, t_lsop ***mem,
 	{
 		*mem = &((**mem)->next);
 		*mem2 = &((**mem2)->next);
+		return (1);
 	}
-	return (1);
+	return (0);
 }
