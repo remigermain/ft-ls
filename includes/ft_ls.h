@@ -100,10 +100,9 @@ int		read_file(t_ls *data, t_lsop *op, t_padding *pad);
 /*
 **	sort_ls
 */
-void	ls_sort(t_ls *data, t_lsop **op);
-void	swap_elem2(t_lsop **mem, t_lsop **mem2);
-void	swap_elem(t_ls *data, t_lsop **op, t_lsop ***mem, t_lsop ***mem2);
-void	ls_sort_ascii(t_ls *data, t_lsop **op, t_lsop ***mem, t_lsop ***mem2);
+void	ls_sort(t_ls *data, t_lsop **op, int nb);
+int	swap_elem(t_ls *data, t_lsop **op, t_lsop ***mem, t_lsop ***mem2);
+int	ls_sort_ascii(t_ls *data, t_lsop **op, t_lsop ***mem, t_lsop ***mem2);
 
 /*
 **	tools.c
@@ -113,7 +112,7 @@ void	set_bit(long *st, int i);
 void	clear_bit(long *st, int i);
 t_bool	test_bit(long *st, int i);
 void	ft_lserror(t_ls *st, char *name);
-void	ftls_error(t_ls *data);
+void	error_ls(t_ls *data);
 void	free_ftls(t_ls *st);
 void	padding_ls(t_ls *data, t_padding *pad, t_lsop *op);
 

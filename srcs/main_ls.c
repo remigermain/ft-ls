@@ -6,18 +6,18 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:09 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/19 10:45:17 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/19 11:36:42 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-void	print_ls(t_ls *data, t_lsop **op, t_padding *padding)
+void	print_ls(t_ls *data, t_lsop **op, t_padding *padding, int nb)
 {
 	t_lsop	*mem;
 
-	ls_sort(data, op);
+	ls_sort(data, op, nb);
 	mem = (*op);
 	while (mem->next)
 	{
@@ -38,28 +38,33 @@ void	read_dir(t_ls *data, char *base, char *path)
 	long	total;
 	char	*rep;
 	char	*rep2;
+	int		len;
 
+	len = 0;
 	ft_bzero(&(pad), sizeof(t_padding));
 	name = ft_strjoin(path, base);
 	if (!(op = (t_lsop*)ft_memalloc(sizeof(t_lsop))))
-		ftls_error(data);
+		error_ls(data);
 	mem = op;
 	op->next = NULL;
 	if ((dir_ptr = opendir(name)))
 	{
 		total = 0;
-		rep2 = ft_strjoin(name, "/");
+		if (!(rep2 = ft_strjoin(name, "/")))
+			error_ls(data);
 		while ((op->dir = readdir(dir_ptr)))
 		{
-			rep = ft_strjoin(rep2 , op->dir->d_name);
+			if (!(rep = ft_strjoin(rep2 , op->dir->d_name)))
+				error_ls(data);
 			stat(rep, &(op->file));
 			if (test_bit(&(data->flag), 2) || op->dir->d_name[0] != '.')
 				padding_ls(data, &pad, op);
 			total += op->file.st_blocks;
 			if (!(op->next = (t_lsop*)ft_memalloc(sizeof(t_lsop))))
-				ftls_error(data);
+				error_ls(data);
 			op = op->next;
 			op->next = NULL;
+			len++;
 			ft_memdel((void**)&rep);
 		}
 		ft_memdel((void**)&rep2);
@@ -68,7 +73,7 @@ void	read_dir(t_ls *data, char *base, char *path)
 		data->indi = 1;
 		if (test_bit(&(data->flag), 0))
 			ft_printf("total %d\n", total);
-		print_ls(data, &mem, &pad);
+		print_ls(data, &mem, &pad, len);
 		while (mem->next)
 		{
 			if (test_bit(&(data->flag), 1) && S_ISDIR(mem->file.st_mode) && ft_strlen(mem->dir->d_name)

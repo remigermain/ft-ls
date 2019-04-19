@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:41 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/19 10:41:30 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/19 11:07:25 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -50,7 +50,8 @@ int			main(int argc, char **argv)
 	while (data.i < data.argc)
 	{
 		data.error = FALSE;
-		name = strdup((i ? "." : argv[data.i]));
+		if (!(name = strdup((i ? "." : argv[data.i]))))
+			error_ls(&data);
 		data.i++;
 		read_dir(&(data), name, "");
 		if (data.i < data.argc && !data.error)
