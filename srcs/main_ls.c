@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:09 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/23 16:46:54 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/23 16:56:43 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -77,7 +77,8 @@ void	read_dir(t_ls *data, char *base, char *path)
 		print_ls(data, &mem, &pad, len);
 		while (mem->next)
 		{
-			if (test_bit(&(data->flag), 1) && (S_ISDIR(mem->file.st_mode) || (S_ISLNK(mem->file.st_mode)))
+			if (test_bit(&(data->flag), 1) && (S_ISDIR(mem->file.st_mode))
+		//	if (test_bit(&(data->flag), 1) && (S_ISDIR(mem->file.st_mode) || (S_ISLNK(mem->file.st_mode)))
 				&& ft_strcmp(".", mem->dir->d_name) && ft_strcmp("..", mem->dir->d_name))
 			{
 				if (mem->dir->d_name[0])
