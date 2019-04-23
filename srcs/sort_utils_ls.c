@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:48 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/19 13:40:07 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/23 16:46:21 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -44,13 +44,13 @@ int		ls_sort_ascii(t_ls *data, t_lsop **op, t_lsop ***mem, t_lsop ***mem2)
 	int	i;
 
 	i = 0;
-	while ((**mem)->dir->d_name[i] && (**mem2)->dir->d_name[i] &&
-			(**mem)->dir->d_name[i] == (**mem2)->dir->d_name[i])
+	while ((**mem)->name[i] && (**mem2)->name[i] &&
+			(**mem)->name[i] == (**mem2)->name[i])
 		i++;
 	if ((test_bit(&(data->flag), LS_R) &&
-		(**mem)->dir->d_name[i] < (**mem2)->dir->d_name[i]) ||
+		(**mem)->name[i] < (**mem2)->name[i]) ||
 			(!test_bit(&(data->flag), LS_R) &&
-			(**mem)->dir->d_name[i] > (**mem2)->dir->d_name[i]))
+			(**mem)->name[i] > (**mem2)->name[i]))
 		return (swap_elem(data, op, mem, mem2));
 	else
 	{

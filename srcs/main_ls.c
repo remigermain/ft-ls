@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:09 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/19 13:47:28 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/23 16:46:54 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -57,6 +57,7 @@ void	read_dir(t_ls *data, char *base, char *path)
 			if (!(rep = ft_strjoin(rep2 , op->dir->d_name)))
 				error_ls(data);
 			lstat(rep, &(op->file));
+			op->name = op->dir->d_name;
 			if (test_bit(&(data->flag), 2) || op->dir->d_name[0] != '.')
 				padding_ls(data, &pad, op);
 			total += op->file.st_blocks;
@@ -78,7 +79,10 @@ void	read_dir(t_ls *data, char *base, char *path)
 		{
 			if (test_bit(&(data->flag), 1) && (S_ISDIR(mem->file.st_mode) || (S_ISLNK(mem->file.st_mode)))
 				&& ft_strcmp(".", mem->dir->d_name) && ft_strcmp("..", mem->dir->d_name))
-				read_dir(data, mem->dir->d_name, ft_strjoin(name, "/"));
+			{
+				if (mem->dir->d_name[0])
+					read_dir(data, mem->dir->d_name, ft_strjoin(name, "/"));
+			}
 			op = mem;
 			mem = mem->next;
 			ft_memdel((void**)&op);
