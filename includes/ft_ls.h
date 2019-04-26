@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/26 08:03:50 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/26 13:43:47 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/26 14:08:20 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -133,7 +133,7 @@ int	ls_sort_ascii(t_ls *data, t_lsop **op, t_lsop ***mem, t_lsop ***mem2);
 /*
 **	tools.c
 */
-int		ls_putflags(t_ls *data, int argc, char **argv);
+void	ls_putflags(t_ls *data, int argc, char **argv);
 void	set_bit(long *st, int i);
 void	clear_bit(long *st, int i);
 t_bool	test_bit(long *st, int i);

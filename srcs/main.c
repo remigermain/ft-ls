@@ -6,14 +6,14 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:41 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/26 13:06:39 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/26 14:14:42 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-static void	put_read(t_ls *data, t_lsop	**origi, int len)
+static void	put_read(t_ls *data, t_lsop **origi, int len)
 {
 	t_lsop	*tmp;
 	t_lsop	*mem;
@@ -42,18 +42,14 @@ static void	put_read(t_ls *data, t_lsop	**origi, int len)
 	ft_memdel((void**)&dir);
 }
 
-static void	sort_argv(t_ls *data, char **argv)
+static void	sort_argv(t_ls *data, char **argv, int i, int len)
 {
-	int		i;
-	int		len;
 	t_lsop	*mem;
 	t_lsop	*op;
 
-	i = 0;
-	len = 0;
 	op = NULL;
 	mem = NULL;
-	while (argv[i])
+	while (argv[i] && (++len))
 	{
 		if (!op)
 		{
@@ -71,7 +67,6 @@ static void	sort_argv(t_ls *data, char **argv)
 		}
 		op->name = argv[i];
 		lstat(argv[i++], &(op->file));
-		len++;
 	}
 	put_read(data, &mem, len);
 }
@@ -80,10 +75,9 @@ int			main(int argc, char **argv)
 {
 	t_ls	data;
 	char	*name;
-	int		i;
 
-	i = ls_putflags(&data, argc, argv);
-	sort_argv(&data, argv + data.i);
-/*	free_ftls(&data);
-*/	return (0);
+	ls_putflags(&data, argc, argv);
+	sort_argv(&data, argv + data.i, 0, 0);
+	free_ftls(&data);
+	return (0);
 }
