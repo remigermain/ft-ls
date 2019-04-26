@@ -6,18 +6,23 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:09 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/23 12:28:42 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/26 09:49:07 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-int	read_file2(t_ls *data, t_lsop *op, t_padding *padding)
+static int	print_link(t_ls *data, t_lsop *op)
 {
-	if (test_bit(&(data->flag), 9))
+	return (1);
+}
+
+static int	print_extra(t_ls *data, t_lsop *op, t_padding *padding)
+{
+	if (test_bit(&(data->flag), LS_G_MAJ))
 		ft_printf("%s", T_WHITE);
-	if (test_bit(&(data->flag), 11))
+	if (test_bit(&(data->flag), LS_F_MAJ))
 	{
 		if (S_ISDIR(op->file.st_mode))
 			ft_printf("/");
@@ -36,15 +41,15 @@ int	read_file2(t_ls *data, t_lsop *op, t_padding *padding)
 	if ((test_bit(&(data->flag), LS_1) || test_bit(&(data->flag), LS_L))
 			&& op->next && op->next->next)
 		ft_printf("\n");
-	return (1);
+	return (print_link(data, op));
 }
 
-int	read_file(t_ls *data, t_lsop *op, t_padding *padding)
+static int	print_file(t_ls *data, t_lsop *op, t_padding *padding)
 {
 	if (test_bit(&(data->flag), LS_A_MAJ) &&
 				(!ft_strcmp(".", op->dir->d_name) || !ft_strcmp("..", op->dir->d_name)))
 		return (0);
-	if (test_bit(&(data->flag), 0))
+	if (test_bit(&(data->flag), LS_L))
 	{
 		file_right(data, op->file, padding);
 		file_link(data, op->file, padding);
@@ -52,7 +57,7 @@ int	read_file(t_ls *data, t_lsop *op, t_padding *padding)
 		file_size(data, op->file, padding);
 		file_date(data, op->file, padding);
 	}
-	if (test_bit(&(data->flag), 9))
+	if (test_bit(&(data->flag), LS_G_MAJ))
 	{
 		if (S_ISDIR(op->file.st_mode))
 				ft_printf("%s", F_BOLD);
@@ -64,11 +69,12 @@ int	read_file(t_ls *data, t_lsop *op, t_padding *padding)
 	}
 	if (op->next && !op->next->next)
 		padding->name = 0;
-	if ((!test_bit(&(data->flag), LS_M) && !test_bit(&(data->flag), LS_1)) || data->flag == 0)
+	if ((!test_bit(&(data->flag), LS_M) && !test_bit(&(data->flag), LS_1) &&
+				(!test_bit(&(data->flag), LS_L))) || data->flag == 0)
 		ft_printf("%-*s", padding->name + 1, op->dir->d_name);
 	else if (test_bit(&(data->flag), 2) || op->dir->d_name[0] != '.')
 		ft_printf("%s", op->dir->d_name);	
-	return (read_file2(data, op, padding));
+	return (print_extra(data, op, padding));
 }
 
 void	print_ls(t_ls *data, t_lsop **op, t_padding *padding, int len)
@@ -81,8 +87,8 @@ void	print_ls(t_ls *data, t_lsop **op, t_padding *padding, int len)
 	i = 0;
 	while (mem->next)
 	{
-		if ((test_bit(&(data->flag), 2) || mem->dir->d_name[0] != '.') && (++i))
-			read_file(data, mem, padding);
+		if ((test_bit(&(data->flag), LS_A) || mem->dir->d_name[0] != '.') && (++i))
+			print_file(data, mem, padding);
 		mem = mem->next;
 	}
 	if (i)

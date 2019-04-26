@@ -1,3 +1,16 @@
+/* ************************************************************************** */
+/*                                                          LE - /            */
+/*                                                              /             */
+/*   ft_ls.h                                          .::    .:/ .      .::   */
+/*                                                 +:+:+   +:    +:  +:+:+    */
+/*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
+/*                                                 #+#   #+    #+    #+#      */
+/*   Created: 2019/04/26 08:03:50 by rgermain     #+#   ##    ##    #+#       */
+/*   Updated: 2019/04/26 09:45:35 by rgermain    ###    #+. /#+    ###.fr     */
+/*                                                         /                  */
+/*                                                        /                   */
+/* ************************************************************************** */
+
 #ifndef FT_LS
 # define FT_LS
 
@@ -94,6 +107,7 @@ void	file_date(t_ls *data, t_stat filestat, t_padding *pad);
 /*
 **	read-file && dir
 */
+void	print_ls(t_ls *data, t_lsop **op, t_padding *pad, int len);
 void	read_dir(t_ls *data, char *base, char *path);
 int		read_file(t_ls *data, t_lsop *op, t_padding *pad);
 

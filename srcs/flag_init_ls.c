@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:21 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/19 10:21:10 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/26 08:06:25 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -32,6 +32,8 @@ static	void	ls_putflags3(t_ls *st, char **argv, int i)
 		set_bit(&(st->flag), LS_A_MAJ);
 	else if (argv[1][i] == 'B')
 		set_bit(&(st->flag), LS_B_MAJ);
+	else if (argv[1][i] == 'S')
+		set_bit(&(st->flag), LS_S_MAJ);
 	else if (argv[1][i] == 'T')
 		set_bit(&(st->flag), LS_T_MAJ);
 }

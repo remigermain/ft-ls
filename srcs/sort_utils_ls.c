@@ -6,19 +6,23 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:48 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/23 16:46:21 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/26 08:25:54 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-void	swap_elem2(t_lsop **mem, t_lsop **mem2)
+void	swap_elem2(t_lsop ***mem_n, t_lsop ***mem2_n)
 {
+	t_lsop	**mem;
+	t_lsop	**mem2;
 	t_stat	tmp_stat;
 	t_dir	*tmp_dir;
 	char	*tmp_name;
 
+	mem = (*mem_n);
+	mem2 = (*mem2_n);
 	tmp_stat = (*mem)->file;
 	tmp_dir = (*mem)->dir;
 	tmp_name = (*mem)->name;
@@ -33,9 +37,9 @@ void	swap_elem2(t_lsop **mem, t_lsop **mem2)
 int		swap_elem(t_ls *data, t_lsop **op, t_lsop ***mem, t_lsop ***mem2)
 {
 	if (test_bit(&(data->flag), LS_R))
-		swap_elem2((*mem), (*mem2));
+		swap_elem2(mem, mem2);
 	else if (!test_bit(&(data->flag), LS_R))
-		swap_elem2((*mem2), (*mem));
+		swap_elem2(mem2, mem);
 	return (-1);
 }
 
