@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/26 08:03:50 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/26 11:38:32 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/26 13:22:33 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -58,17 +58,6 @@ typedef	struct stat	t_stat;
 typedef	struct passwd	t_passwd;
 typedef	struct group	t_group;
 
-typedef struct	s_lsdiv
-{
-	t_dir	*tmp_dir;
-	void	*dir_ptr;
-	char	*rep_d;
-	char	*rep;
-	char	*name;
-	int		total;
-	int		len;
-}				t_lsdiv;
-
 typedef	struct	s_padding
 {
 	int	link;
@@ -79,11 +68,22 @@ typedef	struct	s_padding
 	int	name;
 }		t_padding;
 
+typedef struct	s_lsdiv
+{
+	t_padding	pad;
+	t_dir	*tmp_dir;
+	void	*dir_ptr;
+	char	*rep_d;
+	char	*rep;
+	char	*name;
+	int		total;
+	int		len;
+}				t_lsdiv;
+
 typedef	struct	s_lsop
 {
 	char	*name;
 	t_stat	file;
-	t_dir	*dir;
 	struct	s_lsop *next;
 }		t_lsop;
 

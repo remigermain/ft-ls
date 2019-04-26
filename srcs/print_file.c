@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:09 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/26 11:49:31 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/26 13:29:28 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -36,7 +36,7 @@ static int	print_extra(t_ls *data, t_lsop *op, t_padding *padding)
 	}
 	else if (test_bit(&(data->flag), LS_P) && (S_ISDIR(op->file.st_mode)))
 			ft_printf("/");
-	if (test_bit(&(data->flag), LS_M) && op->next && op->next->next)
+	if (test_bit(&(data->flag), LS_M) && op->next)
 		ft_printf(", ");
 	if ((test_bit(&(data->flag), LS_1) || test_bit(&(data->flag), LS_L))
 			&& op->next)
@@ -47,7 +47,7 @@ static int	print_extra(t_ls *data, t_lsop *op, t_padding *padding)
 static int	print_file(t_ls *data, t_lsop *op, t_padding *padding)
 {
 	if (test_bit(&(data->flag), LS_A_MAJ) &&
-				(!ft_strcmp(".", op->dir->d_name) || !ft_strcmp("..", op->dir->d_name)))
+				(!ft_strcmp(".", op->name) || !ft_strcmp("..", op->name)))
 		return (0);
 	if (test_bit(&(data->flag), LS_L))
 	{
@@ -71,9 +71,9 @@ static int	print_file(t_ls *data, t_lsop *op, t_padding *padding)
 		padding->name = 0;
 	if ((!test_bit(&(data->flag), LS_M) && !test_bit(&(data->flag), LS_1) &&
 				(!test_bit(&(data->flag), LS_L))) || data->flag == 0)
-		ft_printf("%-*s", padding->name + 1, op->dir->d_name);
-	else if (test_bit(&(data->flag), 2) || op->dir->d_name[0] != '.')
-		ft_printf("%s", op->dir->d_name);	
+		ft_printf("%-*s", padding->name + 1, op->name);
+	else if (test_bit(&(data->flag), 2) || op->name[0] != '.')
+		ft_printf("%s", op->name);	
 	return (print_extra(data, op, padding));
 }
 
@@ -87,7 +87,7 @@ void	print_ls(t_ls *data, t_lsop **op, t_padding *padding, int len)
 	i = 0;
 	while (mem)
 	{
-		if ((test_bit(&(data->flag), LS_A) || mem->dir->d_name[0] != '.') && (i = 1))
+		if ((test_bit(&(data->flag), LS_A) || mem->name[0] != '.') && (i = 1))
 			print_file(data, mem, padding);
 		mem = mem->next;
 	}

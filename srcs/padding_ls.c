@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:40:54 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/19 10:27:27 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/26 12:41:15 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -50,6 +50,6 @@ void		padding_ls(t_ls *data, t_padding *pad, t_lsop *op)
 	}
 	else if (pad->size < ft_intlen(op->file.st_size))
 		pad->size = ft_intlen(op->file.st_size);
-	if (pad->name < ft_strlen(op->dir->d_name))
-		pad->name = ft_strlen(op->dir->d_name);
+	if (pad->name < ft_strlen(op->name))
+		pad->name = ft_strlen(op->name);
 }
