@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:09 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/26 11:12:54 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/26 11:55:57 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -53,7 +53,7 @@ static void	recursive_dir(t_ls *data, t_lsop **origi, char *name)
 	t_lsop	*tmp;
 
 	mem = (*origi);
-	while (mem->next)
+	while (mem)
 	{
 		if (test_bit(&(data->flag), 1) && (S_ISDIR(mem->file.st_mode))
 			&& ft_strcmp(".", mem->dir->d_name) && ft_strcmp("..", mem->dir->d_name))
@@ -66,7 +66,6 @@ static void	recursive_dir(t_ls *data, t_lsop **origi, char *name)
 		ft_memdel((void**)&mem);
 		mem = tmp;
 	}
-	ft_memdel((void**)&mem);
 }
 
 void	read_dir(t_ls *data, char *base, char *path)
@@ -85,7 +84,7 @@ void	read_dir(t_ls *data, char *base, char *path)
 	{
 		if (!(div.rep_d = ft_strjoin(div.name, "/")))
 			error_ls(data);
-		while (1)
+		while ((div.tmp_dir = readdir(div.dir_ptr)))
 		{
 			if (!op)
 			{
@@ -101,11 +100,9 @@ void	read_dir(t_ls *data, char *base, char *path)
 				op = op->next;
 				op->next = NULL;
 			}
-			if (!(div.tmp_dir = readdir(div.dir_ptr)))
-				break ;
 			if (!(op->dir = (t_dir*)ft_memalloc(sizeof(t_dir))))
 				error_ls(data);
-			ft_memcpy(op->dir, div.tmp_dir, sizeof(*div.tmp_dir));
+			op->dir = ft_memcpy(op->dir, div.tmp_dir, sizeof(t_dir));
 			if (!(div.rep = ft_strjoin(div.rep_d , op->dir->d_name)))
 				error_ls(data);
 			lstat(div.rep, &(op->file));
@@ -115,6 +112,7 @@ void	read_dir(t_ls *data, char *base, char *path)
 			div.total += op->file.st_blocks;
 			div.len++;
 			ft_memdel((void**)&(div.rep));
+			div.tmp_dir = NULL;
 		}
 		print_file(data,& mem, &pad, &div);
 		recursive_dir(data, &mem, div.name);

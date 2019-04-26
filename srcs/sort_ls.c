@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:48 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/26 08:11:15 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/26 12:04:31 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -22,7 +22,7 @@ static void	ls_sort_size(t_ls *data, t_lsop **op, int len, int i)
 	{
 		mem = op;
 		mem2 = &((*op)->next);
-		while ((*mem2)->next)
+		while (i < len && (*mem2))
 		{
 			if ((test_bit(&(data->flag), LS_R) &&
 				(*mem)->file.st_size > (*mem2)->file.st_size) ||
@@ -50,7 +50,7 @@ static void	ls_sort_atime(t_ls *data, t_lsop **op, int len, int i)
 	{
 		mem = op;
 		mem2 = &((*op)->next);
-		while ((*mem2)->next)
+		while (i < len && (*mem2))
 		{
 			if ((test_bit(&(data->flag), LS_R) &&
 				(*mem)->file.st_atime > (*mem2)->file.st_atime) ||
@@ -78,7 +78,7 @@ static void	ls_sort_time(t_ls *data, t_lsop **op, int len, int i)
 	{
 		mem = op;
 		mem2 = &((*op)->next);
-		while ((*mem2)->next)
+		while (i < len && (*mem2))
 		{
 			if ((test_bit(&(data->flag), LS_R) &&
 				(*mem)->file.st_ctime > (*mem2)->file.st_ctime) ||
@@ -106,7 +106,7 @@ static void	ls_sort_alpha(t_ls *data, t_lsop **op, int len, int i)
 	{
 		mem = op;
 		mem2 = &((*op)->next);
-		while ((*mem2)->next)
+		while (i < len && (*mem2))
 			i += ls_sort_ascii(data, op, &mem, &mem2);
 	}
 }

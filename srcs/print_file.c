@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:09 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/26 09:49:07 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/26 11:49:31 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -39,7 +39,7 @@ static int	print_extra(t_ls *data, t_lsop *op, t_padding *padding)
 	if (test_bit(&(data->flag), LS_M) && op->next && op->next->next)
 		ft_printf(", ");
 	if ((test_bit(&(data->flag), LS_1) || test_bit(&(data->flag), LS_L))
-			&& op->next && op->next->next)
+			&& op->next)
 		ft_printf("\n");
 	return (print_link(data, op));
 }
@@ -85,9 +85,9 @@ void	print_ls(t_ls *data, t_lsop **op, t_padding *padding, int len)
 	ls_sort(data, op, len);
 	mem = (*op);
 	i = 0;
-	while (mem->next)
+	while (mem)
 	{
-		if ((test_bit(&(data->flag), LS_A) || mem->dir->d_name[0] != '.') && (++i))
+		if ((test_bit(&(data->flag), LS_A) || mem->dir->d_name[0] != '.') && (i = 1))
 			print_file(data, mem, padding);
 		mem = mem->next;
 	}
