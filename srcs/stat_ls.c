@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:27 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/19 12:41:34 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/26 10:59:42 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -15,7 +15,7 @@
 
 void	file_right(t_ls *data, t_stat stat, t_padding *pad)
 {
-	char	right[10];
+	char	right[11];
 
 	right[0] = '-';
 	if (S_ISDIR(stat.st_mode))
@@ -39,7 +39,8 @@ void	file_right(t_ls *data, t_stat stat, t_padding *pad)
 	right[7] = (stat.st_mode & S_IROTH) ? 'r' : '-';
 	right[8] = (stat.st_mode & S_IWOTH) ? 'w' : '-';
 	right[9] = (stat.st_mode & S_IXOTH) ? 'x' : '-';
-	write(1, right, 10);
+	right[10] = 0;
+	ft_printf("%s", right);
 }
 
 void	file_link(t_ls *data, t_stat filestat, t_padding *pad)

@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/26 08:03:50 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/26 09:45:35 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/26 11:10:23 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -23,6 +23,7 @@
 //#include <attr/xattr.h>
 #include <time.h>
 #include <stdio.h>
+//#define ft_printf(...) ft_printf("")
 
 #define MAJOR(dev) ((int)(((unsigned int) (dev) >> 8) & 0xff))
 #define MINOR(dev) ((int)((dev) & 0xff))
@@ -56,6 +57,17 @@ typedef	struct dirent	t_dir;
 typedef	struct stat	t_stat;
 typedef	struct passwd	t_passwd;
 typedef	struct group	t_group;
+
+typedef struct	s_lsdiv
+{
+	t_dir	*tmp_dir;
+	void	*dir_ptr;
+	char	*rep_d;
+	char	*rep;
+	char	*name;
+	int		total;
+	int		len;
+}				t_lsdiv;
 
 typedef	struct	s_padding
 {
@@ -125,7 +137,7 @@ int		ls_putflags(t_ls *data, int argc, char **argv);
 void	set_bit(long *st, int i);
 void	clear_bit(long *st, int i);
 t_bool	test_bit(long *st, int i);
-void	ft_lserror(t_ls *st, char *name);
+void	ft_lserror(t_ls *st, char *base, char *name);
 void	error_ls(t_ls *data);
 void	free_ftls(t_ls *st);
 void	padding_ls(t_ls *data, t_padding *pad, t_lsop *op);
