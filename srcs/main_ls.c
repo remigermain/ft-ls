@@ -6,14 +6,14 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:09 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/26 13:29:10 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/26 14:27:02 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-static void	free_readdir(t_lsdiv *div, char **path)
+static void		free_readdir(t_lsdiv *div, char **path)
 {
 	if (div)
 	{
@@ -26,9 +26,11 @@ static void	free_readdir(t_lsdiv *div, char **path)
 		ft_memdel((void**)path);
 }
 
-static void	print_file(t_ls *data, t_lsop **mem, t_padding *pad, t_lsdiv *div)
+static void		print_file(t_ls *data, t_lsop **mem, t_padding *pad,
+		t_lsdiv *div)
 {
-	if ((test_bit(&(data->flag), 1) || test_bit(&(data->flag), 11)) && data->indi)
+	if ((test_bit(&(data->flag), 1) || test_bit(&(data->flag), 11)) &&
+			data->indi)
 		ft_printf("\n%s:\n", div->name);
 	data->indi = 1;
 	if (test_bit(&(data->flag), 0))
@@ -36,7 +38,7 @@ static void	print_file(t_ls *data, t_lsop **mem, t_padding *pad, t_lsdiv *div)
 	print_ls(data, mem, pad, div->len);
 }
 
-static void	recursive_dir(t_ls *data, t_lsop **origi, char *name)
+static void		recursive_dir(t_ls *data, t_lsop **origi, char *name)
 {
 	t_lsop	*mem;
 	t_lsop	*tmp;
@@ -73,7 +75,7 @@ static t_lsop	*put_info(t_ls *data, t_lsop **op, t_lsdiv *div)
 		op = &((*op)->next);
 		(*op)->next = NULL;
 	}
-	if (!(div->rep = ft_strjoin(div->rep_d , div->tmp_dir->d_name)))
+	if (!(div->rep = ft_strjoin(div->rep_d, div->tmp_dir->d_name)))
 		return (0);
 	(*op)->name = strdup(div->tmp_dir->d_name);
 	lstat(div->rep, &((*op)->file));
@@ -86,7 +88,7 @@ static t_lsop	*put_info(t_ls *data, t_lsop **op, t_lsdiv *div)
 	return ((*op));
 }
 
-void	read_dir(t_ls *data, char *base, char *path)
+void			read_dir(t_ls *data, char *base, char *path)
 {
 	t_lsop		*op;
 	t_lsop		*mem;
@@ -109,7 +111,7 @@ void	read_dir(t_ls *data, char *base, char *path)
 			else if (!mem)
 				mem = op;
 		}
-		print_file(data,& mem, &(div.pad), &div);
+		print_file(data, &mem, &(div.pad), &div);
 		recursive_dir(data, &mem, div.name);
 		closedir(div.dir_ptr);
 	}
