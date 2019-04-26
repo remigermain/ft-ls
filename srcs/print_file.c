@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:09 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/26 14:42:08 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/26 15:40:43 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -15,11 +15,19 @@
 
 static int	print_link(t_ls *data, t_lsop *op)
 {
+	char	path[1024];
+	t_dir	*tmp;
+	void	*ptr;
+
 	if (test_bit(&(data->flag), LS_M) && op->next)
 		ft_printf(", ");
-//	if ((test_bit(&(data->flag), LS_1) || test_bit(&(data->flag), LS_L))
-//			&& op->next)
-		ft_printf("\n");
+	if (S_ISLNK(op->file.st_mode))
+	{
+		int i = 1;
+		(i = listxattr(ft_strjoin(op->name, "/"), path, 1024, XATTR_SHOWCOMPRESSION));
+			ft_printf(" -> %s , %d", op->name, i);
+	}
+	ft_printf("\n");
 	return (1);
 }
 
@@ -66,7 +74,9 @@ static int	print_file(t_ls *data, t_lsop *op, t_padding *padding)
 	}
 	if (test_bit(&(data->flag), LS_G_MAJ))
 	{
-		if (S_ISDIR(op->file.st_mode))
+		if (op->file.st_mode & S_ISVTX)
+			ft_printf("%s%s", B_YELLOW, T_LGREY);
+		else if (S_ISDIR(op->file.st_mode))
 			ft_printf("%s", F_BOLD);
 		else if (S_ISLNK(op->file.st_mode))
 			ft_printf("%s", T_PURPLE);

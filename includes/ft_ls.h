@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/26 08:03:50 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/26 14:25:13 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/26 15:26:19 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -20,6 +20,7 @@
 # include <pwd.h>
 # include <grp.h>
 # include <time.h>
+# include <sys/xattr.h>
 //#define ft_printf(...) ft_printf("")
 # define MAJOR(dev) ((int)(((unsigned int) (dev) >> 8) & 0xff))
 # define MINOR(dev) ((int)((dev) & 0xff))
