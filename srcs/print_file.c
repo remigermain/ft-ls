@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:09 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/26 14:12:31 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/26 14:42:08 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -17,8 +17,8 @@ static int	print_link(t_ls *data, t_lsop *op)
 {
 	if (test_bit(&(data->flag), LS_M) && op->next)
 		ft_printf(", ");
-	if ((test_bit(&(data->flag), LS_1) || test_bit(&(data->flag), LS_L))
-			&& op->next)
+//	if ((test_bit(&(data->flag), LS_1) || test_bit(&(data->flag), LS_L))
+//			&& op->next)
 		ft_printf("\n");
 	return (1);
 }
@@ -85,12 +85,12 @@ void		print_ls(t_ls *data, t_lsop **op, t_padding *pad, int len)
 	ls_sort(data, op, len);
 	mem = (*op);
 	i = 0;
+	data->indi = 0;
 	while (mem)
 	{
 		if ((test_bit(&(data->flag), LS_A) || mem->name[0] != '.') && (i = 1))
 			print_file(data, mem, pad);
 		mem = mem->next;
 	}
-	if (i)
-		ft_printf("\n");
+	data->indi = i;
 }

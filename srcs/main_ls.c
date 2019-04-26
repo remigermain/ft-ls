@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:09 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/26 14:27:02 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/26 14:39:52 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -29,9 +29,11 @@ static void		free_readdir(t_lsdiv *div, char **path)
 static void		print_file(t_ls *data, t_lsop **mem, t_padding *pad,
 		t_lsdiv *div)
 {
-	if ((test_bit(&(data->flag), 1) || test_bit(&(data->flag), 11)) &&
-			data->indi)
-		ft_printf("\n%s:\n", div->name);
+	if (data->indi)
+		ft_printf("\n");
+	if ((test_bit(&(data->flag), LS_R_MAJ) || test_bit(&(data->flag), LS_F_MAJ)
+				|| data->argc > 1) && data->indi)
+		ft_printf("%s:\n", div->name);
 	data->indi = 1;
 	if (test_bit(&(data->flag), 0))
 		ft_printf("total %d\n", div->total);

@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:41 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/26 14:14:42 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/26 14:42:38 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -30,8 +30,6 @@ static void	put_read(t_ls *data, t_lsop **origi, int len)
 			data->error = FALSE;
 			data->i++;
 			read_dir(data, mem->name, dir);
-			if (data->i < data->argc && !data->error)
-				ft_printf("\n");
 			tmp = mem->next;
 			ft_memdel((void**)&mem);
 			mem = tmp;
