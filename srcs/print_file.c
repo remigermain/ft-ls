@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:09 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/26 13:29:28 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/26 13:39:38 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -67,7 +67,7 @@ static int	print_file(t_ls *data, t_lsop *op, t_padding *padding)
 				op->file.st_mode & S_IXOTH)
 			ft_printf("%s", T_RED);
 	}
-	if (op->next && !op->next->next)
+	if (!(op->next))
 		padding->name = 0;
 	if ((!test_bit(&(data->flag), LS_M) && !test_bit(&(data->flag), LS_1) &&
 				(!test_bit(&(data->flag), LS_L))) || data->flag == 0)
@@ -77,7 +77,7 @@ static int	print_file(t_ls *data, t_lsop *op, t_padding *padding)
 	return (print_extra(data, op, padding));
 }
 
-void	print_ls(t_ls *data, t_lsop **op, t_padding *padding, int len)
+void	print_ls(t_ls *data, t_lsop **op, t_padding *pad, int len)
 {
 	t_lsop	*mem;
 	int		i;
@@ -88,7 +88,7 @@ void	print_ls(t_ls *data, t_lsop **op, t_padding *padding, int len)
 	while (mem)
 	{
 		if ((test_bit(&(data->flag), LS_A) || mem->name[0] != '.') && (i = 1))
-			print_file(data, mem, padding);
+			print_file(data, mem, pad);
 		mem = mem->next;
 	}
 	if (i)

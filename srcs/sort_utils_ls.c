@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:48 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/26 12:31:19 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/26 13:34:36 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -50,7 +50,6 @@ int		ls_sort_ascii(t_ls *data, t_lsop **op, t_lsop ***mem, t_lsop ***mem2)
 	i = 0;
 	while ((**mem)->name && (**mem2)->name &&
 			(**mem)->name[i] == (**mem2)->name[i])
-		i++;
 		i++;
 	if ((**mem)->name && (**mem2)->name &&
 		 ((test_bit(&(data->flag), LS_R) &&
