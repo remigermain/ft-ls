@@ -6,28 +6,43 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:09 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/26 15:40:43 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/27 20:16:47 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
+static void	file_acl(t_ls *data, t_lsop *op, t_padding *pad)
+{
+	if (test_bit(&(data->flag), LS_L))
+	{
+		if (op->xattr > 0)
+			ft_printf("@");
+		else if (data->path && getxattr(data->path, op->name, NULL, 0, 0, XATTR_NOFOLLOW) >= 0)
+			ft_printf("+");
+		else
+			ft_printf(" ");
+	}
+}
+
 static int	print_link(t_ls *data, t_lsop *op)
 {
-	char	path[1024];
-	t_dir	*tmp;
-	void	*ptr;
+	char	buff[1024];
+	char	*name;
+	int		i;
 
 	if (test_bit(&(data->flag), LS_M) && op->next)
 		ft_printf(", ");
 	if (S_ISLNK(op->file.st_mode))
 	{
-		int i = 1;
-		(i = listxattr(ft_strjoin(op->name, "/"), path, 1024, XATTR_SHOWCOMPRESSION));
-			ft_printf(" -> %s , %d", op->name, i);
+		if (!(name = ft_strjoin(data->path, op->name)))
+			error_ls(data);
+		if ((i = readlink(name, buff, 1023)) > 0)
+			ft_printf(" -> %.*s", i, buff);
 	}
-	ft_printf("\n");
+	if (test_bit(&(data->flag), LS_L) || test_bit(&(data->flag), LS_1))
+		ft_printf("\n");
 	return (1);
 }
 
@@ -67,6 +82,7 @@ static int	print_file(t_ls *data, t_lsop *op, t_padding *padding)
 	if (test_bit(&(data->flag), LS_L))
 	{
 		file_right(data, op->file, padding);
+		file_acl(data, op, padding);
 		file_link(data, op->file, padding);
 		file_group(data, op->file, padding);
 		file_size(data, op->file, padding);
@@ -75,7 +91,7 @@ static int	print_file(t_ls *data, t_lsop *op, t_padding *padding)
 	if (test_bit(&(data->flag), LS_G_MAJ))
 	{
 		if (op->file.st_mode & S_ISVTX)
-			ft_printf("%s%s", B_YELLOW, T_LGREY);
+			ft_printf("%s%s", B_YELLOW, T_BLACK);
 		else if (S_ISDIR(op->file.st_mode))
 			ft_printf("%s", F_BOLD);
 		else if (S_ISLNK(op->file.st_mode))
@@ -102,5 +118,7 @@ void		print_ls(t_ls *data, t_lsop **op, t_padding *pad, int len)
 			print_file(data, mem, pad);
 		mem = mem->next;
 	}
+	if (!test_bit(&(data->flag), LS_L) && !test_bit(&(data->flag), LS_1))
+		ft_printf("\n");
 	data->indi = i;
 }

@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:48 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/26 14:13:10 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/27 19:41:26 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -22,12 +22,14 @@ void	swap_elem2(t_lsop ***mem_n, t_lsop ***mem2_n)
 
 	mem = (*mem_n);
 	mem2 = (*mem2_n);
+
 	tmp_stat = (*mem)->file;
 	tmp_name = (*mem)->name;
 	(*mem)->file = (*mem2)->file;
 	(*mem)->name = (*mem2)->name;
 	(*mem2)->file = tmp_stat;
 	(*mem2)->name = tmp_name;
+	ft_swap(&((*mem)->xattr), &((*mem2)->xattr));
 }
 
 int		swap_elem(t_ls *data, t_lsop **op, t_lsop ***mem, t_lsop ***mem2)

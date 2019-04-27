@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:27 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/26 14:57:18 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/27 20:09:52 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -38,13 +38,13 @@ void	file_right(t_ls *data, t_stat stat, t_padding *pad)
 	right[6] = (stat.st_mode & S_IXGRP) ? 'x' : '-';
 	right[7] = (stat.st_mode & S_IROTH) ? 'r' : '-';
 	right[8] = (stat.st_mode & S_IWOTH) ? 'w' : '-';
-	right[9] = (stat.st_mode & S_ISVTX) ? 'l' : (stat.st_mode & S_IXOTH) ? 'x' : '-';
+	right[9] = (stat.st_mode & S_ISVTX) ? 't' : (stat.st_mode & S_IXOTH) ? 'x' : '-';
 	ft_printf("%.10s", right);
 }
 
 void	file_link(t_ls *data, t_stat filestat, t_padding *pad)
 {
-	ft_printf("  %*d", pad->link, filestat.st_nlink);
+	ft_printf(" %*d", pad->link, filestat.st_nlink);
 }
 
 void	file_group(t_ls *data, t_stat filestat, t_padding *pad)

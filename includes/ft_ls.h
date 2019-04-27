@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/26 08:03:50 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/26 15:26:19 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/27 19:44:16 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -75,6 +75,7 @@ typedef struct	s_lsdiv
 typedef	struct	s_lsop
 {
 	char			*name;
+	int				xattr;
 	t_stat			file;
 	struct s_lsop	*next;
 }				t_lsop;
@@ -92,6 +93,7 @@ typedef	struct	s_ls
 	t_bool		error;
 	long		flag;
 	char		*name;
+	char		*path;
 	int			i;
 	int			argc;
 	char		indi;

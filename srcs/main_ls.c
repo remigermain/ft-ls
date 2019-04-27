@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:09 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/26 14:39:52 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/27 20:09:12 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -80,7 +80,11 @@ static t_lsop	*put_info(t_ls *data, t_lsop **op, t_lsdiv *div)
 	if (!(div->rep = ft_strjoin(div->rep_d, div->tmp_dir->d_name)))
 		return (0);
 	(*op)->name = strdup(div->tmp_dir->d_name);
-	lstat(div->rep, &((*op)->file));
+	(*op)->xattr = listxattr(div->rep, NULL, 0, XATTR_SHOWCOMPRESSION);
+	if (div->tmp_dir->d_type == DT_LNK)
+		lstat(div->rep, &((*op)->file));
+	else
+		stat(div->rep, &((*op)->file));
 	if (test_bit(&(data->flag), 2) || (*op)->name[0] != '.')
 		padding_ls(data, &(div->pad), (*op));
 	div->total += (*op)->file.st_blocks;
@@ -113,6 +117,7 @@ void			read_dir(t_ls *data, char *base, char *path)
 			else if (!mem)
 				mem = op;
 		}
+		data->path = div.rep_d;
 		print_file(data, &mem, &(div.pad), &div);
 		recursive_dir(data, &mem, div.name);
 		closedir(div.dir_ptr);
