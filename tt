@@ -1,0 +1,4 @@
+#!bin/usr/bash
+./ft_ls $1 $2 | wc -l
+echo "";
+ls $1 $2 | wc -l

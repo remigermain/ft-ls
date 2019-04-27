@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:09 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/27 20:09:12 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/27 23:47:13 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -35,7 +35,7 @@ static void		print_file(t_ls *data, t_lsop **mem, t_padding *pad,
 				|| data->argc > 1) && data->indi)
 		ft_printf("%s:\n", div->name);
 	data->indi = 1;
-	if (test_bit(&(data->flag), 0))
+	if (test_bit(&(data->flag), LS_L))
 		ft_printf("total %d\n", div->total);
 	print_ls(data, mem, pad, div->len);
 }
@@ -48,7 +48,7 @@ static void		recursive_dir(t_ls *data, t_lsop **origi, char *name)
 	mem = (*origi);
 	while (mem)
 	{
-		if (test_bit(&(data->flag), 1) && (S_ISDIR(mem->file.st_mode))
+		if (test_bit(&(data->flag), LS_R_MAJ) && S_ISDIR(mem->file.st_mode)
 			&& ft_strcmp(".", mem->name) && ft_strcmp("..", mem->name))
 		{
 			if (mem->name[0])
@@ -67,59 +67,51 @@ static t_lsop	*put_info(t_ls *data, t_lsop **op, t_lsdiv *div)
 	if (!(*op))
 	{
 		if (!((*op) = (t_lsop*)ft_memalloc(sizeof(t_lsop))))
-			return (NULL);
-		(*op)->next = NULL;
+			error_ls(data);
 	}
 	else if (!(*op)->next)
 	{
 		if (!(((*op)->next) = (t_lsop*)ft_memalloc(sizeof(t_lsop))))
-			return (NULL);
+			error_ls(data);
 		op = &((*op)->next);
-		(*op)->next = NULL;
 	}
 	if (!(div->rep = ft_strjoin(div->rep_d, div->tmp_dir->d_name)))
 		return (0);
 	(*op)->name = strdup(div->tmp_dir->d_name);
 	(*op)->xattr = listxattr(div->rep, NULL, 0, XATTR_SHOWCOMPRESSION);
+	stat(div->rep, &((*op)->file));
 	if (div->tmp_dir->d_type == DT_LNK)
 		lstat(div->rep, &((*op)->file));
-	else
-		stat(div->rep, &((*op)->file));
-	if (test_bit(&(data->flag), 2) || (*op)->name[0] != '.')
+	if (test_bit(&(data->flag), LS_A) || (*op)->name[0] != '.')
 		padding_ls(data, &(div->pad), (*op));
 	div->total += (*op)->file.st_blocks;
 	div->len++;
 	ft_memdel((void**)&(div->rep));
-	div->tmp_dir = NULL;
 	return ((*op));
 }
 
 void			read_dir(t_ls *data, char *base, char *path)
 {
-	t_lsop		*op;
-	t_lsop		*mem;
 	t_lsdiv		div;
+	t_stat		stat;
 
 	ft_bzero(&div, sizeof(t_lsdiv));
 	ft_bzero(&(div.pad), sizeof(t_padding));
 	if (!(div.name = ft_strjoin(path, base)))
 		error_ls(data);
-	op = NULL;
-	mem = NULL;
 	if ((div.dir_ptr = opendir(div.name)))
 	{
 		if (!(div.rep_d = ft_strjoin(div.name, "/")))
 			error_ls(data);
 		while ((div.tmp_dir = readdir(div.dir_ptr)))
 		{
-			if (!(op = put_info(data, &op, &div)))
-				error_ls(data);
-			else if (!mem)
-				mem = op;
+			div.op = put_info(data, &(div.op), &div);
+			if (!(div.mem))
+				div.mem = div.op;
 		}
 		data->path = div.rep_d;
-		print_file(data, &mem, &(div.pad), &div);
-		recursive_dir(data, &mem, div.name);
+		print_file(data, &(div.mem), &(div.pad), &div);
+		recursive_dir(data, &(div.mem), div.name);
 		closedir(div.dir_ptr);
 	}
 	else

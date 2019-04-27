@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/26 08:03:50 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/27 19:44:16 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/27 23:16:22 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -50,6 +50,14 @@ typedef	struct stat	t_stat;
 typedef	struct passwd	t_passwd;
 typedef	struct group	t_group;
 
+typedef	struct	s_lsop
+{
+	char			*name;
+	int				xattr;
+	t_stat			file;
+	struct s_lsop	*next;
+}				t_lsop;
+
 typedef	struct	s_padding
 {
 	int	link;
@@ -62,6 +70,8 @@ typedef	struct	s_padding
 
 typedef struct	s_lsdiv
 {
+	t_lsop		*op;
+	t_lsop		*mem;
 	t_padding	pad;
 	t_dir		*tmp_dir;
 	void		*dir_ptr;
@@ -71,14 +81,6 @@ typedef struct	s_lsdiv
 	int			total;
 	int			len;
 }				t_lsdiv;
-
-typedef	struct	s_lsop
-{
-	char			*name;
-	int				xattr;
-	t_stat			file;
-	struct s_lsop	*next;
-}				t_lsop;
 
 typedef	struct	s_infols
 {
@@ -104,11 +106,7 @@ typedef	struct	s_ls
 **	right_file
 */
 void			sort_ls(t_ls *data, t_lsop **mem);
-void			file_right(t_ls *data, t_stat filestat, t_padding *pad);
-void			file_link(t_ls *data, t_stat filestat, t_padding *pad);
-void			file_group(t_ls *data, t_stat filestat, t_padding *pad);
-void			file_size(t_ls *data, t_stat filestat, t_padding *pad);
-void			file_date(t_ls *data, t_stat filestat, t_padding *pad);
+void			file_info(t_ls *data, t_lsop *op, t_padding *pad);
 
 /*
 **	read-file && dir

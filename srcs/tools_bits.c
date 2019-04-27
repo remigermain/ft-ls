@@ -6,7 +6,7 @@
 /*   By: loiberti <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/03/14 14:36:08 by loiberti     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/19 09:33:31 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/27 21:41:15 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -33,5 +33,6 @@ void	set_bit(long *bit, int bit_nb)
 
 void	clear_bit(long *bit, int bit_nb)
 {
-	*bit ^= (1 << bit_nb);
+	if (test_bit(bit, bit_nb))
+		*bit ^= (1 << bit_nb);
 }

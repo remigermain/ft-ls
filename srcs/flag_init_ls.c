@@ -6,96 +6,127 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:21 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/26 14:08:38 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/27 23:20:47 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-static	void	error_lsflags(char c)
+static	void	unset_sort(t_ls *data, char c)
 {
-	ft_dprintf(2, "ft_ls: illegal option -- %c\nusage: ls [-ABCFGHLOPRSTUWa"
-			"bcdefghiklmnopqrstuwx1] [file ...]\n", c);
-	exit(0);
+	if (test_bit(&(data->flag), LS_T))
+		clear_bit(&(data->flag), LS_T);
+	if (test_bit(&(data->flag), LS_U))
+		clear_bit(&(data->flag), LS_U);
+	if (test_bit(&(data->flag), LS_S_MAJ))
+		clear_bit(&(data->flag), LS_S_MAJ);
+	if (c == 't')
+		set_bit(&(data->flag), LS_T);
+	else if (c == 'u')
+		set_bit(&(data->flag), LS_U);
+	else if (c == 'S')
+		set_bit(&(data->flag), LS_S_MAJ);
 }
 
-static	void	ls_finalflags(t_ls *data)
+static	void	ls_putflags4(t_ls *data, char **argv, int i)
 {
-	if (test_bit(&(data->flag), LS_M) && test_bit(&(data->flag), LS_L))
-		clear_bit(&(data->flag), LS_L);
-	if (test_bit(&(data->flag), LS_A_MAJ))
-		set_bit(&(data->flag), LS_A);
-	clear_bit(&(data->flag), LS_G_MAJ);
-}
-
-static	void	ls_putflags3(t_ls *st, char **argv, int i)
-{
-	if (argv[1][i] == 'm')
-		set_bit(&(st->flag), LS_M);
-	else if (argv[1][i] == 'p')
-		set_bit(&(st->flag), LS_P);
+	if (argv[1][i] == 'p')
+	{
+		set_bit(&(data->flag), LS_P);
+		clear_bit(&(data->flag), LS_F_MAJ);
+	}
 	else if (argv[1][i] == 'A')
-		set_bit(&(st->flag), LS_A_MAJ);
+	{
+		set_bit(&(data->flag), LS_A);
+		set_bit(&(data->flag), LS_A_MAJ);
+	}
 	else if (argv[1][i] == 'B')
-		set_bit(&(st->flag), LS_B_MAJ);
+		set_bit(&(data->flag), LS_B_MAJ);
 	else if (argv[1][i] == 'S')
-		set_bit(&(st->flag), LS_S_MAJ);
+		unset_sort(data, argv[1][i]);
 	else if (argv[1][i] == 'T')
-		set_bit(&(st->flag), LS_T_MAJ);
-	else
-		error_lsflags(argv[1][i]);
+		set_bit(&(data->flag), LS_T_MAJ);
 }
 
-static	void	ls_putflags2(t_ls *st, char **argv, int i)
+static	void	ls_putflags3(t_ls *data, char **argv, int i)
 {
-	if (argv[1][i] == 't')
-		set_bit(&(st->flag), LS_T);
-	else if (argv[1][i] == 'u')
-		set_bit(&(st->flag), LS_U);
-	else if (argv[1][i] == 'f')
-		set_bit(&(st->flag), LS_F);
-	else if (argv[1][i] == 'g')
-		set_bit(&(st->flag), LS_G);
-	else if (argv[1][i] == 'd')
-		set_bit(&(st->flag), LS_D);
-	else if (argv[1][i] == 'G')
-		set_bit(&(st->flag), LS_G_MAJ);
-	else if (argv[1][i] == '1')
-		set_bit(&(st->flag), LS_1);
+	if (argv[1][i] == '1')
+	{
+		set_bit(&(data->flag), LS_1);
+		clear_bit(&(data->flag), LS_L);
+	}
 	else if (argv[1][i] == 'F')
-		set_bit(&(st->flag), LS_F_MAJ);
+		set_bit(&(data->flag), LS_F_MAJ);
 	else if (argv[1][i] == 'c')
-		set_bit(&(st->flag), LS_C);
+		set_bit(&(data->flag), LS_C);
 	else if (argv[1][i] == 'n')
-		set_bit(&(st->flag), LS_N);
+	{
+		set_bit(&(data->flag), LS_N);
+		set_bit(&(data->flag), LS_L);
+		clear_bit(&(data->flag), LS_M);
+	}
+	else if (argv[1][i] == 'm')
+	{
+		set_bit(&(data->flag), LS_M);
+		clear_bit(&(data->flag), LS_L);
+		clear_bit(&(data->flag), LS_1);
+	}
 	else
-		ls_putflags3(st, argv, i);
+		ls_putflags4(data, argv, i);
 }
 
-void			ls_putflags(t_ls *st, int argc, char **argv)
+static	void	ls_putflags2(t_ls *data, char **argv, int i)
+{
+	if (argv[1][i] == 'a')
+		set_bit(&(data->flag), LS_A);
+	else if (argv[1][i] == 'r')
+		set_bit(&(data->flag), LS_R);
+	else if (argv[1][i] == 't')
+		unset_sort(data, argv[1][i]);
+	else if (argv[1][i] == 'u')
+		unset_sort(data, argv[1][i]);
+	else if (argv[1][i] == 'f')
+		set_bit(&(data->flag), LS_F);
+	else if (argv[1][i] == 'g')
+	{
+		set_bit(&(data->flag), LS_G);
+		set_bit(&(data->flag), LS_L);
+		clear_bit(&(data->flag), LS_M);
+	}
+	else if (argv[1][i] == 'd')
+		set_bit(&(data->flag), LS_D);
+	else if (argv[1][i] == 'G')
+		set_bit(&(data->flag), LS_G_MAJ);
+	else
+		ls_putflags3(data, argv, i);
+}
+
+void			ls_putflags(t_ls *data, int argc, char **argv)
 {
 	int	i;
 
 	i = 0;
-	ft_bzero(st, sizeof(t_ls));
+	ft_bzero(data, sizeof(t_ls));
 	while (argc > 1 && argv[1][0] == '-' &&
 			ft_strlen(argv[1]) > 1 && argv[1][++i])
 	{
 		if (argv[1][i] == 'l')
-			set_bit(&(st->flag), LS_L);
+		{
+			clear_bit(&(data->flag), LS_M);
+			set_bit(&(data->flag), LS_L);
+		}
 		else if (argv[1][i] == 'R')
-			set_bit(&(st->flag), LS_R_MAJ);
-		else if (argv[1][i] == 'a')
-			set_bit(&(st->flag), LS_A);
-		else if (argv[1][i] == 'r')
-			set_bit(&(st->flag), LS_R);
+			set_bit(&(data->flag), LS_R_MAJ);
 		else
-			ls_putflags2(st, argv, i);
+			ls_putflags2(data, argv, i);
 	}
-	st->i = (i == 0 ? 1 : 2);
-	st->argc = argc;
-	ls_finalflags(st);
-	if (st->i == st->argc)
-		st->argc++;
+	if (test_bit(&(data->flag), LS_G_MAJ))
+		clear_bit(&(data->flag), LS_G_MAJ);
+	else
+		set_bit(&(data->flag), LS_G_MAJ);
+	data->i = (i == 0 ? 1 : 2);
+	data->argc = argc;
+	if (data->i == data->argc)
+		data->argc++;
 }

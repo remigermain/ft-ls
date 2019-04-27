@@ -6,40 +6,30 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:09 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/27 20:16:47 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/27 23:43:56 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-static void	file_acl(t_ls *data, t_lsop *op, t_padding *pad)
-{
-	if (test_bit(&(data->flag), LS_L))
-	{
-		if (op->xattr > 0)
-			ft_printf("@");
-		else if (data->path && getxattr(data->path, op->name, NULL, 0, 0, XATTR_NOFOLLOW) >= 0)
-			ft_printf("+");
-		else
-			ft_printf(" ");
-	}
-}
-
-static int	print_link(t_ls *data, t_lsop *op)
+static int	print_link(t_ls *data, t_lsop *op, t_padding *pad)
 {
 	char	buff[1024];
 	char	*name;
 	int		i;
 
-	if (test_bit(&(data->flag), LS_M) && op->next)
-		ft_printf(", ");
-	if (S_ISLNK(op->file.st_mode))
+	if (!test_bit(&(data->flag), LS_L) && !test_bit(&(data->flag), LS_M))
+		ft_printf(" %*@", pad->name - ft_strlen(op->name), "char", ' ');
+	else
+		ft_printf(" ");
+	if (S_ISLNK(op->file.st_mode) && test_bit(&(data->flag), LS_L))
 	{
 		if (!(name = ft_strjoin(data->path, op->name)))
 			error_ls(data);
 		if ((i = readlink(name, buff, 1023)) > 0)
-			ft_printf(" -> %.*s", i, buff);
+			ft_printf(" -> %.*s", i - 1, buff);
+		ft_memdel((void**)&name);
 	}
 	if (test_bit(&(data->flag), LS_L) || test_bit(&(data->flag), LS_1))
 		ft_printf("\n");
@@ -50,10 +40,7 @@ static int	print_extra(t_ls *data, t_lsop *op, t_padding *padding)
 {
 	if (!(op->next))
 		padding->name = 0;
-	if ((!test_bit(&(data->flag), LS_M) && !test_bit(&(data->flag), LS_1) &&
-				(!test_bit(&(data->flag), LS_L))) || data->flag == 0)
-		ft_printf("%-*s", padding->name + 1, op->name);
-	else if (test_bit(&(data->flag), 2) || op->name[0] != '.')
+	if (test_bit(&(data->flag), LS_A) || op->name[0] != '.')
 		ft_printf("%s", op->name);
 	if (test_bit(&(data->flag), LS_G_MAJ))
 		ft_printf("%s", T_WHITE);
@@ -71,7 +58,9 @@ static int	print_extra(t_ls *data, t_lsop *op, t_padding *padding)
 	}
 	else if (test_bit(&(data->flag), LS_P) && (S_ISDIR(op->file.st_mode)))
 		ft_printf("/");
-	return (print_link(data, op));
+	if (test_bit(&(data->flag), LS_M) && op->next)
+		ft_printf(",");
+	return (print_link(data, op, padding));
 }
 
 static int	print_file(t_ls *data, t_lsop *op, t_padding *padding)
@@ -80,14 +69,7 @@ static int	print_file(t_ls *data, t_lsop *op, t_padding *padding)
 				(!ft_strcmp(".", op->name) || !ft_strcmp("..", op->name)))
 		return (0);
 	if (test_bit(&(data->flag), LS_L))
-	{
-		file_right(data, op->file, padding);
-		file_acl(data, op, padding);
-		file_link(data, op->file, padding);
-		file_group(data, op->file, padding);
-		file_size(data, op->file, padding);
-		file_date(data, op->file, padding);
-	}
+		file_info(data, op, padding);
 	if (test_bit(&(data->flag), LS_G_MAJ))
 	{
 		if (op->file.st_mode & S_ISVTX)
@@ -108,7 +90,8 @@ void		print_ls(t_ls *data, t_lsop **op, t_padding *pad, int len)
 	t_lsop	*mem;
 	int		i;
 
-	ls_sort(data, op, len);
+	if (!test_bit(&(data->flag), LS_F))
+		ls_sort(data, op, len);
 	mem = (*op);
 	i = 0;
 	data->indi = 0;
