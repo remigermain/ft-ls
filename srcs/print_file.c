@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:09 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/27 23:43:56 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/27 23:57:29 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -19,16 +19,17 @@ static int	print_link(t_ls *data, t_lsop *op, t_padding *pad)
 	char	*name;
 	int		i;
 
-	if (!test_bit(&(data->flag), LS_L) && !test_bit(&(data->flag), LS_M))
+	if (!test_bit(&(data->flag), LS_L) && !test_bit(&(data->flag), LS_M) &&
+			!test_bit(&(data->flag), LS_1))
 		ft_printf(" %*@", pad->name - ft_strlen(op->name), "char", ' ');
-	else
+	else if (test_bit(&(data->flag), LS_M))
 		ft_printf(" ");
 	if (S_ISLNK(op->file.st_mode) && test_bit(&(data->flag), LS_L))
 	{
 		if (!(name = ft_strjoin(data->path, op->name)))
 			error_ls(data);
 		if ((i = readlink(name, buff, 1023)) > 0)
-			ft_printf(" -> %.*s", i - 1, buff);
+			ft_printf(" -> %.*s", i, buff);
 		ft_memdel((void**)&name);
 	}
 	if (test_bit(&(data->flag), LS_L) || test_bit(&(data->flag), LS_1))

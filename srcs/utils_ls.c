@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:54 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/27 20:16:00 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/27 23:51:42 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -29,5 +29,6 @@ void	ft_lserror(t_ls *data, char *name, char *path)
 	if ((test_bit(&(data->flag), 1) || test_bit(&(data->flag), 11)) &&
 			data->indi)
 		ft_printf("\n%s:\n", path);
-	ft_dprintf(2, "ft_ls: %s %s%m%s\n", name, T_RED, T_WHITE);
+	ft_dprintf(2, "ft_ls: %s %s%m%s\n", name, (test_bit(&(data->flag), LS_G_MAJ)
+				? T_RED : T_WHITE), T_WHITE);
 }
