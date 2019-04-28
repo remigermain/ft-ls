@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:09 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/28 02:45:16 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/28 04:09:26 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -102,10 +102,9 @@ void			read_dir(t_ls *data, char *base, char *path)
 		error_ls();
 	if ((div.dir_ptr = opendir(div.name)))
 	{
-		lstat(base, &file);
 		data->path = path;
-		if (S_ISLNK(file.st_mode) && test_bit(&(data->flag), LS_L) &&
-				!data->level)
+		if (lstat(base, &file) != -1 && S_ISLNK(file.st_mode) &&
+				test_bit(&(data->flag), LS_L) && !data->level)
 			link_dir(data, &div, &file, base);
 		else
 			normal_dir(data, &div);
@@ -114,7 +113,7 @@ void			read_dir(t_ls *data, char *base, char *path)
 		closedir(div.dir_ptr);
 	}
 	else
-		ft_lserror(data, base, div.name);
+		ft_lserror(data, base, path);
 	ft_memdel((void**)&(div.name));
 	ft_memdel((void**)&(div.rep_d));
 	if (path && path[0])

@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:27 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/28 03:47:00 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/28 03:58:45 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -24,18 +24,14 @@ static void	file_acl(t_ls *data, t_lsop *op)
 		if (!(name = ft_strjoin(data->path, op->name)))
 			error_ls();
 		acl = acl_get_link_np(name, ACL_TYPE_EXTENDED);
-		if (acl && acl_get_entry(acl, ACL_FIRST_ENTRY, &dummy) == -1)
-		{
-			acl_free((void *)acl);
-			acl = NULL;
-		}
 		if (op->xattr > 0)
 			ft_printf("@");
-		else if (acl)
+		else if (acl && acl_get_entry(acl, ACL_FIRST_ENTRY, &dummy) != -1)
 			ft_printf("+");
 		else
 			ft_printf(" ");
 		ft_memdel((void**)&name);
+		acl_free((void *)acl);
 	}
 }
 
@@ -73,6 +69,8 @@ static void	file_group(t_ls *data, t_lsop *op, t_padding *pad)
 	t_passwd	*uid;
 	t_group		*gid;
 
+	if (pad)
+		;
 	if (!test_bit(&(data->flag), LS_G))
 	{
 		if ((uid = getpwuid(op->file.st_uid)) &&

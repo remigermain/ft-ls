@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/26 08:03:50 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/28 03:46:58 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/28 04:11:42 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -133,7 +133,7 @@ void			ls_putflags(t_ls *data, int argc, char **argv);
 void			set_bit(long *st, int i);
 void			clear_bit(long *st, int i);
 t_bool			test_bit(long *st, int i);
-void			ft_lserror(t_ls *st, char *base, char *name);
+void			ft_lserror(t_ls *st, char *base, char *path);
 void			error_ls(void);
 void			free_ftls(t_ls *st);
 void			padding_ls(t_ls *data, t_padding *pad, t_lsop *op);

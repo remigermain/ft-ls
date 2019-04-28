@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:09 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/28 02:42:09 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/28 04:08:16 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -37,10 +37,10 @@ static int		print_link(t_ls *data, t_lsop *op, t_padding *pad)
 	return (1);
 }
 
-static int		print_extra(t_ls *data, t_lsop *op, t_padding *padding)
+static int		print_extra(t_ls *data, t_lsop *op, t_padding *pad)
 {
 	if (!(op->next))
-		padding->name = 0;
+		pad->name = 0;
 	if (test_bit(&(data->flag), LS_A) || op->name[0] != '.')
 		ft_printf("%s", op->name);
 	if (test_bit(&(data->flag), LS_G_MAJ))
@@ -61,7 +61,7 @@ static int		print_extra(t_ls *data, t_lsop *op, t_padding *padding)
 		ft_printf("/");
 	if (test_bit(&(data->flag), LS_M) && op->next)
 		ft_printf(",");
-	return (print_link(data, op, padding));
+	return (print_link(data, op, pad));
 }
 
 static int		print_name(t_ls *data, t_lsop *op, t_padding *padding)
