@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/26 08:03:50 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/28 02:31:01 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/28 02:39:04 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -98,6 +98,7 @@ typedef	struct	s_ls
 	char		*path;
 	char		indi;
 	char		link_dir;
+	char		level;
 	int			i;
 	int			argc;
 	time_t		time;

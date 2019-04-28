@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:09 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/28 02:27:56 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/28 02:45:16 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -66,6 +66,7 @@ static t_lsop	*put_info(t_ls *data, t_lsop **op, t_lsdiv *div)
 
 static void		normal_dir(t_ls *data, t_lsdiv *div)
 {
+	ft_bzero(&(div->pad), sizeof(t_padding));
 	if (!(div->rep_d = ft_strjoin(div->name, "/")))
 		error_ls();
 	while ((div->tmp_dir = readdir(div->dir_ptr)))
@@ -79,6 +80,7 @@ static void		normal_dir(t_ls *data, t_lsdiv *div)
 
 static void		link_dir(t_ls *data, t_lsdiv *div, t_stat *file, char *base)
 {
+	ft_bzero(&(div->pad), sizeof(t_padding));
 	data->link_dir = 1;
 	if (!(div->mem = (t_lsop*)ft_memalloc(sizeof(t_lsop))))
 		error_ls();
@@ -96,14 +98,14 @@ void			read_dir(t_ls *data, char *base, char *path)
 	t_stat		file;
 
 	ft_bzero(&div, sizeof(t_lsdiv));
-	ft_bzero(&(div.pad), sizeof(t_padding));
 	if (!(div.name = ft_strjoin(path, base)))
 		error_ls();
 	if ((div.dir_ptr = opendir(div.name)))
 	{
 		lstat(base, &file);
 		data->path = path;
-		if (S_ISLNK(file.st_mode) && test_bit(&(data->flag), LS_L))
+		if (S_ISLNK(file.st_mode) && test_bit(&(data->flag), LS_L) &&
+				!data->level)
 			link_dir(data, &div, &file, base);
 		else
 			normal_dir(data, &div);

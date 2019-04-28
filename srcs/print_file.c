@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:09 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/28 02:28:12 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/28 02:42:09 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -110,6 +110,7 @@ static void		print_ls(t_ls *data, t_lsop **op, t_padding *pad, int len)
 void			print_file(t_ls *data, t_lsop **mem, t_padding *pad,
 		t_lsdiv *div)
 {
+	data->level = 1;
 	if (data->indi && !data->link_dir)
 		ft_printf("\n");
 	if ((test_bit(&(data->flag), LS_R_MAJ) || test_bit(&(data->flag), LS_F_MAJ)
