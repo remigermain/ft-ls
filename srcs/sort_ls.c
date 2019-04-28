@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:48 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/26 13:35:06 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/28 02:24:48 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -28,37 +28,9 @@ static void	ls_sort_size(t_ls *data, t_lsop **op, int len, int i)
 				(*mem)->file.st_size > (*mem2)->file.st_size) ||
 					(!test_bit(&(data->flag), LS_R) &&
 				(*mem)->file.st_size < (*mem2)->file.st_size))
-				i += swap_elem(data, op, &mem, &mem2);
+				i += swap_elem(data, &mem, &mem2);
 			else if ((*mem)->file.st_size == (*mem2)->file.st_size)
-				i += ls_sort_ascii(data, op, &mem, &mem2);
-			else
-			{
-				i++;
-				mem = &((*mem)->next);
-				mem2 = &((*mem2)->next);
-			}
-		}
-	}
-}
-
-static void	ls_sort_atime(t_ls *data, t_lsop **op, int len, int i)
-{
-	t_lsop **mem;
-	t_lsop **mem2;
-
-	while (i < len && (i = 1))
-	{
-		mem = op;
-		mem2 = &((*op)->next);
-		while (i < len && (*mem2))
-		{
-			if ((test_bit(&(data->flag), LS_R) &&
-				(*mem)->file.st_atime > (*mem2)->file.st_atime) ||
-					(!test_bit(&(data->flag), LS_R) &&
-				(*mem)->file.st_atime < (*mem2)->file.st_atime))
-				i += swap_elem(data, op, &mem, &mem2);
-			else if ((*mem)->file.st_atime == (*mem2)->file.st_atime)
-				i += ls_sort_ascii(data, op, &mem, &mem2);
+				i += ls_sort_ascii(data, &mem, &mem2);
 			else
 			{
 				i++;
@@ -81,12 +53,12 @@ static void	ls_sort_time(t_ls *data, t_lsop **op, int len, int i)
 		while (i < len && (*mem2))
 		{
 			if ((test_bit(&(data->flag), LS_R) &&
-				(*mem)->file.st_ctime > (*mem2)->file.st_ctime) ||
+				(*mem)->file.st_mtime > (*mem2)->file.st_mtime) ||
 					(!test_bit(&(data->flag), LS_R) &&
-				(*mem)->file.st_ctime < (*mem2)->file.st_ctime))
-				i += swap_elem(data, op, &mem, &mem2);
-			else if ((*mem)->file.st_ctime == (*mem2)->file.st_ctime)
-				i += ls_sort_ascii(data, op, &mem, &mem2);
+				(*mem)->file.st_mtime < (*mem2)->file.st_mtime))
+				i += swap_elem(data, &mem, &mem2);
+			else if ((*mem)->file.st_mtime == (*mem2)->file.st_mtime)
+				i += ls_sort_ascii(data, &mem, &mem2);
 			else
 			{
 				i++;
@@ -107,7 +79,7 @@ static void	ls_sort_alpha(t_ls *data, t_lsop **op, int len, int i)
 		mem = op;
 		mem2 = &((*op)->next);
 		while (i < len && (*mem2))
-			i += ls_sort_ascii(data, op, &mem, &mem2);
+			i += ls_sort_ascii(data, &mem, &mem2);
 	}
 }
 
@@ -115,8 +87,6 @@ void		ls_sort(t_ls *data, t_lsop **op, int len)
 {
 	if (test_bit(&(data->flag), LS_T))
 		ls_sort_time(data, op, len, 1);
-	else if (test_bit(&(data->flag), LS_U))
-		ls_sort_atime(data, op, len, 1);
 	else if (test_bit(&(data->flag), LS_S_MAJ))
 		ls_sort_size(data, op, len, 1);
 	else

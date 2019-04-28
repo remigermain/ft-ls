@@ -6,24 +6,36 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:27 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/27 23:30:23 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/28 02:28:41 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-static void	file_acl(t_ls *data, t_lsop *op, t_padding *pad)
+static void	file_acl(t_ls *data, t_lsop *op)
 {
+	acl_entry_t dummy;
+	acl_t		acl;
+	char		*name;
+
 	if (test_bit(&(data->flag), LS_L))
 	{
+		if (!(name = ft_strjoin(data->path, op->name)))
+			error_ls();
+		acl = acl_get_link_np(name, ACL_TYPE_EXTENDED);
+		if (acl && acl_get_entry(acl, ACL_FIRST_ENTRY, &dummy) == -1)
+		{
+			acl_free((void *)acl);
+			acl = NULL;
+		}
 		if (op->xattr > 0)
 			ft_printf("@");
-		else if (data->path &&
-				getxattr(data->path, op->name, NULL, 0, 0, XATTR_NOFOLLOW) >= 0)
+		else if (acl)
 			ft_printf("+");
 		else
 			ft_printf(" ");
+		ft_memdel((void**)&name);
 	}
 }
 
@@ -79,13 +91,13 @@ static void	file_group(t_ls *data, t_lsop *op, t_padding *pad)
 void		file_info(t_ls *data, t_lsop *op, t_padding *pad)
 {
 	char	right[10];
-	char	*time;
+	char	*t;
+	time_t	j;
 	int		i;
 
-	i = 13;
 	file_right(op->file, right);
 	ft_printf("%.10s", right);
-	file_acl(data, op, pad);
+	file_acl(data, op);
 	ft_printf(" %*d", pad->link, op->file.st_nlink);
 	file_group(data, op, pad);
 	if (S_ISBLK(op->file.st_mode) || S_ISCHR(op->file.st_mode))
@@ -93,11 +105,12 @@ void		file_info(t_ls *data, t_lsop *op, t_padding *pad)
 				pad->size2, MINOR(op->file.st_rdev));
 	else
 		ft_printf("%*d", pad->size + pad->size2 + 2, op->file.st_size);
-	if (test_bit(&(data->flag), LS_U))
-		time = ctime(&(op->file.st_atime));
-	else
-		time = ctime(&(op->file.st_ctime));
-	if (test_bit(&(data->flag), LS_T_MAJ))
-		i = 5;
-	ft_printf(" %.*s ", ft_strlen(time) - i, time + 4);
+	j = (test_bit(&(data->flag), LS_U) ? op->file.st_atime : op->file.st_mtime);
+	i = (test_bit(&(data->flag), LS_T_MAJ) ? 5 : 13);
+	t = ctime(&j);
+	if ((data->time - j) > 31536000)
+		i = 18;
+	ft_printf(" %.*s ", ft_strlen(t) - i, t + 4);
+	if (i == 18)
+		ft_printf("%.*s ", 4, t + 20);
 }

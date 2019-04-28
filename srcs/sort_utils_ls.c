@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:48 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/27 22:27:22 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/28 02:25:00 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -31,7 +31,7 @@ void	swap_elem2(t_lsop ***mem_n, t_lsop ***mem2_n)
 	ft_swap(&((*mem)->xattr), &((*mem2)->xattr));
 }
 
-int		swap_elem(t_ls *data, t_lsop **op, t_lsop ***mem, t_lsop ***mem2)
+int		swap_elem(t_ls *data, t_lsop ***mem, t_lsop ***mem2)
 {
 	if (test_bit(&(data->flag), LS_R))
 		swap_elem2(mem, mem2);
@@ -40,7 +40,7 @@ int		swap_elem(t_ls *data, t_lsop **op, t_lsop ***mem, t_lsop ***mem2)
 	return (-1);
 }
 
-int		ls_sort_ascii(t_ls *data, t_lsop **op, t_lsop ***mem, t_lsop ***mem2)
+int		ls_sort_ascii(t_ls *data, t_lsop ***mem, t_lsop ***mem2)
 {
 	int	i;
 
@@ -53,7 +53,7 @@ int		ls_sort_ascii(t_ls *data, t_lsop **op, t_lsop ***mem, t_lsop ***mem2)
 		(**mem)->name[i] < (**mem2)->name[i]) ||
 			(!test_bit(&(data->flag), LS_R) &&
 			(**mem)->name[i] > (**mem2)->name[i])))
-		return (swap_elem(data, op, mem, mem2));
+		return (swap_elem(data, mem, mem2));
 	else
 	{
 		*mem = &((**mem)->next);

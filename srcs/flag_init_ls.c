@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:21 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/27 23:20:47 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/28 02:06:04 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -17,8 +17,6 @@ static	void	unset_sort(t_ls *data, char c)
 {
 	if (test_bit(&(data->flag), LS_T))
 		clear_bit(&(data->flag), LS_T);
-	if (test_bit(&(data->flag), LS_U))
-		clear_bit(&(data->flag), LS_U);
 	if (test_bit(&(data->flag), LS_S_MAJ))
 		clear_bit(&(data->flag), LS_S_MAJ);
 	if (c == 't')
@@ -85,7 +83,7 @@ static	void	ls_putflags2(t_ls *data, char **argv, int i)
 	else if (argv[1][i] == 't')
 		unset_sort(data, argv[1][i]);
 	else if (argv[1][i] == 'u')
-		unset_sort(data, argv[1][i]);
+		set_bit(&(data->flag), LS_U);
 	else if (argv[1][i] == 'f')
 		set_bit(&(data->flag), LS_F);
 	else if (argv[1][i] == 'g')

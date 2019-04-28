@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:54 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/27 23:51:42 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/28 02:27:17 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -18,7 +18,7 @@ void	free_ftls(t_ls *st)
 	ft_memdel((void**)&(st->name));
 }
 
-void	error_ls(t_ls *data)
+void	error_ls(void)
 {
 	ft_printf("%1.@", "error", "ft_ls");
 }
