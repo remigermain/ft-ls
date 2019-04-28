@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/26 08:03:50 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/28 04:11:42 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/28 21:27:18 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -44,6 +44,8 @@
 # define LS_B_MAJ	17
 # define LS_S_MAJ	18
 # define LS_T_MAJ	19
+# define LS_L_MAJ	20
+# define MONTH_SIX 15552000
 
 typedef	struct dirent	t_dir;
 typedef	struct stat	t_stat;
@@ -101,7 +103,7 @@ typedef	struct	s_ls
 	char		level;
 	int			i;
 	int			argc;
-	long		time;
+	time_t		time;
 	t_infols	*st;
 }				t_ls;
 

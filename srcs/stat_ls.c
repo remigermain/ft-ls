@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:27 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/28 04:37:39 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/28 21:20:28 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -106,8 +106,7 @@ void		file_info(t_ls *data, t_lsop *op, t_padding *pad)
 	j = (test_bit(&(data->flag), LS_U) ? op->file.st_atime : op->file.st_mtime);
 	i = (test_bit(&(data->flag), LS_T_MAJ) ? 5 : 13);
 	t = ctime(&j);
-	if ((data->time + (5 * 60 * 60 * 24 * 31)) < j ||
-			(data->time - (6 * 60 * 60 * 24 * 31)) > j)
+	if ((data->time + MONTH_SIX) < j || (data->time - MONTH_SIX) > j)
 		i = 18;
 	ft_printf(" %.*s ", ft_strlen(t) - i, t + 4);
 	if (i == 18)

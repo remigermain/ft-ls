@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:09 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/28 04:09:26 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/28 22:53:20 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -21,12 +21,10 @@ static void		recursive_dir(t_ls *data, t_lsop **origi, char *name)
 	mem = (*origi);
 	while (mem)
 	{
-		if (test_bit(&(data->flag), LS_R_MAJ) && S_ISDIR(mem->file.st_mode)
-			&& ft_strcmp(".", mem->name) && ft_strcmp("..", mem->name))
-		{
-			if (mem->name[0])
-				read_dir(data, mem->name, ft_strjoin(name, "/"));
-		}
+		if (test_bit(&(data->flag), LS_R_MAJ) && S_ISDIR(mem->file.st_mode) &&
+			ft_strcmp(".", mem->name) && ft_strcmp("..", mem->name)
+				&& mem->name[0])
+			read_dir(data, mem->name, ft_strjoin(name, "/"));
 		tmp = mem->next;
 		if (mem->name)
 			ft_memdel((void**)&(mem->name));
@@ -48,9 +46,9 @@ static t_lsop	*put_info(t_ls *data, t_lsop **op, t_lsdiv *div)
 			error_ls();
 		op = &((*op)->next);
 	}
-	if (!(div->rep = ft_strjoin(div->rep_d, div->tmp_dir->d_name)))
-		return (0);
-	(*op)->name = strdup(div->tmp_dir->d_name);
+	if (!(div->rep = ft_strjoin(div->rep_d, div->tmp_dir->d_name)) ||
+			!((*op)->name = strdup(div->tmp_dir->d_name)))
+		error_ls();
 	(*op)->xattr = listxattr(div->rep, NULL, 0, XATTR_NOFOLLOW);
 	if (div->tmp_dir->d_type == DT_LNK)
 		lstat(div->rep, &((*op)->file));
@@ -98,13 +96,14 @@ void			read_dir(t_ls *data, char *base, char *path)
 	t_stat		file;
 
 	ft_bzero(&div, sizeof(t_lsdiv));
-	if (!(div.name = ft_strjoin(path, base)))
+	if (!path || !(div.name = ft_strjoin(path, base)))
 		error_ls();
 	if ((div.dir_ptr = opendir(div.name)))
 	{
 		data->path = path;
 		if (lstat(base, &file) != -1 && S_ISLNK(file.st_mode) &&
-				test_bit(&(data->flag), LS_L) && !data->level)
+				test_bit(&(data->flag), LS_L) && !data->level &&
+				!test_bit(&(data->flag), LS_L_MAJ))
 			link_dir(data, &div, &file, base);
 		else
 			normal_dir(data, &div);
