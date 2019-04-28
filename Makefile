@@ -6,7 +6,7 @@
 #    By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+      #
 #                                                  #+#   #+    #+    #+#       #
 #    Created: 2018/10/01 15:39:03 by rgermain     #+#   ##    ##    #+#        #
-#    Updated: 2019/04/28 02:37:56 by rgermain    ###    #+. /#+    ###.fr      #
+#    Updated: 2019/04/28 03:49:06 by rgermain    ###    #+. /#+    ###.fr      #
 #                                                          /                   #
 #                                                         /                    #
 # **************************************************************************** #
@@ -113,6 +113,6 @@ re: LIBFT_R re_clean print_name $(NAME)
 norme : print_norme
 	@norminette $(CSRC) $(CHEADER) | sed "s,Norme,${ESC}[38;5;326m&${ESC}[0m," | sed "s/Error/  Error/g" | sed "s,Error,${ESC}[31m&${ESC}[0m,"
 
-normeall : LIBFT_norme print_norme
+normeall : LIBFT_N norme
 
 .PHONY: default all fclean clean_f fclean re re_clean norme normeall print_norme print_name
