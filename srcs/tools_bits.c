@@ -6,18 +6,18 @@
 /*   By: loiberti <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/03/14 14:36:08 by loiberti     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/27 21:41:15 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/30 16:00:58 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
 
-void	set_or_clear_bit(long *bit, int bit_nb, int mode)
+void	set_or_clear_bit(long *bit, int bit_nb)
 {
-	if (!mode && !(*bit & (1 << bit_nb)))
+	if (!(*bit & (1 << bit_nb)))
 		*bit |= (1 << bit_nb);
-	else if (mode && (*bit & (1 << bit_nb)))
+	else if ((*bit & (1 << bit_nb)))
 		*bit ^= (1 << bit_nb);
 }
 

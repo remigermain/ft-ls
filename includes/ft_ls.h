@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/26 08:03:50 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/28 21:27:18 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/30 17:21:48 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -20,37 +20,41 @@
 # include <pwd.h>
 # include <grp.h>
 # include <time.h>
+# include <sys/ioctl.h>
 # include <sys/xattr.h>
 # include <sys/acl.h>
-# define MAJOR(dev) ((int)(((unsigned int) (dev) >> 8) & 0xff))
-# define MINOR(dev) ((int)((dev) & 0xff))
-# define LS_L 0
-# define LS_R_MAJ	1
-# define LS_A	2
-# define LS_R	3
-# define LS_T	4
-# define LS_U	5
-# define LS_F	6
-# define LS_G	7
-# define LS_D	8
-# define LS_G_MAJ	9
-# define LS_1	10
-# define LS_F_MAJ	11
-# define LS_C	12
-# define LS_N	13
-# define LS_M	14
-# define LS_P	15
-# define LS_A_MAJ	16
-# define LS_B_MAJ	17
-# define LS_S_MAJ	18
-# define LS_T_MAJ	19
-# define LS_L_MAJ	20
 # define MONTH_SIX 15552000
+# define BUFF_STPRINTF 10000
 
 typedef	struct dirent	t_dir;
 typedef	struct stat	t_stat;
 typedef	struct passwd	t_passwd;
 typedef	struct group	t_group;
+typedef	struct winsize	t_winsize;
+
+enum	{
+	LS_L = 0,
+	LS_A,
+	LS_A_MAJ,
+	LS_1,
+	LS_R_MAJ,
+	LS_P,
+	LS_T_MAJ,
+	LS_L_MAJ,
+	LS_C,
+	LS_M,
+	LS_N,
+	LS_G_MAJ,
+	LS_G,
+	LS_D,
+	LS_F_MAJ,
+	LS_F,
+	LS_T,
+	LS_U,
+	LS_U_MAJ,
+	LS_S_MAJ,
+	LS_R
+};
 
 typedef	struct	s_lsop
 {
@@ -94,6 +98,7 @@ typedef	struct	s_infols
 
 typedef	struct	s_ls
 {
+	t_winsize	w;
 	t_bool		error;
 	long		flag;
 	char		*name;
@@ -101,6 +106,7 @@ typedef	struct	s_ls
 	char		indi;
 	char		link_dir;
 	char		level;
+	char		nb_arg;
 	int			i;
 	int			argc;
 	time_t		time;
@@ -125,18 +131,23 @@ int				read_file(t_ls *data, t_lsop *op, t_padding *pad);
 **	sort_ls
 */
 void			ls_sort(t_ls *data, t_lsop **op, int nb);
-int				swap_elem(t_ls *data, t_lsop ***m, t_lsop ***p);
-int				ls_sort_ascii(t_ls *d, t_lsop ***m, t_lsop ***p);
+int				ls_sort_ascii(t_ls *d, t_lsop **m, t_lsop **p);
+int				ls_sort_size(t_ls *d, t_lsop **m, t_lsop **p);
+int				ls_sort_mtime(t_ls *d, t_lsop **m, t_lsop **p);
+int				ls_sort_atime(t_ls *d, t_lsop **m, t_lsop **p);
+int				ls_sort_ctime(t_ls *d, t_lsop **m, t_lsop **p);
 
 /*
 **	tools.c
 */
+void			usage_ls(void);
 void			ls_putflags(t_ls *data, int argc, char **argv);
 void			set_bit(long *st, int i);
 void			clear_bit(long *st, int i);
+void			set_or_clear_bit(long *st, int i);
 t_bool			test_bit(long *st, int i);
 void			ft_lserror(t_ls *st, char *base, char *path);
 void			error_ls(void);
 void			free_ftls(t_ls *st);
-void			padding_ls(t_ls *data, t_padding *pad, t_lsop *op);
+void			padding_ls(t_ls *data, t_lsdiv *div, t_lsop *op);
 #endif

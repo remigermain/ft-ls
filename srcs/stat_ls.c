@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:27 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/28 21:20:28 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/30 17:38:30 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -25,11 +25,11 @@ static void	file_acl(t_ls *data, t_lsop *op)
 			error_ls();
 		acl = acl_get_link_np(name, ACL_TYPE_EXTENDED);
 		if (op->xattr > 0)
-			ft_printf("@");
+			ft_stprintf(KEEP_PF, "@");
 		else if (acl && acl_get_entry(acl, ACL_FIRST_ENTRY, &dummy) != -1)
-			ft_printf("+");
+			ft_stprintf(KEEP_PF, "+");
 		else
-			ft_printf(" ");
+			ft_stprintf(KEEP_PF, " ");
 		ft_memdel((void**)&name);
 		acl_free((void *)acl);
 	}
@@ -75,40 +75,53 @@ static void	file_group(t_ls *data, t_lsop *op, t_padding *pad)
 	{
 		if ((uid = getpwuid(op->file.st_uid)) &&
 				!test_bit(&(data->flag), LS_N))
-			ft_printf(" %-*s ", pad->group, uid->pw_name);
+			ft_stprintf(KEEP_PF, " %-*s ", pad->group, uid->pw_name);
 		else
-			ft_printf(" %-*d ", pad->group, op->file.st_uid);
+			ft_stprintf(KEEP_PF, " %-*d ", pad->group, op->file.st_uid);
 	}
 	if ((gid = getgrgid(op->file.st_gid)) &&
 			!test_bit(&(data->flag), LS_N))
-		ft_printf(" %-*s", pad->group2, gid->gr_name);
+		ft_stprintf(KEEP_PF, " %-*s", pad->group2, gid->gr_name);
 	else
-		ft_printf(" %-*d", pad->group2, op->file.st_gid);
+		ft_stprintf(KEEP_PF, " %-*d", pad->group2, op->file.st_gid);
+}
+
+static void	file_date(t_ls *data, t_lsop *op)
+{
+	char	*t;
+	long	j;
+	int		i;
+
+	if (test_bit(&(data->flag), LS_U))
+		j = op->file.st_atime;
+	else if (test_bit(&(data->flag), LS_U_MAJ))
+		j = op->file.st_ctime;
+	else
+		j = op->file.st_mtime;
+	i = (test_bit(&(data->flag), LS_T_MAJ) ? 5 : 13);
+	t = ctime(&j);
+	if ((data->time + MONTH_SIX) < j || (data->time - MONTH_SIX) > j)
+		i = 18;
+	ft_stprintf(KEEP_PF, " %.*s ", ft_strlen(t) - i, t + 4);
+	if (i == 18)
+		ft_stprintf(KEEP_PF, "%.*s ", 4, t + 20);
 }
 
 void		file_info(t_ls *data, t_lsop *op, t_padding *pad)
 {
 	char	right[10];
-	char	*t;
-	long	j;
-	int		i;
 
 	file_right(op->file, right);
-	ft_printf("%.10s", right);
+	ft_stprintf(KEEP_PF, "%.10s", right);
 	file_acl(data, op);
-	ft_printf(" %*d", pad->link, op->file.st_nlink);
+	ft_stprintf(KEEP_PF, " %*d", pad->link, op->file.st_nlink);
 	file_group(data, op, pad);
 	if (S_ISBLK(op->file.st_mode) || S_ISCHR(op->file.st_mode))
-		ft_printf(" %*lld, %*lld", pad->size, MAJOR(op->file.st_rdev),
-				pad->size2, MINOR(op->file.st_rdev));
+		ft_stprintf(KEEP_PF, " %*lld, %*lld", pad->size,
+				major(op->file.st_rdev),
+				pad->size2, minor(op->file.st_rdev));
 	else
-		ft_printf("%*d", pad->size + pad->size2 + 2, op->file.st_size);
-	j = (test_bit(&(data->flag), LS_U) ? op->file.st_atime : op->file.st_mtime);
-	i = (test_bit(&(data->flag), LS_T_MAJ) ? 5 : 13);
-	t = ctime(&j);
-	if ((data->time + MONTH_SIX) < j || (data->time - MONTH_SIX) > j)
-		i = 18;
-	ft_printf(" %.*s ", ft_strlen(t) - i, t + 4);
-	if (i == 18)
-		ft_printf("%.*s ", 4, t + 20);
+		ft_stprintf(KEEP_PF, "%*d", pad->size + pad->size2 + 2,
+				op->file.st_size);
+	file_date(data, op);
 }

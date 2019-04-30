@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:41 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/28 21:10:06 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/04/30 21:27:01 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -73,9 +73,12 @@ int			main(int argc, char **argv)
 {
 	t_ls	data;
 
+	if (argc > 1 && !ft_strcmp(argv[1], "--help"))
+		usage_ls();
 	ls_putflags(&data, argc, argv);
 	data.time = time(NULL);
 	sort_argv(&data, argv + data.i, 0, 0);
+	ft_stprintf(OUT_PF, "");
 	free_ftls(&data);
 	return (0);
 }

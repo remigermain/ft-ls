@@ -1,0 +1,29 @@
+usage: ./ft_ls [ option ] source_file...
+
+          [option] 
+          -l	List in long format  
+          -a	Include directory entries whose names begin with a dot (.). 
+          -A	List all entries except for . and ...  Always set for the super-user
+          -1	Force output to be one entry per line. 
+          -R	Recursively list subdirectories encountered. 
+          -p	Write a slash (`/') after each filename if that file is a directory. 
+          -T	option, display complete time information for the file, including month, day, hour, minute, secon ,and year.	
+          -L	Follow all symbolic links 
+          -c	Use time when file status was last changed for sorting 
+          -m	Stream output format; list files across the page, separated by commas 
+          -n	Display user and group IDs numerically
+          -G	Disable color 
+          -g	display the group name in the long (-l) format output (the owner name is suppressed)
+          -d	Directories are listed as plain files 
+          -F	Display a slash (`/') immediately after each pathname that is a directory, an asterisk (`*')
+                after each that is executable, an at sign (`@') after each symbolic link, an equals sign (`=')
+                after each socket, a percent sign (`) after each whiteout, and a vertical bar (`|')
+                after each that is a FIFO.
+
+          [sort option] 
+          -f	Output is not sorted.  This option turns on the -a option. 
+          -t	Sort by time modified 
+          -u	Sort time of last access 
+          -U	Sort time of file creation 
+          -r	Sort Reverse the order of the sort
+          -S	Sort files by size
