@@ -6,12 +6,44 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:40:54 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/30 15:19:11 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/07/15 02:33:51 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
 
 #include "ft_ls.h"
+
+void		sticky_byte(t_stat stat, char right[10])
+{
+	if (stat.st_mode & S_ISVTX)
+		right[9] = 't';
+	else
+		right[9] = (stat.st_mode & S_IXOTH) ? 'x' : '-';
+	if (S_ISGID & stat.st_mode)
+	{
+		right[3] = (stat.st_mode & S_IXUSR) ? 's' : 'S';
+		right[6] = (stat.st_mode & S_IXUSR) ? 's' : 'S';
+	}
+}
+
+void		one_file(t_ls *data, t_lsdiv *div, t_lsop **op)
+{
+	ft_bzero(&(div->pad), sizeof(t_padding));
+	if (!((*op) = (t_lsop*)ft_memalloc(sizeof(t_lsop))))
+		error_ls();
+	(*op)->xattr = listxattr(div->name, NULL, 0, XATTR_NOFOLLOW);
+	stat(div->name, &((*op)->file));
+	(*op)->name = ft_strdup(div->name);
+	data->path = "";
+	data->link_dir = 1;
+	(*op)->xattr = listxattr(div->name, NULL, 0, XATTR_NOFOLLOW);
+	if (test_bit(&(data->flag), LS_A) || (*op)->name[0] != '.')
+		padding_ls(data, div, (*op));
+	div->len++;
+	print_file(data, &(div->mem), &(div->pad), div);
+	ft_memdel((void**)&((*op)->name));
+	ft_memdel((void**)op);
+}
 
 static void	padding_groups(t_ls *data, t_lsdiv *div, t_lsop *op)
 {

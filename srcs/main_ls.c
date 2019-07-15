@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:09 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/30 21:21:41 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/07/15 02:32:54 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -116,6 +116,8 @@ void			read_dir(t_ls *data, char *base, char *path)
 		recursive_dir(data, &(div.mem), div.name);
 		closedir(div.dir_ptr);
 	}
+	else if (open(div.name, O_RDONLY) > 0)
+		one_file(data, &div, &(div.mem));
 	else
 		ft_lserror(data, base, path);
 	ft_memdel((void**)&(div.name));

@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/26 08:03:50 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/30 17:21:48 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/07/15 02:32:16 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -150,4 +150,6 @@ void			ft_lserror(t_ls *st, char *base, char *path);
 void			error_ls(void);
 void			free_ftls(t_ls *st);
 void			padding_ls(t_ls *data, t_lsdiv *div, t_lsop *op);
+void			sticky_byte(t_stat stat, char right[10]);
+void			one_file(t_ls *data, t_lsdiv *div, t_lsop **op);
 #endif

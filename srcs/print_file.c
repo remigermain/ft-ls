@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:09 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/30 21:18:14 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/07/15 02:08:28 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -79,6 +79,8 @@ static int		print_name(t_ls *data, t_lsop *op, t_padding *padding, int size)
 		if ((op->file.st_mode & S_ISVTX && op->xattr <= 0) ||
 				(S_ISCHR(op->file.st_mode)))
 			ft_stprintf(KEEP_PF, "%s%s", B_YELLOW, T_BLACK);
+		else if (op->file.st_mode & S_ISGID && op->file.st_mode & S_IXOTH)
+			ft_stprintf(KEEP_PF, "%s%s", B_RED, T_BLACK);
 		else if (S_ISDIR(op->file.st_mode))
 			ft_stprintf(KEEP_PF, "%s", F_BOLD);
 		else if (S_ISLNK(op->file.st_mode))

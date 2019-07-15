@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:27 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/30 17:38:30 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/07/15 01:46:18 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -58,10 +58,7 @@ static void	file_right(t_stat stat, char right[10])
 	right[6] = (stat.st_mode & S_IXGRP) ? 'x' : '-';
 	right[7] = (stat.st_mode & S_IROTH) ? 'r' : '-';
 	right[8] = (stat.st_mode & S_IWOTH) ? 'w' : '-';
-	if (stat.st_mode & S_ISVTX)
-		right[9] = 't';
-	else
-		right[9] = (stat.st_mode & S_IXOTH) ? 'x' : '-';
+	sticky_byte(stat, right);
 }
 
 static void	file_group(t_ls *data, t_lsop *op, t_padding *pad)
