@@ -6,7 +6,7 @@
 #    By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+      #
 #                                                  #+#   #+    #+    #+#       #
 #    Created: 2018/10/01 15:39:03 by rgermain     #+#   ##    ##    #+#        #
-#    Updated: 2019/04/30 16:31:34 by rgermain    ###    #+. /#+    ###.fr      #
+#    Updated: 2019/06/10 18:51:01 by rgermain    ###    #+. /#+    ###.fr      #
 #                                                          /                   #
 #                                                         /                    #
 # **************************************************************************** #
@@ -19,19 +19,19 @@ CFLAGS = -Wall -Werror -Wextra -o3 -g
 INCLUDE = -Iincludes
 
 HEADER = libft.h limit.h color.h ft_printf.h is_methode.h memory.h strings.h \
-		divers.h get_next_line.h lib_lst.h math.h print.h
+		divers.h get_next_line.h lib_lst.h math.h print.h flags.h
 
 OBJ = $(SRC:.c=.o)
 
 DSRC = srcs/
 DOBJ = obj/
-ALL_D = $(D_DIVERS) $(D_IS_METHODE) $(D_LST) $(D_MATH) $(D_MEMORY) \
+ALL_D = $(D_DIVERS) $(D_IS_METHODE) $(D_LST) $(D_MATH) $(D_MEMORY) $(D_FLAGS) \
 		$(D_PUT) $(D_STDIO) $(D_STRING) $(addprefix $(D_STDIO),$(D_FT_PRINTF))
 
 DHEADER = includes/
 
 SRC =  $(CSRC_divers) $(CSRC_ISMETHODE) $(CSRC_lst) $(CSRC_MATH) \
-	  $(CSRC_MEMORY) $(CSRC_PUT) $(CSRC_string) $(CSRC_STDIO)
+	  $(CSRC_MEMORY) $(CSRC_PUT) $(CSRC_string) $(CSRC_STDIO) $(CSRC_FLAGS)
 
 CSRC = $(addprefix $(DSRC),$(SRC))
 COBJ = $(addprefix $(DOBJ),$(OBJ))
@@ -46,11 +46,15 @@ D_DIVERS = divers/
 SRC_divers = 		ft_countwchar.c ft_match.c ft_sort_integer_table.c ft_swap.c get_next_line.c \
 					ft_createtab.c timestamp.c
 
+CSRC_FLAGS = $(addprefix $(D_FLAGS),$(SRC_flags))
+D_FLAGS = flags/
+SRC_flags = 	ft_erro_argv.c ft_flags.c ft_parse_argv.c
+
 
 CSRC_ISMETHODE = $(addprefix $(D_IS_METHODE),$(SRC_ISMETHODE))  
 D_IS_METHODE = is_methode/
 SRC_ISMETHODE =		ft_isalpha.c  ft_isblank.c  ft_isdigit.c  ft_isprint.c  ft_isxdigit.c ft_toupper.c \
-					ft_isalnum.c  ft_isascii.c  ft_iscntrl.c  ft_isgraph.c  ft_isspace.c  ft_tolower.c
+					ft_isalnum.c  ft_isascii.c  ft_iscntrl.c  ft_isgraph.c  ft_isspace.c  ft_tolower.c ft_toupper.c
 
 
 
@@ -87,7 +91,7 @@ SRC_STDIO = $(CSRC_PRINTF)
 CSRC_PRINTF = $(addprefix $(D_FT_PRINTF),$(SRC_PRINTF))
 D_FT_PRINTF = ft_printf/
 SRC_PRINTF =		conv_char.c conv_int.c conv_string.c ft_printf.c ft_stprintf.c lst_putdouble.c lst_putoption.c \
-					put_string.c conv_double.c conv_other.c conv_tabstring.c put_color.c utils.c
+					put_string.c conv_double.c conv_other.c conv_tabstring.c utils.c
 
 
 

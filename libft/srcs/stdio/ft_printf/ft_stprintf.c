@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/01/04 16:38:22 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/30 17:19:50 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/06/10 18:50:34 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -31,8 +31,6 @@ static int	find_conv(t_pf *lst, char *str, int ret)
 		conv_int(lst);
 	else if (CONV == '@')
 		conv_other(lst);
-	else if (CONV == '{')
-		ret += conv_color(lst, str + ret);
 	else if (CONV != 0)
 		conv_char(lst);
 	return (ret);

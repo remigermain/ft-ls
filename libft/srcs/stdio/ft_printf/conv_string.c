@@ -71,7 +71,7 @@ void			pf_string(t_pf *lst, t_uchar *str, wchar_t *wstr, int index)
 	else if (index == 2)
 		str = comv_wstr(lst, wstr, max);
 	put_buff(lst, str, max, ((LENGHT >= 10 && LENGHT <= 20) ||
-				CONV == 'S') ? 1 : 0);
+				CONV == 'S' || CONV == 'm') ? 1 : 0);
 	put_prefix(lst, max, -FIELD, 0);
 }
 

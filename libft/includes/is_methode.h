@@ -26,4 +26,6 @@ int				ft_isblank(int i);
 int				ft_iscntrl(char c);
 int				ft_isgraph(char c);
 int				ft_isxdigit(char c);
+int				ft_toupper(int c);
+int				ft_tolower(int c);
 #endif

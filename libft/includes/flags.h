@@ -1,36 +1,32 @@
 /* ************************************************************************** */
 /*                                                          LE - /            */
 /*                                                              /             */
-/*   libft.h                                          .::    .:/ .      .::   */
+/*   flags.h                                          .::    .:/ .      .::   */
 /*                                                 +:+:+   +:    +:  +:+:+    */
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
-/*   Created: 2018/10/07 18:10:38 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/03/21 03:13:03 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Created: 2019/07/20 16:16:41 by rgermain     #+#   ##    ##    #+#       */
+/*   Updated: 2019/07/20 16:18:58 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
 
-#ifndef LIBFT_H
-# define LIBFT_H
-# define TRUE 1
-# define FALSE 0
-# include <unistd.h>
-# include <stdlib.h>
-# include <errno.h>
-# include <string.h>
-# include <sys/types.h>
-# include <sys/uio.h>
-# include <fcntl.h>
-# include "limit.h"
-# include "memory.h"
-# include "divers.h"
-# include "is_methode.h"
-# include "lib_lst.h"
-# include "math.h"
-# include "print.h"
-# include "strings.h"
-# include "ft_printf.h"
-# include "get_next_line.h"
-# include "flags.h"
+#ifndef FLAGS_H
+# define FLAGS_H
+
+enum	e_flags
+{
+	F_EXIST = 0b001,
+	F_ADD = 0b010,
+	F_RM = 0b011,
+	F_PRINT = 0b100,
+	F_STOP,
+};
+
+int		exist_flags(char fl);
+void	remove_flags(char fl);
+void	unknow_flags(char **argv, int i, int j);
+int		flags_base(char fl, enum e_flags mod);
+void	ft_error_argv(char **argv, int error, int error_2);
+void	init_flags(char **argv, char *flag, char *mflag, enum e_flags mod);
 #endif

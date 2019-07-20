@@ -6,12 +6,14 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/01/04 16:39:10 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/30 17:18:17 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/06/10 14:29:21 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
+
+#include <stdio.h>
 
 void	convert_buff(t_pf *lst, void *tmp, size_t len)
 {
@@ -55,7 +57,7 @@ void	put_itoa(t_pf *lst, t_ulong n)
 	int			mlen;
 
 	len = ulen_base(n, BASE);
-	if (LOCAL == 1 && (len - 1) > 3)
+	if (LOCAL == 1 && len > 3)
 		len += ((len / 3) - (len % 3 == 0 ? 1 : 0));
 	mlen = len;
 	len--;

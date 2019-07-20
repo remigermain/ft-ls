@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:09 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/07/15 02:32:54 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/07/20 16:12:02 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -27,7 +27,9 @@ static void		recursive_dir(t_ls *data, t_lsop **origi, char *name)
 		{
 			if (S_ISDIR(mem->file.st_mode) || (S_ISLNK(mem->file.st_mode) &&
 						test_bit(&(data->flag), LS_L_MAJ)))
+			{
 				read_dir(data, mem->name, ft_strjoin(name, "/"));
+			}
 		}
 		tmp = mem->next;
 		if (mem->name)
@@ -51,7 +53,7 @@ static t_lsop	*put_info(t_ls *data, t_lsop **op, t_lsdiv *div)
 		op = &((*op)->next);
 	}
 	if (!(div->rep = ft_strjoin(div->rep_d, div->tmp_dir->d_name)) ||
-			!((*op)->name = strdup(div->tmp_dir->d_name)))
+			!((*op)->name = ft_strdup(div->tmp_dir->d_name)))
 		error_ls();
 	(*op)->xattr = listxattr(div->rep, NULL, 0, XATTR_NOFOLLOW);
 	if (div->tmp_dir->d_type == DT_LNK)
@@ -91,7 +93,8 @@ static int		link_dir(t_ls *data, t_lsdiv *div, t_stat *file, char *base)
 	if (!(div->mem = (t_lsop*)ft_memalloc(sizeof(t_lsop))))
 		error_ls();
 	div->mem->file = (*file);
-	div->mem->name = strdup(base);
+	if (!(div->mem->name = ft_strdup(base)))
+		error_ls();
 	div->mem->xattr = listxattr(base, NULL, 0, XATTR_NOFOLLOW);
 	if (test_bit(&(data->flag), LS_A) || base[0] != '.')
 		padding_ls(data, div, div->mem);
