@@ -39,6 +39,8 @@ static void	padding_groups(t_ls *data, t_lsop *op, t_pad *pad)
 void		padding_ls(t_ls *data, t_lsop *op, t_pad *pad)
 {
 	pad->total += op->file.st_blocks;
+	if (pad->block < ft_intlen(op->file.st_blocks))
+		pad->block = ft_intlen(op->file.st_blocks);
 	if (pad->link < ft_intlen(op->file.st_nlink))
 		pad->link = ft_intlen(op->file.st_nlink);
 	padding_groups(data, op, pad);

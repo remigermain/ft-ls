@@ -189,9 +189,11 @@ static  void		print_extra(t_ls *data, t_lsop *op)
 
 static void		print_name(t_ls *data, t_lsop *op, t_pad *pad, char *path)
 {
-	if (test_bit(&(data->flag), LS_A_MAJ) &&
-				(!ft_strcmp(".", op->name) || !ft_strcmp("..", op->name)))
-		return ;
+//	if (test_bit(&(data->flag), LS_A_MAJ) &&
+//				(!ft_strcmp(".", op->name) || !ft_strcmp("..", op->name)))
+//		return ;
+	if (test_bit(&(data->flag), LS_S))
+		ft_stprintf(KEEP_PF, "%*d ", pad->block, op->file.st_blocks);
 	if (test_bit(&(data->flag), LS_L))
 		file_info(data, op, pad, path);
 	if (test_bit(&(data->flag), LS_G_MAJ))
@@ -216,7 +218,7 @@ t_bool    print_file(t_ls *data, t_lsop *lst, t_pad *pad, char *path)
     t_lsop  *mem;
 
     mem = lst;
-    ls_sort(data, &lst);
+    ls_sort(data, lst);
     while (mem)
     {
         print_name(data, mem, pad, path);
@@ -225,5 +227,7 @@ t_bool    print_file(t_ls *data, t_lsop *lst, t_pad *pad, char *path)
             return (false);
         mem = mem->next;
     }
+	if (!test_bit(&(data->flag), LS_L) && !test_bit(&(data->flag), LS_1))
+		ft_stprintf(KEEP_PF, "\n");
     return (true);
 }

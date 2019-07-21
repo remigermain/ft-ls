@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:09 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/07/20 16:12:02 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/07/21 12:48:50 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -75,13 +75,15 @@ t_bool			directory_file(t_ls *data, char *path, void *dir_ptr)
 	ft_bzero(&pad, sizeof(t_pad));
 	while ((dir = readdir(dir_ptr)))
 	{
-		if (test_bit(&(data->flag), LS_A) || dir->d_name[0] != '.')
+		if (test_bit(&(data->flag), LS_A) || (dir->d_name[0] != '.' || (test_bit(&(data->flag), LS_A_MAJ) && ft_strcmp(".", lst->name) && ft_strcmp("..", lst->name))))
 		{
 			lst = info_file(data, &pad, dir->d_name, path);
 			lst->next = mem;
 			mem = lst;
 		}
 	}
+	if (!lst)
+		return (true);
 	if (test_bit(&(data->flag), LS_L))
 		ft_stprintf(KEEP_PF, "total %d\n", pad.total);
 	print_file(data, lst, &pad, path);
@@ -94,11 +96,12 @@ t_bool			regular_file(t_ls *data, char *name, char *path)
 	t_pad pad;
 	t_lsop *lst;
 
+	ft_printf("%s  %s\n", name, path);
 	ft_bzero(&pad, sizeof(t_pad));
 	if (!(lst = info_file(data, &pad, name, path)))
 		return (false);
 	print_file(data, lst, &pad, path);
-	ft_stprintf(KEEP_PF, "\n");
+	//ft_stprintf(KEEP_PF, "\n");
 	return (true);
 }
 
@@ -116,12 +119,12 @@ t_bool			read_dir(t_ls *data, char *path, char *name)
 			if ((dir_ptr = opendir(path)))
 				return (directory_file(data, path, dir_ptr));
 			else
-				ft_lserror(data, name);
+				ft_lserror(data, path);
 		}
-		else if (!regular_file(data, path, path))
+		else if (!regular_file(data, path, name))
 			return (false);
 	}
 	else
-		ft_lserror(data, path);
+		ft_lserror(data, name);
 	return (true);
 }

@@ -51,6 +51,8 @@ static	void	ls_putflags4(t_ls *data, char c)
 		unset_sort(data, c);
 	else if (c == 'L')
 		set_bit(&(data->flag), LS_L_MAJ);
+	else if (c == 's')
+		set_bit(&(data->flag), LS_S);
 }
 
 static	void	ls_putflags3(t_ls *data, char c)

@@ -19,14 +19,17 @@
 
 static t_bool	put_read(t_ls *data, t_lsop *mem)
 {
-	t_lsop *origi;
+	t_lsop	*origi;
 
 	origi = mem;
-	data->path = "";
 	while (origi)
 	{
+		if (data->len_argc)
+			ft_stprintf(KEEP_PF, "%s:\n", mem->name);
 		if (!read_dir(data, origi->name, origi->name))
 			return (false);
+		if (origi->next)
+			ft_stprintf(KEEP_PF, "\n");
 		origi = origi->next;
 	}
 	if (!mem && !read_dir(data, ".", "."))
@@ -44,6 +47,7 @@ static t_bool	sort_argv(t_ls *data, t_lsop **op, char **argv)
 	int i;
 
 	i = 0;
+	data->len_argc = -1;
 	if (argv[0] && !((*op) = (t_lsop*)ft_memalloc(sizeof(t_lsop))))
 		return (error_ls("sort_argv"));
 	mem = (*op);
@@ -54,8 +58,9 @@ static t_bool	sort_argv(t_ls *data, t_lsop **op, char **argv)
 		if (argv[i] && !(mem->next = (t_lsop*)ft_memalloc(sizeof(t_lsop))))
 			return (error_ls("sort_argv"));
 		mem = mem->next;
+		data->len_argc++;
 	}
-	ls_sort(data, op);
+	ls_sort(data, (*op));
 	return (TRUE);
 }
 

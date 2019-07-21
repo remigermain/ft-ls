@@ -3,7 +3,7 @@ if [ $# -ge 3 ]
 then
 {
 	echo "[ DIFF ] \n"
-	diff <(./ft_ls -G $1 $2 | cat -e) <(ls $1 $2 | cat -e)
+	diff <(nl <(./ft_ls -G $1 $2 | cat -e)) <(nl <(ls $1 $2 | cat -e))
 }
 elif [ $# -ge 2 ]
 then

@@ -56,7 +56,8 @@ enum	{
 	LS_U,
 	LS_U_MAJ,
 	LS_S_MAJ,
-	LS_R
+	LS_R,
+	LS_S
 };
 
 typedef	struct	s_lsop
@@ -78,6 +79,7 @@ typedef	struct	s_pad
 	int	sizet;
 	int mm;
 	int	name;
+	int block;
 }				t_pad;
 
 typedef	struct	s_infols
@@ -94,6 +96,7 @@ typedef	struct	s_ls
 	long		flag;
 	time_t		time;
 	char		*path;
+	int			len_argc;
 }				t_ls;
 
 /*
@@ -110,12 +113,12 @@ t_bool			read_dir(t_ls *data, char *path, char *name);
 /*
 **	sort_ls
 */
-void			ls_sort(t_ls *data, t_lsop **op);
-int				ls_sort_ascii(t_ls *d, t_lsop **m, t_lsop **p);
-int				ls_sort_size(t_ls *d, t_lsop **m, t_lsop **p);
-int				ls_sort_mtime(t_ls *d, t_lsop **m, t_lsop **p);
-int				ls_sort_atime(t_ls *d, t_lsop **m, t_lsop **p);
-int				ls_sort_ctime(t_ls *d, t_lsop **m, t_lsop **p);
+void			ls_sort(t_ls *data, t_lsop *op);
+int				ls_sort_ascii(t_ls *d, t_lsop *m, t_lsop *p);
+int				ls_sort_size(t_ls *d, t_lsop *m, t_lsop *p);
+int				ls_sort_mtime(t_ls *d, t_lsop *m, t_lsop *p);
+int				ls_sort_atime(t_ls *d, t_lsop *m, t_lsop *p);
+int				ls_sort_ctime(t_ls *d, t_lsop *m, t_lsop *p);
 
 void			padding_ls(t_ls *data, t_lsop *op, t_pad *pad);
 t_bool    		print_file(t_ls *data, t_lsop *lst, t_pad *pad, char *path);

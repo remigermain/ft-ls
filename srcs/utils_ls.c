@@ -35,7 +35,7 @@ char		*cat_path(char *name, char *path)
 	if (!path[0])
 		return (ft_strdup(name));
 	ft_bzero(path_mem, 2);
-	if (ft_strlen(path) > 0 && path[ft_strlen(path) - 1] != '/')
+	if (ft_strlen(path) > 0 && path[ft_strlen(path)] != '/')
 		path_mem[0] = '/';
 	ft_strcat(path_mem, name);
 	return (ft_strjoin(path, path_mem));
@@ -67,9 +67,16 @@ t_bool	error_ls(char *str)
 
 void	ft_lserror(t_ls *data, char *name)
 {
-	char *str;
+	char	*str;
+	char	*file;
+	int		len;
+
+	len = ft_strlen(name);
+	while (len > 0 && name[len - 1] != '/')
+		len--;
+	file = name + len;
 	ft_stprintf(OUT_PF, "");
-	ft_dprintf(2, "ls: %s: %s", name, (test_bit(&(data->flag), LS_G_MAJ) ? T_RED : T_WHITE));
+	ft_dprintf(2, "ls: %s: %s", file, (test_bit(&(data->flag), LS_G_MAJ) ? T_RED : T_WHITE));
 	str = strerror(errno);
 	ft_dprintf(2, "%s%s\n", str, T_WHITE);
 }

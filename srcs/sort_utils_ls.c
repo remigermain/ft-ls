@@ -13,65 +13,65 @@
 
 #include "ft_ls.h"
 
-int	ls_sort_ascii(t_ls *data, t_lsop **mem, t_lsop **mem2)
+int	ls_sort_ascii(t_ls *data, t_lsop *mem, t_lsop *mem2)
 {
 	int	i;
 
 	i = 0;
-	while ((*mem)->name[i] == (*mem2)->name[i])
+	while (mem->name[i] && mem2->name[i] && mem->name[i] == mem2->name[i])
 		i++;
 	if ((test_bit(&(data->flag), LS_R) &&
-			(*mem)->name[i] < (*mem2)->name[i]) ||
+			mem->name[i] < mem2->name[i]) ||
 				(!test_bit(&(data->flag), LS_R) &&
-				(*mem)->name[i] > (*mem2)->name[i]))
+				mem->name[i] > mem2->name[i]))
 		return (1);
 	return (0);
 }
 
-int	ls_sort_size(t_ls *data, t_lsop **mem, t_lsop **mem2)
+int	ls_sort_size(t_ls *data, t_lsop *mem, t_lsop *mem2)
 {
 	if ((test_bit(&(data->flag), LS_R) &&
-		(*mem)->file.st_size > (*mem2)->file.st_size) ||
+		mem->file.st_size > mem2->file.st_size) ||
 			(!test_bit(&(data->flag), LS_R) &&
-				(*mem)->file.st_size < (*mem2)->file.st_size))
+				mem->file.st_size < mem2->file.st_size))
 		return (1);
-	else if ((*mem)->file.st_size == (*mem2)->file.st_size)
+	else if (mem->file.st_size == mem2->file.st_size)
 		return (ls_sort_ascii(data, mem, mem2));
 	return (0);
 }
 
-int	ls_sort_mtime(t_ls *data, t_lsop **mem, t_lsop **mem2)
+int	ls_sort_mtime(t_ls *data, t_lsop *mem, t_lsop *mem2)
 {
 	if ((test_bit(&(data->flag), LS_R) &&
-		(*mem)->file.st_mtime > (*mem2)->file.st_mtime) ||
+		mem->file.st_mtime > mem2->file.st_mtime) ||
 			(!test_bit(&(data->flag), LS_R) &&
-			(*mem)->file.st_mtime < (*mem2)->file.st_mtime))
+			mem->file.st_mtime < mem2->file.st_mtime))
 		return (1);
-	else if ((*mem)->file.st_mtime == (*mem2)->file.st_mtime)
+	else if (mem->file.st_mtime == mem2->file.st_mtime)
 		return (ls_sort_ascii(data, mem, mem2));
 	return (0);
 }
 
-int	ls_sort_atime(t_ls *data, t_lsop **mem, t_lsop **mem2)
+int	ls_sort_atime(t_ls *data, t_lsop *mem, t_lsop *mem2)
 {
 	if ((test_bit(&(data->flag), LS_R) &&
-		(*mem)->file.st_atime > (*mem2)->file.st_mtime) ||
+		mem->file.st_atime > mem2->file.st_mtime) ||
 			(!test_bit(&(data->flag), LS_R) &&
-			(*mem)->file.st_atime < (*mem2)->file.st_atime))
+			mem->file.st_atime < mem2->file.st_atime))
 		return (1);
-	else if ((*mem)->file.st_atime == (*mem2)->file.st_atime)
+	else if (mem->file.st_atime == mem2->file.st_atime)
 		return (ls_sort_ascii(data, mem, mem2));
 	return (0);
 }
 
-int	ls_sort_ctime(t_ls *data, t_lsop **mem, t_lsop **mem2)
+int	ls_sort_ctime(t_ls *data, t_lsop *mem, t_lsop *mem2)
 {
 	if ((test_bit(&(data->flag), LS_R) &&
-		(*mem)->file.st_ctime > (*mem2)->file.st_ctime) ||
+		mem->file.st_ctime > mem2->file.st_ctime) ||
 			(!test_bit(&(data->flag), LS_R) &&
-			(*mem)->file.st_ctime < (*mem2)->file.st_ctime))
+			mem->file.st_ctime < mem2->file.st_ctime))
 		return (1);
-	else if ((*mem)->file.st_ctime == (*mem2)->file.st_ctime)
+	else if (mem->file.st_ctime == mem2->file.st_ctime)
 		return (ls_sort_ascii(data, mem, mem2));
 	return (0);
 }
