@@ -75,11 +75,18 @@ t_bool			directory_file(t_ls *data, char *path, void *dir_ptr)
 	ft_bzero(&pad, sizeof(t_pad));
 	while ((dir = readdir(dir_ptr)))
 	{
-		if (test_bit(&(data->flag), LS_A) || (dir->d_name[0] != '.' || (test_bit(&(data->flag), LS_A_MAJ) && ft_strcmp(".", lst->name) && ft_strcmp("..", lst->name))))
+		if (test_bit(&(data->flag), LS_A) || test_bit(&(data->flag), LS_F) || (dir->d_name[0] != '.' || (test_bit(&(data->flag), LS_A_MAJ) && ft_strcmp(".", lst->name) && ft_strcmp("..", lst->name))))
 		{
-			lst = info_file(data, &pad, dir->d_name, path);
-			lst->next = mem;
-			mem = lst;
+			if (!lst)
+			{
+				lst = info_file(data, &pad, dir->d_name, path);
+				mem = lst;
+			}
+			else
+			{
+				mem->next = info_file(data, &pad, dir->d_name, path);
+				mem = mem->next;
+			}
 		}
 	}
 	if (!lst)

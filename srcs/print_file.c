@@ -165,7 +165,7 @@ static t_bool		print_link(t_ls *data, t_lsop *op, t_pad *pad, char *path)
 
 static  void		print_extra(t_ls *data, t_lsop *op)
 {
-	if (test_bit(&(data->flag), LS_A) || op->name[0] != '.')
+	if (test_bit(&(data->flag), LS_A) || test_bit(&(data->flag), LS_F) || op->name[0] != '.')
 		ft_stprintf(KEEP_PF, "%s", op->name);
 	if (test_bit(&(data->flag), LS_G_MAJ))
 		ft_stprintf(KEEP_PF, "%s", T_WHITE);
@@ -218,7 +218,8 @@ t_bool    print_file(t_ls *data, t_lsop *lst, t_pad *pad, char *path)
     t_lsop  *mem;
 
     mem = lst;
-    ls_sort(data, lst);
+	if (!test_bit(&(data->flag), LS_F))
+    	ls_sort(data, lst);
     while (mem)
     {
         print_name(data, mem, pad, path);

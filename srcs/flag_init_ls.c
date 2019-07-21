@@ -15,22 +15,16 @@
 
 static	void	unset_sort(t_ls *data, char c)
 {
-	if (test_bit(&(data->flag), LS_T))
-		clear_bit(&(data->flag), LS_T);
-	if (test_bit(&(data->flag), LS_S_MAJ))
-		clear_bit(&(data->flag), LS_S_MAJ);
-	if (test_bit(&(data->flag), LS_U_MAJ))
-		clear_bit(&(data->flag), LS_U_MAJ);
-	if (test_bit(&(data->flag), LS_U))
-		clear_bit(&(data->flag), LS_U);
 	if (c == 't')
 		set_bit(&(data->flag), LS_T);
-	else if (c == 'u')
-		set_bit(&(data->flag), LS_U);
-	else if (c == 'U')
-		set_bit(&(data->flag), LS_U_MAJ);
 	else if (c == 'S')
 		set_bit(&(data->flag), LS_S_MAJ);
+	if (test_bit(&(data->flag), LS_S_MAJ))
+	{
+		if (test_bit(&(data->flag), LS_T))
+			clear_bit(&(data->flag), LS_T);
+		return ;
+	}
 }
 
 static	void	ls_putflags4(t_ls *data, char c)
@@ -45,10 +39,21 @@ static	void	ls_putflags4(t_ls *data, char c)
 		set_bit(&(data->flag), LS_A);
 		set_bit(&(data->flag), LS_A_MAJ);
 	}
-	else if (c == 'S' || c == 'T' ||
-			c == 't' || c == 'U' ||
-			c == 'u')
+	else if (c == 'T')
+		set_bit(&(data->flag), LS_T_MAJ);
+	else if (c == 'S' || c == 't')
 		unset_sort(data, c);
+	else if (c == 'U' || c == 'u')
+	{
+		if (test_bit(&(data->flag), LS_U))
+			clear_bit(&(data->flag), LS_U);
+		if (test_bit(&(data->flag), LS_U_MAJ))
+			clear_bit(&(data->flag), LS_U_MAJ);
+		if (test_bit(&(data->flag), LS_U_MAJ))
+			set_bit(&(data->flag), LS_U_MAJ);
+		if (test_bit(&(data->flag), LS_U))		
+			set_bit(&(data->flag), LS_U);
+	}
 	else if (c == 'L')
 		set_bit(&(data->flag), LS_L_MAJ);
 	else if (c == 's')
