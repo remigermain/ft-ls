@@ -18,14 +18,12 @@ int	ls_sort_ascii(t_ls *data, t_lsop **mem, t_lsop **mem2)
 	int	i;
 
 	i = 0;
-	while ((*mem)->name && (*mem2)->name &&
-			(*mem)->name[i] == (*mem2)->name[i])
+	while ((*mem)->name[i] == (*mem2)->name[i])
 		i++;
-	if ((*mem)->name && (*mem2)->name &&
-		((test_bit(&(data->flag), LS_R) &&
+	if ((test_bit(&(data->flag), LS_R) &&
 			(*mem)->name[i] < (*mem2)->name[i]) ||
 				(!test_bit(&(data->flag), LS_R) &&
-				(*mem)->name[i] > (*mem2)->name[i])))
+				(*mem)->name[i] > (*mem2)->name[i]))
 		return (1);
 	return (0);
 }

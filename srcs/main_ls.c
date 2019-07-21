@@ -13,118 +13,115 @@
 
 #include "ft_ls.h"
 
-static void		recursive_dir(t_ls *data, t_lsop **origi, char *name)
+
+
+t_lsop		*info_file(t_ls *data, t_pad *pad, char *name, char *path_mem)
+{
+	t_lsop	*lst;
+	char	*path;
+
+	if (!(lst = (t_lsop*)ft_memalloc(sizeof(t_lsop))))
+		return (NULL);
+	if (!(path = cat_path(name, path_mem)))
+	{
+		ft_memdel((void**)&lst);
+		return (NULL);
+	}
+	lst->xattr = listxattr(path, NULL, 0, XATTR_NOFOLLOW);
+	ft_strcat(lst->name, name);
+	lstat(path, &(lst->file));
+//	if (!S_ISLNK(lst->file.st_mode))
+//		stat(path, &(lst->file));
+	padding_ls(data, lst, pad);
+	ft_strdel(&path);
+	return (lst);
+}
+
+t_bool			recursive_dir(t_ls *data, t_lsop *lst, char *path)
 {
 	t_lsop	*mem;
-	t_lsop	*tmp;
+	char	*new_path;
 
-	mem = (*origi);
-	while (mem)
+	while(lst)
 	{
-		if (test_bit(&(data->flag), LS_R_MAJ) &&
-			ft_strcmp(".", mem->name) && ft_strcmp("..", mem->name)
-				&& mem->name[0])
+		mem = lst;
+		if (test_bit(&(data->flag), LS_R_MAJ) && ft_strcmp(".", lst->name) && ft_strcmp("..", lst->name) && (S_ISDIR(mem->file.st_mode) || (S_ISLNK(mem->file.st_mode) && test_bit(&(data->flag), LS_L_MAJ))))
 		{
-			if (S_ISDIR(mem->file.st_mode) || (S_ISLNK(mem->file.st_mode) &&
-						test_bit(&(data->flag), LS_L_MAJ)))
+			ft_stprintf(OUT_PF, "\n%s/%s:\n", path, lst->name);
+			if (!(new_path = cat_path(mem->name, path)))
+				return (free_lsop(mem));
+			if (!read_dir(data, new_path, mem->name))
 			{
-				read_dir(data, mem->name, ft_strjoin(name, "/"));
+				ft_strdel(&new_path);
+				return (free_lsop(mem));
 			}
+			ft_strdel(&new_path);
 		}
-		tmp = mem->next;
-		if (mem->name)
-			ft_memdel((void**)&(mem->name));
+		lst = lst->next;
 		ft_memdel((void**)&mem);
-		mem = tmp;
 	}
+	return (true);
 }
 
-static t_lsop	*put_info(t_ls *data, t_lsop **op, t_lsdiv *div)
+t_bool			directory_file(t_ls *data, char *path, void *dir_ptr)
 {
-	if (!(*op))
+	t_dir	*dir;
+	t_pad	pad;
+	t_lsop	*lst;
+	t_lsop	*mem;
+
+	lst = NULL;
+	mem = NULL;
+	ft_bzero(&pad, sizeof(t_pad));
+	while ((dir = readdir(dir_ptr)))
 	{
-		if (!((*op) = (t_lsop*)ft_memalloc(sizeof(t_lsop))))
-			error_ls();
+		if (test_bit(&(data->flag), LS_A) || dir->d_name[0] != '.')
+		{
+			lst = info_file(data, &pad, dir->d_name, path);
+			lst->next = mem;
+			mem = lst;
+		}
 	}
-	else if (!(*op)->next)
-	{
-		if (!(((*op)->next) = (t_lsop*)ft_memalloc(sizeof(t_lsop))))
-			error_ls();
-		op = &((*op)->next);
-	}
-	if (!(div->rep = ft_strjoin(div->rep_d, div->tmp_dir->d_name)) ||
-			!((*op)->name = ft_strdup(div->tmp_dir->d_name)))
-		error_ls();
-	(*op)->xattr = listxattr(div->rep, NULL, 0, XATTR_NOFOLLOW);
-	if (div->tmp_dir->d_type == DT_LNK)
-		lstat(div->rep, &((*op)->file));
-	else
-		stat(div->rep, &((*op)->file));
-	if (test_bit(&(data->flag), LS_A) || (*op)->name[0] != '.')
-		padding_ls(data, div, (*op));
-	div->len++;
-	ft_memdel((void**)&(div->rep));
-	return ((*op));
+	if (test_bit(&(data->flag), LS_L))
+		ft_stprintf(KEEP_PF, "total %d\n", pad.total);
+	print_file(data, lst, &pad, path);
+	closedir(dir_ptr);
+	return (recursive_dir(data, lst, path));
 }
 
-static void		normal_dir(t_ls *data, t_lsdiv *div)
+t_bool			regular_file(t_ls *data, char *name, char *path)
 {
-	ft_bzero(&(div->pad), sizeof(t_padding));
-	if (!(div->rep_d = ft_strjoin(div->name, "/")))
-		error_ls();
-	while ((div->tmp_dir = readdir(div->dir_ptr)))
-	{
-		div->op = put_info(data, &(div->op), div);
-		if (!(div->mem))
-			div->mem = div->op;
-	}
-	data->path = div->rep_d;
+	t_pad pad;
+	t_lsop *lst;
+
+	ft_bzero(&pad, sizeof(t_pad));
+	if (!(lst = info_file(data, &pad, name, path)))
+		return (false);
+	print_file(data, lst, &pad, path);
+	ft_stprintf(KEEP_PF, "\n");
+	return (true);
 }
 
-static int		link_dir(t_ls *data, t_lsdiv *div, t_stat *file, char *base)
+t_bool			read_dir(t_ls *data, char *path, char *name)
 {
-	if (!((lstat(base, file) != -1 && S_ISLNK(file->st_mode) &&
-		test_bit(&(data->flag), LS_L) && !data->level &&
-		!test_bit(&(data->flag), LS_L_MAJ)) ||
-			test_bit(&(data->flag), LS_D)))
-		return (0);
-	ft_bzero(&(div->pad), sizeof(t_padding));
-	data->link_dir = 1;
-	if (!(div->mem = (t_lsop*)ft_memalloc(sizeof(t_lsop))))
-		error_ls();
-	div->mem->file = (*file);
-	if (!(div->mem->name = ft_strdup(base)))
-		error_ls();
-	div->mem->xattr = listxattr(base, NULL, 0, XATTR_NOFOLLOW);
-	if (test_bit(&(data->flag), LS_A) || base[0] != '.')
-		padding_ls(data, div, div->mem);
-	div->len++;
-	return (1);
-}
-
-void			read_dir(t_ls *data, char *base, char *path)
-{
-	t_lsdiv		div;
 	t_stat		file;
+	void		*dir_ptr;
 
-	ft_bzero(&div, sizeof(t_lsdiv));
-	if (!path || !(div.name = ft_strjoin(path, base)))
-		error_ls();
-	if ((div.dir_ptr = opendir(div.name)))
+	dir_ptr = NULL;
+	ft_bzero(&file, sizeof(t_stat));
+	if (!lstat(path, &file))
 	{
-		data->path = path;
-		if (!link_dir(data, &div, &file, base))
-			normal_dir(data, &div);
-		print_file(data, &(div.mem), &(div.pad), &div);
-		recursive_dir(data, &(div.mem), div.name);
-		closedir(div.dir_ptr);
+		if (S_ISDIR(file.st_mode) && !test_bit(&(data->flag), LS_D))
+		{
+			if ((dir_ptr = opendir(path)))
+				return (directory_file(data, path, dir_ptr));
+			else
+				ft_lserror(data, name);
+		}
+		else if (!regular_file(data, path, path))
+			return (false);
 	}
-	else if (open(div.name, O_RDONLY) > 0)
-		one_file(data, &div, &(div.mem));
 	else
-		ft_lserror(data, base, path);
-	ft_memdel((void**)&(div.name));
-	ft_memdel((void**)&(div.rep_d));
-	if (path && path[0])
-		ft_memdel((void**)&path);
+		ft_lserror(data, path);
+	return (true);
 }

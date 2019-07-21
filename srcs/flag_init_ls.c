@@ -105,29 +105,27 @@ static	void	ls_putflags2(t_ls *data, char c)
 		ls_putflags3(data, c);
 }
 
-void			ls_putflags(t_ls *data, int argc, char **argv)
+int			ls_putflags(t_ls *data, int argc, char **argv)
 {
 	int	i;
+	int	j;
 
 	ft_bzero(data, sizeof(t_ls));
-	data->i = 0;
+	j = 0;
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &(data->w));
-	while (++data->i < argc && (i = 0) != -1 && argv[data->i][0] == '-')
-		while (argv[data->i][++i])
+	while (++j < argc && (i = 0) != -1 && argv[j][0] == '-')
+		while (argv[j][++i])
 		{
-			if (argv[data->i][i] == 'l')
+			if (argv[j][i] == 'l')
 			{
 				clear_bit(&(data->flag), LS_M);
 				set_bit(&(data->flag), LS_L);
 			}
-			else if (argv[data->i][i] == 'R')
+			else if (argv[j][i] == 'R')
 				set_bit(&(data->flag), LS_R_MAJ);
 			else
-				ls_putflags2(data, argv[data->i][i]);
+				ls_putflags2(data, argv[j][i]);
 		}
 	set_or_clear_bit(&(data->flag), LS_G_MAJ);
-	data->argc = (data->i == data->argc ? argc + 1 : argc);
-	data->nb_arg = data->argc - (data->i + 1);
-	if (data->nb_arg < 0)
-		data->nb_arg = 0;
+	return (j);
 }

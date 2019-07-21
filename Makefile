@@ -25,7 +25,7 @@ LIBFT_N :
 LIBFT_R : 
 	@make -C libft/ re
 
-CFLAGS = -Wall -Werror -Wextra -g3
+CFLAGS = -Wall -Wextra -g3 #-fsanitize=address
 
 INCLUDE = -Iincludes
 

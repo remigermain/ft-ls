@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/01/04 16:38:13 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/04/19 10:59:20 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/07/20 18:11:15 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -71,7 +71,7 @@ void			pf_string(t_pf *lst, t_uchar *str, wchar_t *wstr, int index)
 	else if (index == 2)
 		str = comv_wstr(lst, wstr, max);
 	put_buff(lst, str, max, ((LENGHT >= 10 && LENGHT <= 20) ||
-				CONV == 'S' || CONV == 'm') ? 1 : 0);
+				CONV == 'S') ? 1 : 0);
 	put_prefix(lst, max, -FIELD, 0);
 }
 

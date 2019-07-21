@@ -13,40 +13,7 @@
 
 #include "ft_ls.h"
 
-void		sticky_byte(t_stat stat, char right[10])
-{
-	if (stat.st_mode & S_ISVTX)
-		right[9] = 't';
-	else
-		right[9] = (stat.st_mode & S_IXOTH) ? 'x' : '-';
-	if (S_ISGID & stat.st_mode)
-	{
-		right[3] = (stat.st_mode & S_IXUSR) ? 's' : 'S';
-		right[6] = (stat.st_mode & S_IXUSR) ? 's' : 'S';
-	}
-}
-
-void		one_file(t_ls *data, t_lsdiv *div, t_lsop **op)
-{
-	ft_bzero(&(div->pad), sizeof(t_padding));
-	if (!((*op) = (t_lsop*)ft_memalloc(sizeof(t_lsop))))
-		error_ls();
-	(*op)->xattr = listxattr(div->name, NULL, 0, XATTR_NOFOLLOW);
-	stat(div->name, &((*op)->file));
-	if (!((*op)->name = ft_strdup(div->name)))
-		error_ls();
-	data->path = "";
-	data->link_dir = 1;
-	(*op)->xattr = listxattr(div->name, NULL, 0, XATTR_NOFOLLOW);
-	if (test_bit(&(data->flag), LS_A) || (*op)->name[0] != '.')
-		padding_ls(data, div, (*op));
-	div->len++;
-	print_file(data, &(div->mem), &(div->pad), div);
-	ft_memdel((void**)&((*op)->name));
-	ft_memdel((void**)op);
-}
-
-static void	padding_groups(t_ls *data, t_lsdiv *div, t_lsop *op)
+static void	padding_groups(t_ls *data, t_lsop *op, t_pad *pad)
 {
 	t_passwd	*uid;
 	t_group		*gid;
@@ -63,27 +30,32 @@ static void	padding_groups(t_ls *data, t_lsdiv *div, t_lsop *op)
 		i_gid = ft_strlen(gid->gr_name);
 	else
 		i_gid = ft_intlen(op->file.st_gid);
-	if (div->pad.group < i_uid)
-		div->pad.group = i_uid;
-	if (div->pad.group2 < i_gid)
-		div->pad.group2 = i_gid;
+	if (pad->group < i_uid)
+		pad->group = i_uid;
+	if (pad->group2 < i_gid)
+		pad->group2 = i_gid;
 }
 
-void		padding_ls(t_ls *data, t_lsdiv *div, t_lsop *op)
+void		padding_ls(t_ls *data, t_lsop *op, t_pad *pad)
 {
-	div->total += op->file.st_blocks;
-	if (div->pad.link < ft_intlen(op->file.st_nlink))
-		div->pad.link = ft_intlen(op->file.st_nlink);
-	padding_groups(data, div, op);
+	pad->total += op->file.st_blocks;
+	if (pad->link < ft_intlen(op->file.st_nlink))
+		pad->link = ft_intlen(op->file.st_nlink);
+	padding_groups(data, op, pad);
 	if (S_ISBLK(op->file.st_mode) || S_ISCHR(op->file.st_mode))
 	{
-		if (div->pad.size < ft_intlen(major(op->file.st_rdev)))
-			div->pad.size = ft_intlen(major(op->file.st_rdev));
-		if (div->pad.size2 < ft_intlen(minor(op->file.st_rdev)))
-			div->pad.size2 = ft_intlen(minor(op->file.st_rdev));
+		if (pad->size < ft_intlen(major(op->file.st_rdev)))
+			pad->size = ft_intlen(major(op->file.st_rdev));
+		if (pad->size2 < ft_intlen(minor(op->file.st_rdev)))
+			pad->size2 = ft_intlen(minor(op->file.st_rdev));
+		if (pad->size2 > pad->sizet)
+			pad->sizet = pad->size2;
+		if (pad->size > pad->sizet)
+			pad->sizet = pad->size;
+		pad->mm = 1;
 	}
-	else if (div->pad.size < ft_intlen(op->file.st_size))
-		div->pad.size = ft_intlen(op->file.st_size);
-	if (div->pad.name < (int)ft_strlen(op->name))
-		div->pad.name = ft_strlen(op->name);
+	else if (pad->size < ft_intlen(op->file.st_size))
+		pad->size = ft_intlen(op->file.st_size);
+	if (pad->name < (int)ft_strlen(op->name))
+		pad->name = ft_strlen(op->name);
 }
