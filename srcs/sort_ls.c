@@ -64,14 +64,14 @@ static void	ls_sort_funct(t_ls *data, t_lsop *op, int len,
 
 void		ls_sort(t_ls *data, t_lsop *op)
 {
-	t_lsop *mem;
-	int len;
+	t_lsop	*mem;
+	int		len;
 
 	mem = op;
 	len = 0;
 	while (mem && (++len))
 		mem = mem->next;
- 	if (test_bit(&(data->flag), LS_T))
+	if (test_bit(&(data->flag), LS_T))
 		ls_sort_funct(data, op, len, ls_sort_mtime);
 	else if (test_bit(&(data->flag), LS_S_MAJ))
 		ls_sort_funct(data, op, len, ls_sort_size);

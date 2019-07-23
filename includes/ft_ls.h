@@ -32,10 +32,8 @@ typedef	struct passwd	t_passwd;
 typedef	struct group	t_group;
 typedef	struct winsize	t_winsize;
 
-#define true 1
-#define false 0
-
-enum	{
+enum	e_flag_ls
+{
 	LS_L = 0,
 	LS_A,
 	LS_A_MAJ,
@@ -80,6 +78,7 @@ typedef	struct	s_pad
 	int mm;
 	int	name;
 	int block;
+	int	col;
 }				t_pad;
 
 typedef	struct	s_infols
@@ -109,6 +108,14 @@ int				ls_putflags(t_ls *data, int argc, char **argv);
 **	read-file && dir
 */
 t_bool			read_dir(t_ls *data, char *path, char *name);
+t_bool			directory_file(t_ls *data, char *path, DIR *dir_ptr);
+t_bool			regular_file(t_ls *data, char *name, char *path);
+void			padding_ls(t_ls *data, t_lsop *op, t_pad *pad);
+t_bool			print_file(t_ls *data, t_lsop *lst, t_pad *pad, char *path);
+char			*cat_path(char *name, char *path);
+t_bool			error_ls(char *str, t_lsop *lst);
+t_bool			file_acl(t_ls *data, t_lsop *op, char *path);
+void			file_info(t_ls *data, t_lsop *op, t_pad *pad, char *path);
 
 /*
 **	sort_ls
@@ -120,10 +127,6 @@ int				ls_sort_mtime(t_ls *d, t_lsop *m, t_lsop *p);
 int				ls_sort_atime(t_ls *d, t_lsop *m, t_lsop *p);
 int				ls_sort_ctime(t_ls *d, t_lsop *m, t_lsop *p);
 
-void			padding_ls(t_ls *data, t_lsop *op, t_pad *pad);
-t_bool    		print_file(t_ls *data, t_lsop *lst, t_pad *pad, char *path);
-char			*cat_path(char *name, char *path);
-
 /*
 **	tools.c
 */
@@ -134,7 +137,4 @@ void			clear_bit(long *st, int i);
 void			set_or_clear_bit(long *st, int i);
 t_bool			test_bit(long *st, int i);
 void			ft_lserror(t_ls *st, char *path);
-t_bool			error_ls(char *str);
-void			free_ftls(t_ls *st);
-void			sticky_byte(t_stat stat, char right[10]);
 #endif

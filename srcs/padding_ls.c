@@ -13,6 +13,16 @@
 
 #include "ft_ls.h"
 
+static int	ft_longlen(long long nb)
+{
+	int i;
+
+	i = 1;
+	while (nb >= 10 && (++i))
+		nb /= 10;
+	return (i);
+}
+
 static void	padding_groups(t_ls *data, t_lsop *op, t_pad *pad)
 {
 	t_passwd	*uid;
@@ -24,12 +34,12 @@ static void	padding_groups(t_ls *data, t_lsop *op, t_pad *pad)
 			!test_bit(&(data->flag), LS_N))
 		i_uid = ft_strlen(uid->pw_name);
 	else
-		i_uid = ft_intlen(op->file.st_uid);
+		i_uid = ft_longlen(op->file.st_uid);
 	if ((gid = getgrgid(op->file.st_gid)) &&
 			!test_bit(&(data->flag), LS_N))
 		i_gid = ft_strlen(gid->gr_name);
 	else
-		i_gid = ft_intlen(op->file.st_gid);
+		i_gid = ft_longlen(op->file.st_gid);
 	if (pad->group < i_uid)
 		pad->group = i_uid;
 	if (pad->group2 < i_gid)
@@ -39,25 +49,25 @@ static void	padding_groups(t_ls *data, t_lsop *op, t_pad *pad)
 void		padding_ls(t_ls *data, t_lsop *op, t_pad *pad)
 {
 	pad->total += op->file.st_blocks;
-	if (pad->block < ft_intlen(op->file.st_blocks))
-		pad->block = ft_intlen(op->file.st_blocks);
-	if (pad->link < ft_intlen(op->file.st_nlink))
-		pad->link = ft_intlen(op->file.st_nlink);
+	if (pad->block < ft_longlen(op->file.st_blocks))
+		pad->block = ft_longlen(op->file.st_blocks);
+	if (pad->link < ft_longlen(op->file.st_nlink))
+		pad->link = ft_longlen(op->file.st_nlink);
 	padding_groups(data, op, pad);
 	if (S_ISBLK(op->file.st_mode) || S_ISCHR(op->file.st_mode))
 	{
-		if (pad->size < ft_intlen(major(op->file.st_rdev)))
-			pad->size = ft_intlen(major(op->file.st_rdev));
-		if (pad->size2 < ft_intlen(minor(op->file.st_rdev)))
-			pad->size2 = ft_intlen(minor(op->file.st_rdev));
+		if (pad->size < ft_longlen(major(op->file.st_rdev)))
+			pad->size = ft_longlen(major(op->file.st_rdev));
+		if (pad->size2 < ft_longlen(minor(op->file.st_rdev)))
+			pad->size2 = ft_longlen(minor(op->file.st_rdev));
 		if (pad->size2 > pad->sizet)
 			pad->sizet = pad->size2;
 		if (pad->size > pad->sizet)
 			pad->sizet = pad->size;
 		pad->mm = 1;
 	}
-	else if (pad->size < ft_intlen(op->file.st_size))
-		pad->size = ft_intlen(op->file.st_size);
+	else if (pad->size < ft_longlen(op->file.st_size))
+		pad->size = ft_longlen(op->file.st_size);
 	if (pad->name < (int)ft_strlen(op->name))
 		pad->name = ft_strlen(op->name);
 }

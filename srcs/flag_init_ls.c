@@ -34,11 +34,6 @@ static	void	ls_putflags4(t_ls *data, char c)
 		set_bit(&(data->flag), LS_P);
 		clear_bit(&(data->flag), LS_F_MAJ);
 	}
-	else if (c == 'A')
-	{
-		set_bit(&(data->flag), LS_A);
-		set_bit(&(data->flag), LS_A_MAJ);
-	}
 	else if (c == 'T')
 		set_bit(&(data->flag), LS_T_MAJ);
 	else if (c == 'S' || c == 't')
@@ -51,7 +46,7 @@ static	void	ls_putflags4(t_ls *data, char c)
 			clear_bit(&(data->flag), LS_U_MAJ);
 		if (test_bit(&(data->flag), LS_U_MAJ))
 			set_bit(&(data->flag), LS_U_MAJ);
-		if (test_bit(&(data->flag), LS_U))		
+		if (test_bit(&(data->flag), LS_U))
 			set_bit(&(data->flag), LS_U);
 	}
 	else if (c == 'L')
@@ -67,6 +62,8 @@ static	void	ls_putflags3(t_ls *data, char c)
 		set_bit(&(data->flag), LS_1);
 		clear_bit(&(data->flag), LS_L);
 	}
+	else if (c == 'A')
+		set_bit(&(data->flag), LS_A_MAJ);
 	else if (c == 'F')
 		set_bit(&(data->flag), LS_F_MAJ);
 	else if (c == 'c')
@@ -112,7 +109,7 @@ static	void	ls_putflags2(t_ls *data, char c)
 		ls_putflags3(data, c);
 }
 
-int			ls_putflags(t_ls *data, int argc, char **argv)
+int				ls_putflags(t_ls *data, int argc, char **argv)
 {
 	int	i;
 	int	j;

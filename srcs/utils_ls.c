@@ -28,7 +28,7 @@ void	usage_ls(void)
 	exit(0);
 }
 
-char		*cat_path(char *name, char *path)
+char	*cat_path(char *name, char *path)
 {
 	char	path_mem[257];
 
@@ -41,7 +41,7 @@ char		*cat_path(char *name, char *path)
 	return (ft_strjoin(path, path_mem));
 }
 
-t_bool 	free_lsop(t_lsop *op)
+t_bool	free_lsop(t_lsop *op)
 {
 	t_lsop *mem;
 
@@ -54,13 +54,9 @@ t_bool 	free_lsop(t_lsop *op)
 	return (FALSE);
 }
 
-void	free_ftls(t_ls *st)
+t_bool	error_ls(char *str, t_lsop *lst)
 {
-	(void)st;
-}
-
-t_bool	error_ls(char *str)
-{
+	free_lsop(lst);
 	ft_dprintf(2, B_RED"error: "T_WHITE"%s\n"T_WHITE, str);
 	return (FALSE);
 }
@@ -76,7 +72,11 @@ void	ft_lserror(t_ls *data, char *name)
 		len--;
 	file = name + len;
 	ft_stprintf(OUT_PF, "");
-	ft_dprintf(2, "ls: %s: %s", file, (test_bit(&(data->flag), LS_G_MAJ) ? T_RED : T_WHITE));
+	ft_dprintf(2, "ls: %s: ", file);
+	if (test_bit(&(data->flag), LS_G_MAJ))
+		ft_dprintf(2, T_RED);
 	str = strerror(errno);
-	ft_dprintf(2, "%s%s\n", str, T_WHITE);
+	ft_dprintf(2, "%s\n", str);
+	if (test_bit(&(data->flag), LS_G_MAJ))
+		ft_dprintf(2, T_WHITE);
 }
