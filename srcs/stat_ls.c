@@ -98,13 +98,14 @@ static void	file_date(t_ls *data, t_lsop *op)
 		ft_stprintf(KEEP_PF, "%.*s ", 4, t + 20);
 }
 
-void		file_info(t_ls *data, t_lsop *op, t_pad *pad, char *path)
+t_bool		file_info(t_ls *data, t_lsop *op, t_pad *pad, char *path)
 {
 	char	right[10];
 
 	file_right(op->file, right);
 	ft_stprintf(KEEP_PF, "%.10s", right);
-	file_acl(data, op, path);
+	if (!file_acl(data, op, path))
+		return (FALSE);
 	ft_stprintf(KEEP_PF, " %*d", pad->link, op->file.st_nlink);
 	file_group(data, op, pad);
 	if (S_ISBLK(op->file.st_mode) || S_ISCHR(op->file.st_mode))
@@ -115,4 +116,5 @@ void		file_info(t_ls *data, t_lsop *op, t_pad *pad, char *path)
 		ft_stprintf(KEEP_PF, " %*llu", (pad->mm ? 8 : pad->size),
 				op->file.st_size);
 	file_date(data, op);
+	return (TRUE);
 }

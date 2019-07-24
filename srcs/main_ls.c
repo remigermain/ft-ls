@@ -47,7 +47,7 @@ static t_bool	recursive_dir(t_ls *data, t_lsop *lst, char *path)
 			ft_strcmp("..", lst->name) && (S_ISDIR(mem->file.st_mode) ||
 			(S_ISLNK(mem->file.st_mode) && test_bit(&(data->flag), LS_L_MAJ))))
 		{
-			ft_stprintf(OUT_PF, "\n%s/%s:\n", path, lst->name);
+			ft_stprintf(KEEP_PF, "\n%s/%s:\n", path, lst->name);
 			if (!(new_path = cat_path(mem->name, path)))
 				return (error_ls("malloc recursive dir", mem));
 			if (!read_dir(data, new_path, mem->name))
@@ -85,17 +85,18 @@ t_bool			directory_file(t_ls *data, char *path, DIR *dir_ptr)
 	mem = NULL;
 	ft_bzero(&pad, sizeof(t_pad));
 	while ((dir = readdir(dir_ptr)))
-	{
 		if (test_bit(&(data->flag), LS_A) || test_bit(&(data->flag), LS_F) ||
 			dir->d_name[0] != '.' || (test_bit(&(data->flag), LS_A_MAJ) &&
 				ft_strcmp(".", dir->d_name) && ft_strcmp("..", dir->d_name)))
 		{
 			if ((!lst && !(lst = info_file(data, &pad, dir->d_name, path))) ||
 			(mem && !(mem->next = info_file(data, &pad, dir->d_name, path))))
+			{
+				closedir(dir_ptr);
 				return (error_ls("malloc from directory_file", lst));
+			}
 			mem = (!mem ? lst : mem->next);
 		}
-	}
 	if (closedir(dir_ptr))
 		return (error_ls("c'ant close dir", lst));
 	return (directory_print(data, lst, path, &pad));

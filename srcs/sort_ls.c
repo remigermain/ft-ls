@@ -25,10 +25,13 @@ int			ls_sort_ctime(t_ls *data, t_lsop *mem, t_lsop *mem2)
 	return (0);
 }
 
-static void	swap_elem2(t_lsop *mem, t_lsop *mem2)
+static void	swap_elem2(t_lsop *mem2, t_lsop *mem, t_lsop *mem3)
 {
 	t_stat	tmp_stat;
 	char	mem_name[256];
+
+	if (mem3)
+		;
 
 	tmp_stat = mem->file;
 	ft_memcpy(mem_name, mem->name, 256);
@@ -37,39 +40,40 @@ static void	swap_elem2(t_lsop *mem, t_lsop *mem2)
 	mem2->file = tmp_stat;
 	ft_memcpy(mem2->name, mem_name, 256);
 	ft_swap(&(mem->xattr), &(mem2->xattr));
+
 }
 
-static int	swap_elem(t_ls *data, t_lsop *mem, t_lsop *mem2)
+static int	swap_elem(t_ls *data, t_lsop *mem, t_lsop *mem2, t_lsop *mem3)
 {
 	if (test_bit(&(data->flag), LS_R))
-		swap_elem2(mem, mem2);
+		swap_elem2(mem, mem2, mem3);
 	else if (!test_bit(&(data->flag), LS_R))
-		swap_elem2(mem2, mem);
-	return (-1);
+		swap_elem2(mem2, mem, mem3);
+	return (1);
 }
 
-static void	ls_sort_funct(t_ls *data, t_lsop *op, int len,
+static void	ls_sort_funct(t_ls *data, t_lsop *op,
 		int (*sort_function)(t_ls*, t_lsop*, t_lsop*))
 {
 	t_lsop	*mem;
 	t_lsop	*mem2;
+	t_lsop	*mem3;
 	int		i;
 
 	i = 1;
-	while (i < len && (i = 1))
+	while (i)
 	{
 		mem = op;
 		mem2 = op->next;
-		while (i < len && mem2)
+		mem3 = NULL;
+		i = 0;
+		while (mem2)
 		{
 			if (sort_function(data, mem, mem2))
-				i += swap_elem(data, mem, mem2);
-			else
-			{
-				i++;
-				mem = mem->next;
-				mem2 = mem2->next;
-			}
+				i = swap_elem(data, mem, mem2, mem3);
+			mem3 = mem;
+			mem = mem->next;
+			mem2 = mem2->next;
 		}
 	}
 }
@@ -77,25 +81,21 @@ static void	ls_sort_funct(t_ls *data, t_lsop *op, int len,
 void		ls_sort(t_ls *data, t_lsop *op)
 {
 	t_lsop	*mem;
-	int		len;
 
 	mem = op;
-	len = 0;
-	while (mem && (++len))
-		mem = mem->next;
 	if (test_bit(&(data->flag), LS_T))
 	{
 		if (test_bit(&(data->flag), LS_U))
-			ls_sort_funct(data, op, len, ls_sort_atime);
+			ls_sort_funct(data, op, ls_sort_atime);
 		else if (test_bit(&(data->flag), LS_U_MAJ))
-			ls_sort_funct(data, op, len, ls_sort_birthtime);
+			ls_sort_funct(data, op, ls_sort_birthtime);
 		else if (test_bit(&(data->flag), LS_C))
-			ls_sort_funct(data, op, len, ls_sort_ctime);
+			ls_sort_funct(data, op, ls_sort_ctime);
 		else
-			ls_sort_funct(data, op, len, ls_sort_mtime);
+			ls_sort_funct(data, op, ls_sort_mtime);
 	}
 	else if (test_bit(&(data->flag), LS_S_MAJ))
-		ls_sort_funct(data, op, len, ls_sort_size);
+		ls_sort_funct(data, op, ls_sort_size);
 	else
-		ls_sort_funct(data, op, len, ls_sort_ascii);
+		ls_sort_funct(data, op, ls_sort_ascii);
 }

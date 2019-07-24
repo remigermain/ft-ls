@@ -16,7 +16,7 @@
 # include "libft.h"
 # include "color.h"
 # include <stdarg.h>
-# define BUFF_PRINTF 128
+# define BUFF_PRINTF 10000
 # define KEEP_PF	1
 # define OUT_PF	0
 
@@ -66,6 +66,7 @@ typedef struct	s_printf
 	va_list			va_copy;
 	t_ulong			buff_size;
 	int				buff_count;
+	char			st_pf;
 	t_uchar			buff[BUFF_PRINTF];
 	int				count;
 	t_uchar			*str;

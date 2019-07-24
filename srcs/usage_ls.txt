@@ -15,7 +15,6 @@ usage: ./ft_ls [ option ] source_file...
           -G	Disable color 
           -g	display the group name in the long (-l) format output (the owner name is suppressed)
           -d	Directories are listed as plain files 
-          -o      List in long format, but omit the group id.
           -F	Display a slash (`/') immediately after each pathname that is a directory, an asterisk (`*')
                   after each that is executable, an at sign (`@') after each symbolic link, an equals sign (`=')
                   after each socket, a percent sign (`) after each whiteout, and a vertical bar (`|')

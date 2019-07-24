@@ -24,7 +24,6 @@
 # include <sys/xattr.h>
 # include <sys/acl.h>
 # define MONTH_SIX 15552000
-# define BUFF_STPRINTF 10000
 
 typedef	struct dirent	t_dir;
 typedef	struct stat	t_stat;
@@ -118,7 +117,7 @@ t_bool			print_file(t_ls *data, t_lsop *lst, t_pad *pad, char *path);
 char			*cat_path(char *name, char *path);
 t_bool			error_ls(char *str, t_lsop *lst);
 t_bool			file_acl(t_ls *data, t_lsop *op, char *path);
-void			file_info(t_ls *data, t_lsop *op, t_pad *pad, char *path);
+t_bool			file_info(t_ls *data, t_lsop *op, t_pad *pad, char *path);
 
 /*
 **	sort_ls

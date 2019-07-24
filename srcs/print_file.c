@@ -59,7 +59,6 @@ static t_bool	print_link(t_ls *data, t_lsop *op, t_pad *pad, char *path)
 	}
 	if (test_bit(&(data->flag), LS_L) || test_bit(&(data->flag), LS_1))
 		ft_stprintf(KEEP_PF, "\n");
-	ft_stprintf(OUT_PF, "");
 	return (TRUE);
 }
 
@@ -86,12 +85,12 @@ static void		print_extra(t_ls *data, t_lsop *op)
 		ft_stprintf(KEEP_PF, ",");
 }
 
-static void		print_name(t_ls *data, t_lsop *op, t_pad *pad, char *path)
+static t_bool	print_name(t_ls *data, t_lsop *op, t_pad *pad, char *path)
 {
 	if (test_bit(&(data->flag), LS_S))
 		ft_stprintf(KEEP_PF, "%*d ", pad->block, op->file.st_blocks);
-	if (test_bit(&(data->flag), LS_L))
-		file_info(data, op, pad, path);
+	if (test_bit(&(data->flag), LS_L) && !file_info(data, op, pad, path))
+		return (FALSE);
 	if (test_bit(&(data->flag), LS_G_MAJ))
 	{
 		if ((op->file.st_mode & S_ISVTX && op->xattr <= 0) ||
@@ -107,6 +106,7 @@ static void		print_name(t_ls *data, t_lsop *op, t_pad *pad, char *path)
 				op->file.st_mode & S_IXOTH)
 			ft_stprintf(KEEP_PF, "%s", T_RED);
 	}
+	return (TRUE);
 }
 
 t_bool			print_file(t_ls *data, t_lsop *lst, t_pad *pad, char *path)
@@ -119,7 +119,8 @@ t_bool			print_file(t_ls *data, t_lsop *lst, t_pad *pad, char *path)
 	while (mem)
 	{
 		pad->col += pad->name;
-		print_name(data, mem, pad, path);
+		if (!print_name(data, mem, pad, path))
+			return (FALSE);
 		print_extra(data, mem);
 		if (!print_link(data, mem, pad, path))
 			return (FALSE);

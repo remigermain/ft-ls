@@ -61,7 +61,10 @@ int			ft_stprintf(char ind, const char *format, ...)
 	int			i;
 
 	if (!pass)
+	{
 		ft_bzero(&lst, sizeof(t_pf));
+		lst.st_pf = 1;
+	}
 	va_start(lst.va_lst, format);
 	i = ftprintf_base((char*)format, &lst, 0, 0);
 	if (ind == OUT_PF && lst.count != 0)

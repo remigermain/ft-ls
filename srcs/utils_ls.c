@@ -42,13 +42,12 @@ t_bool	free_lsop(t_lsop *op)
 t_bool	error_ls(char *str, t_lsop *lst)
 {
 	free_lsop(lst);
-	ft_dprintf(2, B_RED"error: "T_WHITE"%s\n"T_WHITE, str);
+	ft_dprintf(2, T_RED"error: "T_LGREY"%s\n"T_WHITE, str);
 	return (FALSE);
 }
 
 void	ft_lserror(t_ls *data, char *name)
 {
-	char	*str;
 	char	*file;
 	int		len;
 
@@ -60,8 +59,7 @@ void	ft_lserror(t_ls *data, char *name)
 	ft_dprintf(2, "ls: %s: ", file);
 	if (test_bit(&(data->flag), LS_G_MAJ))
 		ft_dprintf(2, T_RED);
-	str = strerror(errno);
-	ft_dprintf(2, "%s\n", str);
+	ft_dprintf(2, "%m\n");
 	if (test_bit(&(data->flag), LS_G_MAJ))
 		ft_dprintf(2, T_WHITE);
 }
