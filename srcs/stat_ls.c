@@ -81,6 +81,8 @@ static void	file_date(t_ls *data, t_lsop *op)
 	if (test_bit(&(data->flag), LS_U))
 		j = op->file.st_atime;
 	else if (test_bit(&(data->flag), LS_U_MAJ))
+		j = op->file.st_birthtime;
+	else if (test_bit(&(data->flag), LS_C))
 		j = op->file.st_ctime;
 	else
 		j = op->file.st_mtime;

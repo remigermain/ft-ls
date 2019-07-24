@@ -64,14 +64,14 @@ int	ls_sort_atime(t_ls *data, t_lsop *mem, t_lsop *mem2)
 	return (0);
 }
 
-int	ls_sort_ctime(t_ls *data, t_lsop *mem, t_lsop *mem2)
+int	ls_sort_birthtime(t_ls *data, t_lsop *mem, t_lsop *mem2)
 {
 	if ((test_bit(&(data->flag), LS_R) &&
-		mem->file.st_ctime > mem2->file.st_ctime) ||
+		mem->file.st_birthtime > mem2->file.st_birthtime) ||
 			(!test_bit(&(data->flag), LS_R) &&
-			mem->file.st_ctime < mem2->file.st_ctime))
+			mem->file.st_birthtime < mem2->file.st_birthtime))
 		return (1);
-	else if (mem->file.st_ctime == mem2->file.st_ctime)
+	else if (mem->file.st_birthtime == mem2->file.st_birthtime)
 		return (ls_sort_ascii(data, mem, mem2));
 	return (0);
 }

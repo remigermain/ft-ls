@@ -38,21 +38,22 @@ static	void	ls_putflags4(t_ls *data, char c)
 		set_bit(&(data->flag), LS_T_MAJ);
 	else if (c == 'S' || c == 't')
 		unset_sort(data, c);
-	else if (c == 'U' || c == 'u')
+	else if (c == 'U' || c == 'u' || c == 'c')
 	{
-		if (test_bit(&(data->flag), LS_U))
-			clear_bit(&(data->flag), LS_U);
-		if (test_bit(&(data->flag), LS_U_MAJ))
-			clear_bit(&(data->flag), LS_U_MAJ);
-		if (test_bit(&(data->flag), LS_U_MAJ))
+		clear_bit(&(data->flag), LS_U);
+		clear_bit(&(data->flag), LS_U_MAJ);
+		clear_bit(&(data->flag), LS_C);
+		if (c == 'U')
 			set_bit(&(data->flag), LS_U_MAJ);
-		if (test_bit(&(data->flag), LS_U))
+		else if (c == 'u')
 			set_bit(&(data->flag), LS_U);
+		else
+			set_bit(&(data->flag), LS_C);
 	}
 	else if (c == 'L')
 		set_bit(&(data->flag), LS_L_MAJ);
-	else if (c == 's')
-		set_bit(&(data->flag), LS_S);
+	else
+		data->error = c;
 }
 
 static	void	ls_putflags3(t_ls *data, char c)
@@ -66,14 +67,14 @@ static	void	ls_putflags3(t_ls *data, char c)
 		set_bit(&(data->flag), LS_A_MAJ);
 	else if (c == 'F')
 		set_bit(&(data->flag), LS_F_MAJ);
-	else if (c == 'c')
-		set_bit(&(data->flag), LS_C);
 	else if (c == 'n')
 	{
 		set_bit(&(data->flag), LS_N);
 		set_bit(&(data->flag), LS_L);
 		clear_bit(&(data->flag), LS_M);
 	}
+	else if (c == 's')
+		set_bit(&(data->flag), LS_S);
 	else if (c == 'm')
 	{
 		set_bit(&(data->flag), LS_M);
@@ -117,7 +118,7 @@ int				ls_putflags(t_ls *data, int argc, char **argv)
 	ft_bzero(data, sizeof(t_ls));
 	j = 0;
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &(data->w));
-	while (++j < argc && (i = 0) != -1 && argv[j][0] == '-')
+	while (++j < argc && (i = 0) != -1 && argv[j][0] == '-' && !data->error)
 		while (argv[j][++i])
 		{
 			if (argv[j][i] == 'l')
@@ -130,6 +131,5 @@ int				ls_putflags(t_ls *data, int argc, char **argv)
 			else
 				ls_putflags2(data, argv[j][i]);
 		}
-	set_or_clear_bit(&(data->flag), LS_G_MAJ);
 	return (j);
 }

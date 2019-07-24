@@ -41,11 +41,40 @@ t_bool			read_dir(t_ls *data, char *path, char *name)
 **	apelle la fonction read_dir() pour chaque arguments
 */
 
+static t_bool	put_dread(t_ls *data, t_lsop *base)
+{
+	t_lsop	*origi;
+	t_lsop	*lst;
+	t_lsop	*mem;
+	t_pad	pad;
+
+	origi = base;
+	lst = NULL;
+	mem = NULL;
+	if (test_bit(&(data->flag), LS_R_MAJ))
+		clear_bit(&(data->flag), LS_R_MAJ);
+	ft_bzero(&pad, sizeof(t_pad));
+	while (origi)
+	{
+		if ((!lst && !(lst = info_file(data, &pad, origi->name, ""))) ||
+			(mem && !(mem->next = info_file(data, &pad, origi->name, ""))))
+		{
+			free_lsop(lst);
+			return (error_ls("malloc from directory_file", lst));
+		}
+		mem = (!mem ? lst : mem->next);
+		origi = origi->next;
+	}
+	return (directory_print(data, lst, "", &pad));
+}
+
 static t_bool	put_read(t_ls *data, t_lsop *mem)
 {
 	t_lsop	*origi;
 
 	origi = mem;
+	if (test_bit(&(data->flag), LS_D) && mem)
+		return (put_dread(data, mem));
 	while (origi)
 	{
 		if (data->len_argc)
@@ -95,9 +124,14 @@ int				main(int argc, char **argv)
 	int		i;
 
 	op = NULL;
-	if (argc > 1 && !ft_strcmp(argv[1], "--help"))
-		usage_ls();
 	i = ls_putflags(&data, argc, argv);
+	if (data.error)
+	{
+		ft_dprintf(2, "ls: illegal option -- %c\n", data.error);
+		ft_dprintf(2, "usage: ls [-ABCFGHLOPRSTUWabcdefghikl");
+		ft_dprintf(2, "mnopqrstuwx1] [file ...]\n");
+		return (1);
+	}
 	data.time = time(NULL);
 	if (sort_argv(&data, &op, argv + i))
 		put_read(&data, op);

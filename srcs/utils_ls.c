@@ -13,21 +13,6 @@
 
 #include "ft_ls.h"
 
-void	usage_ls(void)
-{
-	char	buff[10];
-	int		fd;
-	int		ret;
-
-	if ((fd = open("srcs/usage_ls.txt", O_RDONLY)) > 0)
-	{
-		while ((ret = read(fd, buff, 10)) > 0)
-			ft_printf("%.*s", ret, buff);
-		close(fd);
-	}
-	exit(0);
-}
-
 char	*cat_path(char *name, char *path)
 {
 	char	path_mem[257];

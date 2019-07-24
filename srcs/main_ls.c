@@ -13,7 +13,7 @@
 
 #include "ft_ls.h"
 
-static t_lsop	*info_file(t_ls *data, t_pad *pad, char *name, char *path_mem)
+t_lsop			*info_file(t_ls *data, t_pad *pad, char *name, char *path_mem)
 {
 	t_lsop	*lst;
 	char	*path;
@@ -28,7 +28,7 @@ static t_lsop	*info_file(t_ls *data, t_pad *pad, char *name, char *path_mem)
 	lst->xattr = listxattr(path, NULL, 0, XATTR_NOFOLLOW);
 	ft_strcat(lst->name, name);
 	lstat(path, &(lst->file));
-	if (!S_ISLNK(lst->file.st_mode))
+	if (!S_ISLNK(lst->file.st_mode) || test_bit(&(data->flag), LS_L_MAJ))
 		stat(path, &(lst->file));
 	padding_ls(data, lst, pad);
 	ft_strdel(&path);
@@ -67,7 +67,7 @@ t_bool			directory_print(t_ls *data, t_lsop *lst, char *path, t_pad *pad)
 {
 	if (!lst)
 		return (TRUE);
-	if (test_bit(&(data->flag), LS_L))
+	if (test_bit(&(data->flag), LS_L) && !test_bit(&(data->flag), LS_D))
 		ft_stprintf(KEEP_PF, "total %d\n", pad->total);
 	if (!print_file(data, lst, pad, path))
 		return (error_ls("malloc from directory_file", lst));
@@ -106,7 +106,6 @@ t_bool			regular_file(t_ls *data, char *name, char *path)
 	t_pad	pad;
 	t_lsop	*lst;
 
-	ft_printf("%s  %s\n", name, path);
 	ft_bzero(&pad, sizeof(t_pad));
 	if (!(lst = info_file(data, &pad, name, path)))
 		return (error_ls("malloc from refular_file", lst));

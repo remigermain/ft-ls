@@ -13,6 +13,18 @@
 
 #include "ft_ls.h"
 
+int			ls_sort_ctime(t_ls *data, t_lsop *mem, t_lsop *mem2)
+{
+	if ((test_bit(&(data->flag), LS_R) &&
+		mem->file.st_ctime > mem2->file.st_ctime) ||
+			(!test_bit(&(data->flag), LS_R) &&
+			mem->file.st_ctime < mem2->file.st_ctime))
+		return (1);
+	else if (mem->file.st_ctime == mem2->file.st_ctime)
+		return (ls_sort_ascii(data, mem, mem2));
+	return (0);
+}
+
 static void	swap_elem2(t_lsop *mem, t_lsop *mem2)
 {
 	t_stat	tmp_stat;
@@ -72,13 +84,18 @@ void		ls_sort(t_ls *data, t_lsop *op)
 	while (mem && (++len))
 		mem = mem->next;
 	if (test_bit(&(data->flag), LS_T))
-		ls_sort_funct(data, op, len, ls_sort_mtime);
+	{
+		if (test_bit(&(data->flag), LS_U))
+			ls_sort_funct(data, op, len, ls_sort_atime);
+		else if (test_bit(&(data->flag), LS_U_MAJ))
+			ls_sort_funct(data, op, len, ls_sort_birthtime);
+		else if (test_bit(&(data->flag), LS_C))
+			ls_sort_funct(data, op, len, ls_sort_ctime);
+		else
+			ls_sort_funct(data, op, len, ls_sort_mtime);
+	}
 	else if (test_bit(&(data->flag), LS_S_MAJ))
 		ls_sort_funct(data, op, len, ls_sort_size);
-	else if (test_bit(&(data->flag), LS_U))
-		ls_sort_funct(data, op, len, ls_sort_atime);
-	else if (test_bit(&(data->flag), LS_U_MAJ))
-		ls_sort_funct(data, op, len, ls_sort_ctime);
 	else
 		ls_sort_funct(data, op, len, ls_sort_ascii);
 }

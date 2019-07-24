@@ -96,6 +96,7 @@ typedef	struct	s_ls
 	time_t		time;
 	char		*path;
 	int			len_argc;
+	int			error;
 }				t_ls;
 
 /*
@@ -110,6 +111,8 @@ int				ls_putflags(t_ls *data, int argc, char **argv);
 t_bool			read_dir(t_ls *data, char *path, char *name);
 t_bool			directory_file(t_ls *data, char *path, DIR *dir_ptr);
 t_bool			regular_file(t_ls *data, char *name, char *path);
+t_lsop			*info_file(t_ls *data, t_pad *pad, char *name, char *path_mem);
+t_bool			directory_print(t_ls *da, t_lsop *l, char *p, t_pad *pa);
 void			padding_ls(t_ls *data, t_lsop *op, t_pad *pad);
 t_bool			print_file(t_ls *data, t_lsop *lst, t_pad *pad, char *path);
 char			*cat_path(char *name, char *path);
@@ -126,6 +129,7 @@ int				ls_sort_size(t_ls *d, t_lsop *m, t_lsop *p);
 int				ls_sort_mtime(t_ls *d, t_lsop *m, t_lsop *p);
 int				ls_sort_atime(t_ls *d, t_lsop *m, t_lsop *p);
 int				ls_sort_ctime(t_ls *d, t_lsop *m, t_lsop *p);
+int				ls_sort_birthtime(t_ls *d, t_lsop *m, t_lsop *p);
 
 /*
 **	tools.c

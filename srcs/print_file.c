@@ -131,7 +131,8 @@ t_bool			print_file(t_ls *data, t_lsop *lst, t_pad *pad, char *path)
 		}
 		mem = mem->next;
 	}
-	if (!test_bit(&(data->flag), LS_L) && !test_bit(&(data->flag), LS_1))
+	if (!test_bit(&(data->flag), LS_L) &&
+		!test_bit(&(data->flag), LS_1) && pad->col)
 		ft_stprintf(KEEP_PF, "\n");
 	return (TRUE);
 }

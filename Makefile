@@ -25,9 +25,9 @@ LIBFT_N :
 LIBFT_R : 
 	@make -C libft/ re
 
-CFLAGS = -Wall -Wextra -g3 #-fsanitize=address
+CFLAGS = -Wall -Werror -Wextra#-fsanitize=address
 
-INCLUDE = -Iincludes
+INCLUDE = -Iincludes -Ilibft/includes
 
 HEADER = ft_ls.h
 
@@ -43,7 +43,7 @@ DHEADER = includes/
 
 CSRC = $(addprefix $(DSRC),$(SRC))
 COBJ = $(addprefix $(DOBJ),$(OBJ))
-CHEADER = $(addprefix $(DHEADER),$(HEADER))
+CHEADER = $(addprefix $(DHEADER),$(HEADER)) libft/includes/libft.h
 
 # *****************************************************************************#
 # 								ALL  SCRS									   #
@@ -79,7 +79,7 @@ all: LIBFT_M print_name $(NAME)
 $(NAME): $(COBJ)
 	@echo $(SPACE)"\033[JCompilation des Objects \033[38;5;326mterminer\033[0m"
 	@echo $(SPACE)"Compilation" $(TYPE) "\033[34m" $(NAME) "\033[0m"
-	@gcc $(COBJ) $(CFLAGS) $(LIBFT) -o $(NAME)
+	@gcc $(COBJ) $(CFLAGS) $(INCLUDE) $(LIBFT) -o $(NAME)
 
 $(DOBJ)%.o : $(DSRC)%.c $(CHEADER) $(LIBFT)
 	@$(eval COUNT = "0")
