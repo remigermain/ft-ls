@@ -85,6 +85,15 @@ typedef	struct	s_pad
 	int	col;
 }				t_pad;
 
+typedef struct	s_lst
+{
+	t_lsop	*error;
+	t_lsop	*file;
+	t_pad	pad_file;
+	t_lsop	*folder;
+	t_pad	pad_folder;
+}				t_lst;
+
 typedef	struct	s_infols
 {
 	int				total;

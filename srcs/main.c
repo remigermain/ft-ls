@@ -13,8 +13,41 @@
 
 #include "ft_ls.h"
 
+static int		add_error(t_lst *st, char *name)
+{
+	return (1);
+}
+
+static int		add_file(t_lst *st, char *name)
+{
+	return (1);
+}
+
+static int		add_folder(t_lst *st, char *name)
+{
+	return (1);
+}
+
 static int		parse_argv(int argc, char **argv, int i)
 {
+	t_lst	st;
+	t_stat	info;
+
+	ft_bzero(&st, sizeof(t_lst));
+	while (argv[i])
+	{
+		ft_printf("fddfd\n");
+		if (!stat(argv[i], &info))
+		{
+			if (S_ISDIR(info.st_mode))
+				add_folder(&st, argv[i]);
+			else
+				add_file(&st, argv[i]);
+		}
+		else
+			add_error(&st, argv[i]);
+		i++;
+	}
 	return (0);
 }
 
