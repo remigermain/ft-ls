@@ -23,10 +23,11 @@ enum	e_flags
 	F_STOP,
 };
 
+int		print_flags(void);
 int		exist_flags(char fl);
 void	remove_flags(char fl);
-void	unknow_flags(char **argv, int i, int j);
+int		unknow_flags(char **argv, int i, int j);
 int		flags_base(char fl, enum e_flags mod);
 void	ft_error_argv(char **argv, int error, int error_2);
-void	init_flags(char **argv, char *flag, char *mflag, enum e_flags mod);
+int		init_flags(char **argv, char *flag, char *mflag, enum e_flags mod);
 #endif

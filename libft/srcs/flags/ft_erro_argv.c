@@ -25,7 +25,7 @@ static void	ft_error_argv2(char **argv, int error, int error_2)
 	{
 		if (error_2)
 			ft_dprintf(2, "%*@ ", error_2 - 1, "char", ' ');
-		ft_dprintf(2, B_RED);
+		ft_dprintf(2, T_RED);
 		ft_dprintf(2, "^%*@\n", (!error_2 ? ft_strlen(argv[i]) - 1 : 0),
 				"char", '~');
 		ft_dprintf(2, T_WHITE);
@@ -43,13 +43,13 @@ void		ft_error_argv(char **argv, int error, int error_2)
 	while (argv[++i])
 	{
 		if (i == error && !error_2)
-			ft_dprintf(2, "%s", (i == error) ? B_RED : "");
+			ft_dprintf(2, "%s", (i == error) ? T_RED : "");
 		if (i != error || error_2 == 0)
 			ft_dprintf(2, "%s%s", argv[i], (argv[i + 1] ? " " : ""));
 		else
 			while (argv[i][++j])
 			{
-				ft_dprintf(2, "%s", (j == error_2) ? B_RED : "");
+				ft_dprintf(2, "%s", (j == error_2) ? T_RED : "");
 				ft_dprintf(2, "%c", argv[i][j]);
 				ft_dprintf(2, "%s", (j == error_2) ? T_WHITE : "");
 			}

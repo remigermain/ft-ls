@@ -30,6 +30,8 @@ typedef	struct stat	t_stat;
 typedef	struct passwd	t_passwd;
 typedef	struct group	t_group;
 typedef	struct winsize	t_winsize;
+#define LS_FLAGS "RaArfGFsTL|l;;m|g;l;m|d;a;|1;l;|n;l;m|m;;l1|p;;F|S;;t|t;;S|U;;uc|u;;Uc|c;:Uu"
+#define LS_MFLAGS ""
 
 enum	e_flag_ls
 {

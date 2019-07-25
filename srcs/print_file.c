@@ -108,7 +108,7 @@ static t_bool	print_name(t_ls *data, t_lsop *op, t_pad *pad, char *path)
 	}
 	return (TRUE);
 }
-
+/*
 t_bool			print_file(t_ls *data, t_lsop *lst, t_pad *pad, char *path)
 {
 	t_lsop	*mem;
@@ -134,3 +134,4 @@ t_bool			print_file(t_ls *data, t_lsop *lst, t_pad *pad, char *path)
 		ft_stprintf(KEEP_PF, "\n");
 	return (TRUE);
 }
+*/

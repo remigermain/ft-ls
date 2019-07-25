@@ -13,14 +13,51 @@
 
 #include "libft.h"
 
-static void	parse_mflag(char **argv, int i, char *mflag)
+static int	find_flags2(char *flag)
 {
-	int	min;
-	int	max;
-	int	len;
+	int i;
+	int	j;
+
+	i = 0;
+	j = 0;
+	flags_base(flag[i++], F_ADD);
+	while (flag[i] && flag[i] != '|' && j != 2)
+	{
+		if (flag[i] == ';' && (++j))
+			i++;
+		while (flag[i] && flag[i] != ';' && flag[i] != '|')
+			flags_base(flag[i++], (j == 1 ? F_ADD : F_RM));
+	}
+	return (0);
+}
+
+static int	find_flags(char c, char *flag)
+{
+	int	i;
+
+	i = 0;
+	while (flag[i] && flag[i] != '|' && flag[i] != c)
+		i++;
+	if (flag[i] == c)
+		return (flags_base(c, F_ADD));
+	while (flag[++i])
+	{
+		if (flag[i] == c && i > 0 && flag[i - 1] == '|')
+			return (find_flags2(flag + i));
+	}
+	return (0);
+}
+
+static void	parse_mflag(char **argv, int i, char *mflag, char *flag)
+{
+	int		min;
+	int		max;
+	int		len;
 
 	min = 0;
-	len = ft_strlen(mflag);
+	len = 0;
+	if (mflag)
+		len = ft_strlen(mflag);
 	while (min < len)
 	{
 		max = len - ft_strlen(ft_strchr(mflag + min, '|')) - min;
@@ -28,6 +65,7 @@ static void	parse_mflag(char **argv, int i, char *mflag)
 			(int)ft_strlen(argv[i] + 2) == (max - 2))
 		{
 			flags_base(mflag[max - 1], F_ADD);
+			find_flags(mflag[max - 1], flag);
 			return ;
 		}
 		min += max + 1;
@@ -35,31 +73,35 @@ static void	parse_mflag(char **argv, int i, char *mflag)
 	unknow_flags(argv, i, 0);
 }
 
-void		init_flags(char **argv, char *flag, char *mflag, enum e_flags mod)
+/*
+**		flags| flag ; set_flag ; unset_flag | ... ect
+**		mflag |
+*/
+
+int			init_flags(char **argv, char *flag, char *mflag, enum e_flags mod)
 {
 	int	i;
 	int	j;
 
 	i = 0;
 	while (argv[++i] && (j = 1))
-	{
-		if (argv[i][0] != '-' && mod == F_STOP)
-			return ;
-		while (argv[i][j] && argv[i][0] == '-')
+		while (argv[i][j])
 		{
+			if (argv[i][0] != '-' && mod == F_STOP)
+				return (unknow_flags(NULL, i, 0));
 			if (argv[i][1] != '-')
 			{
 				if (ft_strchr(flag, argv[i][j]))
-					flags_base(argv[i][j], F_ADD);
+					find_flags(argv[i][j], flag);
 				else
 					unknow_flags(argv, i, j);
 			}
 			else if (argv[i][1] == '-')
 			{
-				parse_mflag(argv, i, mflag);
+				parse_mflag(argv, i, mflag, flag);
 				break ;
 			}
 			j++;
 		}
-	}
+	return (unknow_flags(NULL, i, 0));
 }
