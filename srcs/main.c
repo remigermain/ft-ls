@@ -62,28 +62,79 @@ static t_bool	put_dread(t_ls *data, t_lsop *base)
 			free_lsop(lst);
 			return (error_ls("malloc from directory_file", lst));
 		}
+		if (mem)
+			mem->next->prev = mem;
 		mem = (!mem ? lst : mem->next);
 		origi = origi->next;
 	}
+	if (lst)
+		lst->last = mem;
 	return (directory_print(data, lst, "", &pad));
 }
 
-static t_bool	put_read(t_ls *data, t_lsop *mem)
+static t_lsop	*print_fileargv(t_ls *data, t_lsop *mem)
+{
+	t_lsop *origi;
+	int		i;
+
+	origi = mem;
+	data->av = 1;
+	i = 0;
+	while (origi)
+	{
+		if (origi->exist == 2 && (++i))
+			read_dir(data, origi->name, "");
+		origi = origi->next;
+	}
+	data->av = 0;
+	if (i)
+		ft_stprintf(KEEP_PF, "\n");
+	if (!test_bit(&(data->flag), LS_L) &&
+		!test_bit(&(data->flag), LS_1))
+		ft_stprintf(KEEP_PF, "\n");
+	if (mem && (test_bit(&(data->flag), LS_R)))
+		return (mem->last ? mem->last : mem);
+	else
+		return (mem);
+}
+
+static t_lsop	*print_error(t_ls *data, t_lsop *mem)
+{
+	t_lsop *origi;
+
+	origi = mem;
+	while (origi)
+	{
+		if (origi->exist == -1)
+			read_dir(data, origi->name, origi->name);
+		origi = origi->next;
+	}
+	return (print_fileargv(data, mem));
+}
+
+static t_bool	put_read(t_ls *data, t_lsop *mem, int i)
 {
 	t_lsop	*origi;
 
-	origi = mem;
+	origi = print_error(data, mem);
 	if (test_bit(&(data->flag), LS_D) && mem)
 		return (put_dread(data, mem));
 	while (origi)
 	{
-		if (data->len_argc)
-			ft_stprintf(KEEP_PF, "%s:\n", mem->name);
-		if (!read_dir(data, origi->name, origi->name))
-			return (FALSE);
-		if (origi->next)
-			ft_stprintf(KEEP_PF, "\n");
-		origi = origi->next;
+		if (origi->exist == 1)
+		{
+			if (i)
+				ft_stprintf(KEEP_PF, "\n");
+	 		if (data->len_argc && S_ISDIR(origi->file.st_mode))
+				ft_stprintf(KEEP_PF, "%s:\n", origi->name);
+			if (!read_dir(data, origi->name, origi->name))
+				return (FALSE);
+			if (((!test_bit(&(data->flag), LS_R) && origi->next) ||
+				(test_bit(&(data->flag), LS_R) && origi->prev)) &&
+				S_ISDIR(origi->file.st_mode))
+				i = 1;
+		}
+		origi = (test_bit(&(data->flag), LS_R) ? origi->prev : origi->next);
 	}
 	if (!mem && !read_dir(data, ".", "."))
 		return (FALSE);
@@ -107,9 +158,15 @@ static t_bool	sort_argv(t_ls *data, t_lsop **op, char **argv)
 	while (argv[i])
 	{
 		ft_strcat(mem->name, argv[i]);
-		lstat(argv[i++], &(mem->file));
-		if (argv[i] && !(mem->next = (t_lsop*)ft_memalloc(sizeof(t_lsop))))
+		if ((mem->exist = lstat(argv[i], &(mem->file))) == 0)
+			mem->exist = (S_ISDIR(mem->file.st_mode) ? 1 : 2);
+		if (argv[++i] && !(mem->next = (t_lsop*)ft_memalloc(sizeof(t_lsop))))
 			return (error_ls("sort_argv", *op));
+		if (mem->next)
+		{
+			mem->next->prev = mem;
+			(*op)->last = mem->next;
+		}
 		mem = mem->next;
 		data->len_argc++;
 	}
@@ -134,7 +191,7 @@ int				main(int argc, char **argv)
 	}
 	data.time = time(NULL);
 	if (sort_argv(&data, &op, argv + i))
-		put_read(&data, op);
+		put_read(&data, op, 0);
 	ft_stprintf(OUT_PF, "");
 	free_lsop(op);
 	return (0);

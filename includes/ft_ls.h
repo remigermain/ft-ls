@@ -62,7 +62,10 @@ typedef	struct	s_lsop
 	char			name[256];
 	int				xattr;
 	t_stat			file;
+	int				exist;
 	struct s_lsop	*next;
+	struct s_lsop	*prev;
+	struct s_lsop	*last;
 }				t_lsop;
 
 typedef	struct	s_pad
@@ -96,6 +99,7 @@ typedef	struct	s_ls
 	char		*path;
 	int			len_argc;
 	int			error;
+	int			av;
 }				t_ls;
 
 /*
@@ -123,12 +127,12 @@ t_bool			file_info(t_ls *data, t_lsop *op, t_pad *pad, char *path);
 **	sort_ls
 */
 void			ls_sort(t_ls *data, t_lsop *op);
-int				ls_sort_ascii(t_ls *d, t_lsop *m, t_lsop *p);
-int				ls_sort_size(t_ls *d, t_lsop *m, t_lsop *p);
-int				ls_sort_mtime(t_ls *d, t_lsop *m, t_lsop *p);
-int				ls_sort_atime(t_ls *d, t_lsop *m, t_lsop *p);
-int				ls_sort_ctime(t_ls *d, t_lsop *m, t_lsop *p);
-int				ls_sort_birthtime(t_ls *d, t_lsop *m, t_lsop *p);
+int				ls_sort_ascii(t_lsop *m, t_lsop *p);
+int				ls_sort_size(t_lsop *m, t_lsop *p);
+int				ls_sort_mtime(t_lsop *m, t_lsop *p);
+int				ls_sort_atime(t_lsop *m, t_lsop *p);
+int				ls_sort_ctime(t_lsop *m, t_lsop *p);
+int				ls_sort_birthtime(t_lsop *m, t_lsop *p);
 
 /*
 **	tools.c

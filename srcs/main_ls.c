@@ -40,6 +40,7 @@ static t_bool	recursive_dir(t_ls *data, t_lsop *lst, char *path)
 	t_lsop	*mem;
 	char	*new_path;
 
+	lst = (test_bit(&(data->flag), LS_R) ? lst->last : lst);
 	while (lst)
 	{
 		mem = lst;
@@ -57,7 +58,7 @@ static t_bool	recursive_dir(t_ls *data, t_lsop *lst, char *path)
 			}
 			ft_strdel(&new_path);
 		}
-		lst = lst->next;
+		lst = (test_bit(&(data->flag), LS_R) ? lst->prev : lst->next);
 		ft_memdel((void**)&mem);
 	}
 	return (TRUE);
@@ -95,8 +96,12 @@ t_bool			directory_file(t_ls *data, char *path, DIR *dir_ptr)
 				closedir(dir_ptr);
 				return (error_ls("malloc from directory_file", lst));
 			}
+			if (mem)
+				mem->next->prev = mem;
 			mem = (!mem ? lst : mem->next);
 		}
+	if (lst)
+		lst->last = mem;
 	if (closedir(dir_ptr))
 		return (error_ls("c'ant close dir", lst));
 	return (directory_print(data, lst, path, &pad));

@@ -113,9 +113,9 @@ t_bool			print_file(t_ls *data, t_lsop *lst, t_pad *pad, char *path)
 {
 	t_lsop	*mem;
 
-	mem = lst;
 	if (!test_bit(&(data->flag), LS_F))
 		ls_sort(data, lst);
+	mem = (test_bit(&(data->flag), LS_R) ? lst->last : lst);
 	while (mem)
 	{
 		pad->col += pad->name;
@@ -125,15 +125,12 @@ t_bool			print_file(t_ls *data, t_lsop *lst, t_pad *pad, char *path)
 		if (!print_link(data, mem, pad, path))
 			return (FALSE);
 		if (!test_bit(&(data->flag), LS_1) && !test_bit(&(data->flag), LS_L)
-				&& (pad->col + pad->name + 1) > data->w.ws_col)
-		{
-			ft_stprintf(KEEP_PF, "\n", pad->col, data->w.ws_col);
-			pad->col = 0;
-		}
-		mem = mem->next;
+			&& (pad->col + pad->name + 1) > data->w.ws_col && (pad->col = 0) != -1)
+			ft_stprintf(KEEP_PF, "\n");
+		mem = (test_bit(&(data->flag), LS_R) ? mem->prev : mem->next);
 	}
 	if (!test_bit(&(data->flag), LS_L) &&
-		!test_bit(&(data->flag), LS_1) && pad->col)
+		!test_bit(&(data->flag), LS_1) && pad->col && !data->av)
 		ft_stprintf(KEEP_PF, "\n");
 	return (TRUE);
 }
