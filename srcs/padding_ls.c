@@ -23,7 +23,7 @@ static int	ft_longlen(long long nb)
 	return (i);
 }
 
-static void	padding_groups(t_ls *data, t_lsop *op, t_pad *pad)
+static void	padding_groups(t_lsop *op, t_pad *pad)
 {
 	t_passwd	*uid;
 	t_group		*gid;
@@ -31,12 +31,12 @@ static void	padding_groups(t_ls *data, t_lsop *op, t_pad *pad)
 	int			i_gid;
 
 	if ((uid = getpwuid(op->file.st_uid)) &&
-			!test_bit(&(data->flag), LS_N))
+			exist_flags(LS_L))
 		i_uid = ft_strlen(uid->pw_name);
 	else
 		i_uid = ft_longlen(op->file.st_uid);
 	if ((gid = getgrgid(op->file.st_gid)) &&
-			!test_bit(&(data->flag), LS_N))
+			!exist_flags(LS_N))
 		i_gid = ft_strlen(gid->gr_name);
 	else
 		i_gid = ft_longlen(op->file.st_gid);
@@ -46,14 +46,14 @@ static void	padding_groups(t_ls *data, t_lsop *op, t_pad *pad)
 		pad->group2 = i_gid;
 }
 
-void		padding_ls(t_ls *data, t_lsop *op, t_pad *pad)
+void		padding_ls(t_lsop *op, t_pad *pad)
 {
 	pad->total += op->file.st_blocks;
 	if (pad->block < ft_longlen(op->file.st_blocks))
 		pad->block = ft_longlen(op->file.st_blocks);
 	if (pad->link < ft_longlen(op->file.st_nlink))
 		pad->link = ft_longlen(op->file.st_nlink);
-	padding_groups(data, op, pad);
+	padding_groups(op, pad);
 	if (S_ISBLK(op->file.st_mode) || S_ISCHR(op->file.st_mode))
 	{
 		if (pad->size < ft_longlen(major(op->file.st_rdev)))

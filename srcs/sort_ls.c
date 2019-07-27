@@ -38,8 +38,7 @@ static int	swap_elem(t_lsop *mem2, t_lsop *mem)
 	return (1);
 }
 
-static void	ls_sort_funct(t_lsop *op,
-		int (*sort_function)(t_lsop*, t_lsop*))
+void	ls_sort_funct(t_lsop *op, int (*sort_function)(t_lsop*, t_lsop*))
 {
 	t_lsop	*mem;
 	t_lsop	*mem2;
@@ -64,23 +63,25 @@ static void	ls_sort_funct(t_lsop *op,
 	}
 }
 
-void		ls_sort(t_ls *data, t_lsop *op)
+void		ls_sort(t_lsop *op)
 {
 	t_lsop	*mem;
 
 	mem = op;
-	if (test_bit(&(data->flag), LS_T))
+	if (exist_flags(LS_F))
+		return ;
+	if (exist_flags(LS_T))
 	{
-		if (test_bit(&(data->flag), LS_U))
+		if (exist_flags(LS_U))
 			ls_sort_funct(op, ls_sort_atime);
-		else if (test_bit(&(data->flag), LS_U_MAJ))
+		else if (exist_flags(LS_U_MAJ))
 			ls_sort_funct(op, ls_sort_birthtime);
-		else if (test_bit(&(data->flag), LS_C))
+		else if (exist_flags(LS_C))
 			ls_sort_funct(op, ls_sort_ctime);
 		else
 			ls_sort_funct(op, ls_sort_mtime);
 	}
-	else if (test_bit(&(data->flag), LS_S_MAJ))
+	else if (exist_flags(LS_S_MAJ))
 		ls_sort_funct(op, ls_sort_size);
 	else
 		ls_sort_funct(op, ls_sort_ascii);

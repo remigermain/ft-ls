@@ -84,12 +84,12 @@ int			init_flags(char **argv, char *flag, char *mflag, enum e_flags mod)
 	int	j;
 
 	i = 0;
-	while (argv[++i] && (j = 1))
-		while (argv[i][j])
+	while (argv[++i] && (j = 0) != 1)
+		while (argv[i][++j] || argv[i][0] != '-')
 		{
 			if (argv[i][0] != '-' && mod == F_STOP)
 				return (unknow_flags(NULL, i, 0));
-			if (argv[i][1] != '-')
+			else if (argv[i][1] != '-')
 			{
 				if (ft_strchr(flag, argv[i][j]))
 					find_flags(argv[i][j], flag);
@@ -101,7 +101,6 @@ int			init_flags(char **argv, char *flag, char *mflag, enum e_flags mod)
 				parse_mflag(argv, i, mflag, flag);
 				break ;
 			}
-			j++;
 		}
 	return (unknow_flags(NULL, i, 0));
 }

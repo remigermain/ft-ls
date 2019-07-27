@@ -39,14 +39,32 @@ t_bool	free_lsop(t_lsop *op)
 	return (FALSE);
 }
 
-t_bool	error_ls(char *str, t_lsop *lst)
+t_bool	error_ls(t_lsop *lst, char *str)
 {
 	free_lsop(lst);
-	ft_dprintf(2, T_RED"error: "T_LGREY"%s\n"T_WHITE, str);
+	ft_dprintf(2, T_RED"error: "T_LGREY"%s: %m\n"T_WHITE, str);
 	return (FALSE);
 }
 
-void	ft_lserror(t_ls *data, char *name)
+t_bool	hidden_file(char *name)
+{
+	if (exist_flags(LS_A) || exist_flags(LS_F) ||
+			name[0] != '.' || (exist_flags(LS_A_MAJ) &&
+				ft_strcmp(".", name) && ft_strcmp("..", name)))
+		return (true);
+	return (false);
+}
+
+t_bool recusive_file(t_lsop *lst)
+{
+	if (exist_flags(LS_R_MAJ) && ft_strcmp(".", lst->name) &&
+			ft_strcmp("..", lst->name) && (S_ISDIR(lst->file.st_mode) ||
+			(S_ISLNK(lst->file.st_mode) && exist_flags(LS_L_MAJ))))
+		return (true);
+	return (false);
+}
+
+void	ft_lserror(char *name)
 {
 	char	*file;
 	int		len;
@@ -57,9 +75,18 @@ void	ft_lserror(t_ls *data, char *name)
 	file = name + len;
 	ft_stprintf(OUT_PF, "");
 	ft_dprintf(2, "ls: %s: ", file);
-	if (test_bit(&(data->flag), LS_G_MAJ))
+	if (exist_flags(LS_G_MAJ))
 		ft_dprintf(2, T_RED);
 	ft_dprintf(2, "%m\n");
-	if (test_bit(&(data->flag), LS_G_MAJ))
+	if (exist_flags(LS_G_MAJ))
 		ft_dprintf(2, T_WHITE);
+}
+
+void		error_argv(t_lst *st, char *error)
+{
+	ft_dprintf(2, T_RED"error: "T_LGREY"%s\n"T_WHITE, error);
+	free_lsop(st->error);
+	free_lsop(st->file);
+	free_lsop(st->folder);
+	exit(0);
 }

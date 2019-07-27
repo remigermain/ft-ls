@@ -13,13 +13,13 @@
 
 #include "ft_ls.h"
 
-t_bool			file_acl(t_ls *data, t_lsop *op, char *path)
+t_bool			file_acl(t_lsop *op, char *path)
 {
 	acl_entry_t	dummy;
 	acl_t		acl;
 	char		*path_total;
 
-	if (test_bit(&(data->flag), LS_L))
+	if (exist_flags(LS_L))
 	{
 		if (!(path_total = cat_path(op->name, path)))
 			return (FALSE);
@@ -36,20 +36,20 @@ t_bool			file_acl(t_ls *data, t_lsop *op, char *path)
 	return (TRUE);
 }
 
-static t_bool	print_link(t_ls *data, t_lsop *op, t_pad *pad, char *path)
+static t_bool	print_link(t_lsop *op, t_pad *pad, char *path, t_winsize win)
 {
 	char	buff[1024];
 	char	*path_new;
 	int		i;
 
-	if (!test_bit(&(data->flag), LS_L) && !test_bit(&(data->flag), LS_M) &&
-			!test_bit(&(data->flag), LS_1) &&
-			(pad->col + pad->name) < data->w.ws_col)
+	if (!exist_flags(LS_L) && !exist_flags(LS_M) &&
+			!exist_flags(LS_1) &&
+			(pad->col + pad->name) < win.ws_col)
 		ft_stprintf(KEEP_PF, " %*@", pad->name - ft_strlen(op->name),
 				"char", ' ');
-	else if (test_bit(&(data->flag), LS_M))
+	else if (exist_flags(LS_M))
 		ft_stprintf(KEEP_PF, " ");
-	if (S_ISLNK(op->file.st_mode) && test_bit(&(data->flag), LS_L))
+	if (S_ISLNK(op->file.st_mode) && exist_flags(LS_L))
 	{
 		if (!(path_new = cat_path(op->name, path)))
 			return (FALSE);
@@ -57,17 +57,15 @@ static t_bool	print_link(t_ls *data, t_lsop *op, t_pad *pad, char *path)
 			ft_stprintf(KEEP_PF, " -> %.*s", i, buff);
 		ft_memdel((void**)&path_new);
 	}
-	if (test_bit(&(data->flag), LS_L) || test_bit(&(data->flag), LS_1))
-		ft_stprintf(KEEP_PF, "\n");
 	return (TRUE);
 }
 
-static void		print_extra(t_ls *data, t_lsop *op)
+static void		print_extra(t_lsop *op)
 {
 	ft_stprintf(KEEP_PF, "%s", op->name);
-	if (test_bit(&(data->flag), LS_G_MAJ))
+	if (exist_flags(LS_G_MAJ))
 		ft_stprintf(KEEP_PF, "%s", T_WHITE);
-	if (test_bit(&(data->flag), LS_F_MAJ))
+	if (exist_flags(LS_F_MAJ))
 	{
 		if (S_ISDIR(op->file.st_mode))
 			ft_stprintf(KEEP_PF, "/");
@@ -79,19 +77,19 @@ static void		print_extra(t_ls *data, t_lsop *op)
 				op->file.st_mode & S_IXOTH)
 			ft_stprintf(KEEP_PF, "*");
 	}
-	else if (test_bit(&(data->flag), LS_P) && (S_ISDIR(op->file.st_mode)))
+	else if (exist_flags(LS_P) && (S_ISDIR(op->file.st_mode)))
 		ft_stprintf(KEEP_PF, "/");
-	if (test_bit(&(data->flag), LS_M) && op->next)
+	if (exist_flags(LS_M) && op->next)
 		ft_stprintf(KEEP_PF, ",");
 }
 
-static t_bool	print_name(t_ls *data, t_lsop *op, t_pad *pad, char *path)
+static t_bool	print_name(t_lsop *op, t_pad *pad, char *path)
 {
-	if (test_bit(&(data->flag), LS_S))
+	if (exist_flags(LS_S))
 		ft_stprintf(KEEP_PF, "%*d ", pad->block, op->file.st_blocks);
-	if (test_bit(&(data->flag), LS_L) && !file_info(data, op, pad, path))
+	if (exist_flags(LS_L) && !file_info(op, pad, path))
 		return (FALSE);
-	if (test_bit(&(data->flag), LS_G_MAJ))
+	if (exist_flags(LS_G_MAJ))
 	{
 		if ((op->file.st_mode & S_ISVTX && op->xattr <= 0) ||
 				(S_ISCHR(op->file.st_mode)))
@@ -108,30 +106,31 @@ static t_bool	print_name(t_ls *data, t_lsop *op, t_pad *pad, char *path)
 	}
 	return (TRUE);
 }
-/*
-t_bool			print_file(t_ls *data, t_lsop *lst, t_pad *pad, char *path)
+
+t_bool			print_file(t_lsop *lst, t_pad *pad, char *path)
 {
+	static t_winsize win;
 	t_lsop	*mem;
 
-	if (!test_bit(&(data->flag), LS_F))
-		ls_sort(data, lst);
-	mem = (test_bit(&(data->flag), LS_R) ? lst->last : lst);
+	ioctl(STDOUT_FILENO, TIOCGWINSZ, &win);
+	ls_sort(lst);
+	mem = lst;
 	while (mem)
 	{
 		pad->col += pad->name;
-		if (!print_name(data, mem, pad, path))
+		if (!print_name(mem, pad, path))
 			return (FALSE);
-		print_extra(data, mem);
-		if (!print_link(data, mem, pad, path))
+		print_extra(mem);
+		if (!print_link(mem, pad, path, win))
 			return (FALSE);
-		if (!test_bit(&(data->flag), LS_1) && !test_bit(&(data->flag), LS_L)
-			&& (pad->col + pad->name + 1) > data->w.ws_col && (pad->col = 0) != -1)
+		if (exist_flags(LS_L) || exist_flags(LS_1) || !mem->next)
 			ft_stprintf(KEEP_PF, "\n");
-		mem = (test_bit(&(data->flag), LS_R) ? mem->prev : mem->next);
+
+		if (!exist_flags(LS_1) && !exist_flags(LS_L)
+			&& (pad->col + pad->name + 1) > win.ws_col && (pad->col = 0) != -1)
+			ft_stprintf(KEEP_PF, "\n");
+		
+		mem = mem->next;
 	}
-	if (!test_bit(&(data->flag), LS_L) &&
-		!test_bit(&(data->flag), LS_1) && pad->col && !data->av)
-		ft_stprintf(KEEP_PF, "\n");
 	return (TRUE);
 }
-*/

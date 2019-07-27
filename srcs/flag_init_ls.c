@@ -19,9 +19,9 @@ static	void	unset_sort(t_ls *data, char c)
 		set_bit(&(data->flag), LS_T);
 	else if (c == 'S')
 		set_bit(&(data->flag), LS_S_MAJ);
-	if (test_bit(&(data->flag), LS_S_MAJ))
+	if (exist_flags(LS_S_MAJ))
 	{
-		if (test_bit(&(data->flag), LS_T))
+		if (exist_flags(LS_T))
 			clear_bit(&(data->flag), LS_T);
 		return ;
 	}

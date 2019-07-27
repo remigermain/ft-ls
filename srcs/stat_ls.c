@@ -51,46 +51,49 @@ static void	file_right(t_stat stat, char right[10])
 	sticky_byte(stat, right);
 }
 
-static void	file_group(t_ls *data, t_lsop *op, t_pad *pad)
+static void	file_group(t_lsop *op, t_pad *pad)
 {
 	t_passwd	*uid;
 	t_group		*gid;
 
-	if (!test_bit(&(data->flag), LS_G))
+	if (!exist_flags(LS_G))
 	{
 		if ((uid = getpwuid(op->file.st_uid)) &&
-				!test_bit(&(data->flag), LS_N))
+				!exist_flags(LS_N))
 			ft_stprintf(KEEP_PF, " %-*s ", pad->group, uid->pw_name);
 		else
 			ft_stprintf(KEEP_PF, " %-*d ", pad->group, op->file.st_uid);
 	}
 	if ((gid = getgrgid(op->file.st_gid)) &&
-			!test_bit(&(data->flag), LS_N))
+			!exist_flags(LS_N))
 		ft_stprintf(KEEP_PF, " %-*s ", pad->group2, gid->gr_name);
 	else
 		ft_stprintf(KEEP_PF, " %-*d ", pad->group2, op->file.st_gid);
 }
 
-static void	file_date(t_ls *data, t_lsop *op)
+static void	file_date(t_lsop *op)
 {
+	static	time_t istime = 0;
 	char	*t;
 	long	j;
 	int		i;
 
+	if (!istime)
+		istime = time(NULL);
 	i = 5;
-	if (test_bit(&(data->flag), LS_U))
+	if (exist_flags(LS_U))
 		j = op->file.st_atime;
-	else if (test_bit(&(data->flag), LS_U_MAJ))
+	else if (exist_flags(LS_U_MAJ))
 		j = op->file.st_birthtime;
-	else if (test_bit(&(data->flag), LS_C))
+	else if (exist_flags(LS_C))
 		j = op->file.st_ctime;
 	else
 		j = op->file.st_mtime;
 	t = ctime(&j);
-	if (!test_bit(&(data->flag), LS_T_MAJ))
+	if (!exist_flags(LS_T_MAJ))
 	{
 		i = 13;
-		if ((data->time + MONTH_SIX) < j || (data->time - MONTH_SIX) > j)
+		if ((istime + MONTH_SIX) < j || (istime - MONTH_SIX) > j)
 			i = 18;
 	}
 	ft_stprintf(KEEP_PF, " %.*s ", ft_strlen(t) - i, t + 4);
@@ -98,16 +101,16 @@ static void	file_date(t_ls *data, t_lsop *op)
 		ft_stprintf(KEEP_PF, "%.*s ", 4, t + 20);
 }
 
-t_bool		file_info(t_ls *data, t_lsop *op, t_pad *pad, char *path)
+t_bool		file_info(t_lsop *op, t_pad *pad, char *path)
 {
 	char	right[10];
 
 	file_right(op->file, right);
 	ft_stprintf(KEEP_PF, "%.10s", right);
-	if (!file_acl(data, op, path))
+	if (!file_acl(op, path))
 		return (FALSE);
 	ft_stprintf(KEEP_PF, " %*d", pad->link, op->file.st_nlink);
-	file_group(data, op, pad);
+	file_group(op, pad);
 	if (S_ISBLK(op->file.st_mode) || S_ISCHR(op->file.st_mode))
 		ft_stprintf(KEEP_PF, " %3lld, %3lld",
 				major(op->file.st_rdev),
@@ -115,6 +118,6 @@ t_bool		file_info(t_ls *data, t_lsop *op, t_pad *pad, char *path)
 	else
 		ft_stprintf(KEEP_PF, " %*llu", (pad->mm ? 8 : pad->size),
 				op->file.st_size);
-	file_date(data, op);
+	file_date(op);
 	return (TRUE);
 }
