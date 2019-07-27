@@ -103,6 +103,7 @@ static int		parse_argv(int argc, char **argv, int i)
 	print_error_argv(st.error);
 	print_file_argv(&st);
 	print_folder_argv(&st);
+	ft_stprintf(OUT_PF, "");
 	return (0);
 }
 

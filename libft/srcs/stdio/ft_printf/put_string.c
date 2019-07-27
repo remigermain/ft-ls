@@ -17,6 +17,7 @@ void	print_buff(t_pf *lst, void *tmp, size_t len)
 {
 	if (lst->buff_count)
 		write(1, lst->buff, lst->buff_count);
+	//write(1, "|ici|", 5);
 	write(1, tmp, len);
 	lst->buff_count = 0;
 }
@@ -45,7 +46,7 @@ void	put_buff(t_pf *lst, void *tmp, size_t len, size_t index)
 {
 	if (len == 0)
 		return ;
-	if (((lst->buff_count + len) >= BUFF_PRINTF) || len >= BUFF_PRINTF)
+	if (((lst->buff_count + len) + 1 >= BUFF_PRINTF) || len  + 1 >= BUFF_PRINTF)
 	{
 		if (lst->st_pf)
 			print_buff(lst, tmp, len);

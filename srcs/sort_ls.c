@@ -65,9 +65,6 @@ void	ls_sort_funct(t_lsop *op, int (*sort_function)(t_lsop*, t_lsop*))
 
 void		ls_sort(t_lsop *op)
 {
-	t_lsop	*mem;
-
-	mem = op;
 	if (exist_flags(LS_F))
 		return ;
 	if (exist_flags(LS_T))

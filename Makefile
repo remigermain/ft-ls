@@ -31,6 +31,8 @@ INCLUDE = -Iincludes -Ilibft/includes
 
 HEADER = ft_ls.h
 
+COMPILE = ~/.brew/bin/gcc-9
+
 LIBFT = libft/libft.a
 
 OBJ = $(SRC:.c=.o)
@@ -79,13 +81,13 @@ all: LIBFT_M print_name $(NAME)
 $(NAME): $(COBJ)
 	@echo $(SPACE)"\033[JCompilation des Objects \033[38;5;326mterminer\033[0m"
 	@echo $(SPACE)"Compilation" $(TYPE) "\033[34m" $(NAME) "\033[0m"
-	@gcc $(COBJ) $(CFLAGS) $(INCLUDE) $(LIBFT) -o $(NAME)
+	@$(COMPILE) $(COBJ) $(CFLAGS) $(INCLUDE) $(LIBFT) -o $(NAME)
 
 $(DOBJ)%.o : $(DSRC)%.c $(CHEADER) $(LIBFT)
 	@$(eval COUNT = "0")
 	@mkdir -p $(DOBJ)
 	@mkdir -p $(addprefix $(DOBJ), $(ALL_D))
-	@gcc $(CFLAGS) $(INCLUDE) -c $< -o $@
+	@$(COMPILE) $(CFLAGS) $(INCLUDE) -c $< -o $@
 	@echo $(SPACE)"compilation de la fonction \033[38;5;326m"$< "\033[0m\033[K\033[1A"
 
 clean: LIBFT_C print_name

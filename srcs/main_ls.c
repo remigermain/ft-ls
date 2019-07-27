@@ -52,8 +52,11 @@ static t_bool		add_file2(t_lsop **op, t_pad *pad, t_dir *dir_tmp, char *path)
 	t_lsop			*lst;
     char            *path_name;
 
-    if (!op && (last = NULL) == NULL)
+    if (!op)
+    {
+        last = NULL;
         return (true);
+    }
 	if (!(lst = (t_lsop*)ft_memalloc(sizeof(t_lsop))))
 		return (false);
     if (!(path_name = cat_path(dir_tmp->d_name, path)))
@@ -90,9 +93,9 @@ static t_bool     get_folder(char *path)
 
     file = NULL;
     ft_bzero(&pad, sizeof(t_pad));
+    add_file2(NULL, NULL, NULL, path);
     if ((dir_ptr = opendir(path)))
     {
-        add_file2(NULL, NULL, NULL, path);
         while ((dir_tmp = readdir(dir_ptr)))
         {
             if (hidden_file(dir_tmp->d_name) && !add_file2(&file, &pad, dir_tmp, path))
@@ -123,7 +126,7 @@ t_bool    recursive_dir(t_lsop *lst, char *path)
         tmp = lst;
         if (recusive_file(tmp))
         {
-            ft_stprintf(OUT_PF, "\n");
+            ft_stprintf(KEEP_PF, "\n");
             if (!(new_path = cat_path(tmp->name, path)))
                 return(free_lsop(tmp));            
             ft_stprintf(KEEP_PF, "%s:\n", new_path);
@@ -152,7 +155,7 @@ void    print_folder_argv(t_lst *st)
     while (tmp)
     {
         if (folder || st->nb_file || st->nb_error)
-            ft_stprintf(OUT_PF, "\n");
+            ft_stprintf(KEEP_PF, "\n");
         if (st->nb_folder - 1)
             ft_stprintf(KEEP_PF, "%s:\n", tmp->name);
         if (!get_folder(tmp->name))
@@ -163,5 +166,5 @@ void    print_folder_argv(t_lst *st)
         folder++;
         tmp = tmp->next;
     }
-    ft_stprintf(OUT_PF, "");
+   // ft_stprintf(OUT_PF, "");
 }

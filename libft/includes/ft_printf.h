@@ -16,7 +16,7 @@
 # include "libft.h"
 # include "color.h"
 # include <stdarg.h>
-# define BUFF_PRINTF 10000
+# define BUFF_PRINTF 20000
 # define KEEP_PF	1
 # define OUT_PF	0
 

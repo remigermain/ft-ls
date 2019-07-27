@@ -17,6 +17,8 @@ char	*cat_path(char *name, char *path)
 {
 	char	path_mem[257];
 
+	if (!name || !path)
+		return (NULL);
 	if (!path[0])
 		return (ft_strdup(name));
 	ft_bzero(path_mem, 2);
