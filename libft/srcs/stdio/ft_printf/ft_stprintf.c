@@ -67,16 +67,16 @@ int			ft_stprintf(char ind, const char *format, ...)
 	}
 	va_start(lst.va_lst, format);
 	i = ftprintf_base((char*)format, &lst, 0, 0);
-	if (ind == OUT_PF && lst.count != 0)
+	if (ind == OUT_PF && lst.count > 0)
 	{
-		write(1, lst.str, lst.count);
+		i += write(1, lst.str, lst.count);
+		ft_memdel((void**)&(lst.str));
 		lst.count = 0;
 	}
-	if (ind == OUT_PF && lst.buff_count != 0)
+	if (ind == OUT_PF && lst.buff_count > 0)
 	{
-		write(1, lst.buff, lst.buff_count);
+		i += write(1, lst.buff, lst.buff_count);
 		lst.buff_count = 0;
-		ft_memdel((void**)&(lst.str));
 	}
 	pass = 1;
 	return (i);

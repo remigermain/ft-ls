@@ -17,7 +17,6 @@ void	print_buff(t_pf *lst, void *tmp, size_t len)
 {
 	if (lst->buff_count)
 		write(1, lst->buff, lst->buff_count);
-	//write(1, "|ici|", 5);
 	write(1, tmp, len);
 	lst->buff_count = 0;
 }
@@ -27,6 +26,7 @@ void	convert_buff(t_pf *lst, void *tmp, size_t len)
 	t_uchar	*new;
 	size_t	len_malloc;
 
+	ft_printf("yobitch\n");
 	len_malloc = lst->count + lst->buff_count + len + 1;
 	if (!(new = (t_uchar*)ft_memalloc(len_malloc)))
 		ERROR(lst, "comvert_buff", 1);
@@ -46,7 +46,7 @@ void	put_buff(t_pf *lst, void *tmp, size_t len, size_t index)
 {
 	if (len == 0)
 		return ;
-	if (((lst->buff_count + len) + 1 >= BUFF_PRINTF) || len  + 1 >= BUFF_PRINTF)
+	if (((lst->buff_count + len) >= BUFF_PRINTF) || len  >= BUFF_PRINTF)
 	{
 		if (lst->st_pf)
 			print_buff(lst, tmp, len);
@@ -99,8 +99,7 @@ void	put_prefix(t_pf *lst, int len, int nb, int point)
 		if (!(tmp = (t_uchar*)malloc(llen + 1)))
 			ERROR(lst, "put_prefix", 1);
 		ft_memset(tmp, (point == 1 ? '0' : ' '), llen);
-		convert_buff(lst, tmp, llen);
-		ft_memdel((void**)&tmp);
+		put_buff(lst, tmp, llen, 1);
 	}
 	else
 	{

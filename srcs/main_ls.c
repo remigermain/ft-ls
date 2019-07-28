@@ -38,12 +38,11 @@ void    print_file_argv(t_lst *st)
 
 static t_bool      print_folder(t_lsop *lst, t_pad *pad, char *path)
 {
-    if (lst)
+    if (lst && exist_flags(LS_L))
         ft_stprintf(KEEP_PF, "total %d\n", pad->total);
     if (!print_file(lst, pad, path))
         return (false);
     return (recursive_dir(lst, path));
-    return (true);
 }
 
 static t_bool		add_file2(t_lsop **op, t_pad *pad, t_dir *dir_tmp, char *path)
