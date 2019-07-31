@@ -117,7 +117,7 @@ t_bool			print_file(t_lsop *lst, t_pad *pad, char *path)
 	mem = lst;
 	while (mem)
 	{
-		pad->col += pad->name;
+		pad->col += (exist_flags(LS_M) ? ft_strlen(mem->name) + 2 : pad->name);
 		if (!print_name(mem, pad, path))
 			return (FALSE);
 		print_extra(mem);
@@ -125,10 +125,15 @@ t_bool			print_file(t_lsop *lst, t_pad *pad, char *path)
 			return (FALSE);
 		if (exist_flags(LS_L) || exist_flags(LS_1) || !mem->next)
 			ft_stprintf(KEEP_PF, "\n");
-
-		if (!exist_flags(LS_1) && !exist_flags(LS_L)
-			&& (pad->col + pad->name + 1) > win.ws_col && (pad->col = 0) != -1)
-			ft_stprintf(KEEP_PF, "\n");
+		else if (!exist_flags(LS_1) && !exist_flags(LS_L))
+		{
+			if (!exist_flags(LS_M) && (pad->col + pad->name + 1)
+				> win.ws_col && (pad->col = 0) != -1)
+				ft_stprintf(KEEP_PF, "\n");
+			else if (exist_flags(LS_M) && (pad->col + 
+			ft_strlen(mem->name) + 2) > win.ws_col && (pad->col = 0) != -1)
+				ft_stprintf(KEEP_PF, "\n");
+		}
 		
 		mem = mem->next;
 	}
