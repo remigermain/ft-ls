@@ -71,12 +71,15 @@ static t_bool		add_file2(t_lsop **op, t_pad *pad, t_dir *dir_tmp, char *path)
 	if (!last)
 	{
 		(*op) = lst;
+        (*op)->last = NULL;
 		last = lst;
 	}
 	else
 	{
 		last->next = lst;
+        last->next->prev = last;
 		last = last->next;
+        (*op)->last = last;
 	}
 	padding_ls(lst, pad);
     ft_strdel(&path_name);
@@ -122,7 +125,7 @@ t_bool    recursive_dir(t_lsop *lst, char *path)
     folder = 0;
     while (lst)
     {
-        tmp = lst;
+        tmp = (exist_flags(LS_R) && lst && lst->last ? lst->last : lst);
         if (recusive_file(tmp))
         {
             ft_stprintf(KEEP_PF, "\n");
@@ -137,7 +140,7 @@ t_bool    recursive_dir(t_lsop *lst, char *path)
             ft_strdel(&new_path);
             folder++;
         }
-        lst = lst->next;
+        lst = (exist_flags(LS_R) ? lst->prev : lst->next);
         ft_memdel((void**)&tmp);
     }
     return (true);
@@ -149,7 +152,8 @@ void    print_folder_argv(t_lst *st)
     int     folder;
 
     ls_sort(st->folder);
-    tmp = st->folder;
+    tmp = (exist_flags(LS_R) && st->folder &&
+        st->folder->last ? st->folder->last : st->folder);
     folder = 0;
     while (tmp)
     {
@@ -163,7 +167,7 @@ void    print_folder_argv(t_lst *st)
             return ;
         }
         folder++;
-        tmp = tmp->next;
+        tmp = (exist_flags(LS_R) ? tmp->prev : tmp->next);
     }
    // ft_stprintf(OUT_PF, "");
 }

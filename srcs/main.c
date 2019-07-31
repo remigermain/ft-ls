@@ -48,12 +48,15 @@ static void		add_file(t_lst *st, t_stat *info, char *name)
 	if (!last)
 	{
 		st->file = lst;
+		st->file->last = NULL;
 		last = lst;
 	}
 	else
 	{
 		last->next = lst;
+		last->next->prev = last;
 		last = last->next;
+		st->file->last = last;
 	}
 	padding_ls(lst, &(st->pad_file));
 }
@@ -71,12 +74,15 @@ static void		add_folder(t_lst *st, t_stat *info, char *name)
 	if (!last)
 	{
 		st->folder = lst;
+		st->folder->last = NULL;
 		last = lst;
 	}
 	else
 	{
 		last->next = lst;
+		last->next->prev = last;
 		last = last->next;
+		st->folder->last = last;
 	}
 	padding_ls(lst, &(st->pad_folder));
 }

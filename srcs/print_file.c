@@ -104,6 +104,7 @@ static t_bool	print_name(t_lsop *op, t_pad *pad, char *path)
 				op->file.st_mode & S_IXOTH)
 			ft_stprintf(KEEP_PF, "%s", T_RED);
 	}
+	print_extra(op);
 	return (TRUE);
 }
 
@@ -114,16 +115,13 @@ t_bool			print_file(t_lsop *lst, t_pad *pad, char *path)
 
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &win);
 	ls_sort(lst);
-	mem = lst;
+	mem = (exist_flags(LS_R) && lst && lst->last ? lst->last : lst);
 	while (mem)
 	{
 		pad->col += (exist_flags(LS_M) ? ft_strlen(mem->name) + 2 : pad->name);
-		if (!print_name(mem, pad, path))
+		if (!print_name(mem, pad, path) || !print_link(mem, pad, path, win))
 			return (FALSE);
-		print_extra(mem);
-		if (!print_link(mem, pad, path, win))
-			return (FALSE);
-		if (exist_flags(LS_L) || exist_flags(LS_1) || !mem->next)
+		if (exist_flags(LS_L) || exist_flags(LS_1) || !mem->next || !mem->last)
 			ft_stprintf(KEEP_PF, "\n");
 		else if (!exist_flags(LS_1) && !exist_flags(LS_L))
 		{
@@ -134,8 +132,7 @@ t_bool			print_file(t_lsop *lst, t_pad *pad, char *path)
 			ft_strlen(mem->name) + 2) > win.ws_col && (pad->col = 0) != -1)
 				ft_stprintf(KEEP_PF, "\n");
 		}
-		
-		mem = mem->next;
+		mem = (exist_flags(LS_R) ? mem->prev : mem->next);
 	}
 	return (TRUE);
 }
