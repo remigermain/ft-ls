@@ -38,7 +38,7 @@ static int	swap_elem(t_lsop *mem2, t_lsop *mem)
 	return (1);
 }
 
-void	ls_sort_funct(t_lsop *op, int (*sort_function)(t_lsop*, t_lsop*))
+void		ls_sort_funct(t_lsop *op, int (*sort_function)(t_lsop*, t_lsop*))
 {
 	t_lsop	*mem;
 	t_lsop	*mem2;

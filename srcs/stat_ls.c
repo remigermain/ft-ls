@@ -73,22 +73,21 @@ static void	file_group(t_lsop *op, t_pad *pad)
 
 static void	file_date(t_lsop *op)
 {
-	static	time_t istime = 0;
-	char	*t;
-	long	j;
-	int		i;
+	static	time_t	istime = 0;
+	char			*t;
+	long			j;
+	int				i;
 
 	if (!istime)
 		istime = time(NULL);
 	i = 5;
+	j = op->file.st_mtime;
 	if (exist_flags(LS_U))
 		j = op->file.st_atime;
 	else if (exist_flags(LS_U_MAJ))
 		j = op->file.st_birthtime;
 	else if (exist_flags(LS_C))
 		j = op->file.st_ctime;
-	else
-		j = op->file.st_mtime;
 	t = ctime(&j);
 	if (!exist_flags(LS_T_MAJ))
 	{

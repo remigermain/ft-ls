@@ -110,8 +110,8 @@ static t_bool	print_name(t_lsop *op, t_pad *pad, char *path)
 
 t_bool			print_file(t_lsop *lst, t_pad *pad, char *path)
 {
-	static t_winsize win;
-	t_lsop	*mem;
+	static t_winsize	win;
+	t_lsop				*mem;
 
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &win);
 	ls_sort(lst);
@@ -128,7 +128,7 @@ t_bool			print_file(t_lsop *lst, t_pad *pad, char *path)
 			if (!exist_flags(LS_M) && (pad->col + pad->name + 1)
 				> win.ws_col && (pad->col = 0) != -1)
 				ft_stprintf(KEEP_PF, "\n");
-			else if (exist_flags(LS_M) && (pad->col + 
+			else if (exist_flags(LS_M) && (pad->col +
 			ft_strlen(mem->name) + 2) > win.ws_col && (pad->col = 0) != -1)
 				ft_stprintf(KEEP_PF, "\n");
 		}

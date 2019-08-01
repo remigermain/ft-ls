@@ -13,7 +13,7 @@
 
 #include "ft_ls.h"
 
-static void	add_error(t_lst *st, char *name)
+static void		add_error(t_lst *st, char *name)
 {
 	static	t_lsop	*last = NULL;
 	t_lsop			*lst;
@@ -97,7 +97,8 @@ static int		parse_argv(int argc, char **argv, int i)
 	{
 		if (!lstat(argv[i], &info))
 		{
-			if (S_ISDIR(info.st_mode) && !S_ISLNK(info.st_mode) && !exist_flags(LS_D))
+			if (S_ISDIR(info.st_mode) &&
+				!S_ISLNK(info.st_mode) && !exist_flags(LS_D))
 				add_folder(&st, &info, argv[i]);
 			else
 				add_file(&st, &info, argv[i]);
@@ -116,9 +117,9 @@ static int		parse_argv(int argc, char **argv, int i)
 int				main(int argc, char **argv)
 {
 	int	ret;
-	
-	ret = init_flags(argv, LS_FLAGS, LS_MFLAGS, F_STOP);
-//	flags_base('G', F_ADD);
+
+	ret = init_flags(argv, "RaArfGFsTL|l;;m|g;l;m|d;a;|1;l;|\
+		n;l;m|m;;l1|p;;F|S;;t|t;;S|U;;uc|u;;Uc|c;:Uu", "", F_STOP);
 	if (ret != -1)
 		return (parse_argv(argc, argv, ret));
 	else
