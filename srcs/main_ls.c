@@ -13,6 +13,23 @@
 
 #include "ft_ls.h"
 
+static void		ls_join(t_lsop **last, t_lsop **lst, t_lsop **op)
+{
+	if (!(*last))
+	{
+		(*op) = (*lst);
+		(*op)->last = NULL;
+		(*last) = (*lst);
+	}
+	else
+	{
+		(*last)->next = (*lst);
+		(*last)->next->prev = (*last);
+		(*last) = (*last)->next;
+		(*op)->last = (*last);
+	}
+}
+
 static t_bool	add_file2(t_lsop **op, t_pad *pad, t_dir *dir_tmp, char *path)
 {
 	static	t_lsop	*last = NULL;
@@ -36,19 +53,7 @@ static t_bool	add_file2(t_lsop **op, t_pad *pad, t_dir *dir_tmp, char *path)
 	lstat(path_name, &(lst->file));
 	if (!S_ISLNK(lst->file.st_mode) || exist_flags(LS_L_MAJ))
 		stat(path_name, &(lst->file));
-	if (!last)
-	{
-		(*op) = lst;
-		(*op)->last = NULL;
-		last = lst;
-	}
-	else
-	{
-		last->next = lst;
-		last->next->prev = last;
-		last = last->next;
-		(*op)->last = last;
-	}
+	ls_join(&last, &lst, op);
 	padding_ls(lst, pad);
 	ft_strdel(&path_name);
 	return (TRUE);
@@ -69,14 +74,11 @@ static t_bool	get_folder(char *path)
 		while ((dir_tmp = readdir(dir_ptr)))
 		{
 			if (hidden_file(dir_tmp->d_name) &&
-					!add_file2(&file, &pad, dir_tmp, path))
-			{
-				closedir(dir_ptr);
-				return (error_ls(file, "add_file2"));
-			}
+				!add_file2(&file, &pad, dir_tmp, path))
+				return (error_ls(file, "add_file2", dir_ptr));
 		}
 		if (closedir(dir_ptr) != 0)
-			return (error_ls(file, "can't close dir"));
+			return (error_ls(file, "can't close dir", NULL));
 		return (print_folder(file, &pad, path));
 	}
 	else
@@ -84,18 +86,16 @@ static t_bool	get_folder(char *path)
 	return (TRUE);
 }
 
-t_bool	recursive_dir(t_lsop *lst, char *path)
+t_bool			recursive_dir(t_lsop *lst, char *path, int folder)
 {
 	t_lsop	*tmp;
 	char	*new_path;
-	int		folder;
 
 	new_path = NULL;
-	folder = 0;
 	while (lst)
 	{
 		tmp = (exist_flags(LS_R) && lst && lst->last ? lst->last : lst);
-		if (recusive_file(tmp))
+		if (recusive_file(tmp) && (++folder))
 		{
 			ft_stprintf(KEEP_PF, "\n");
 			if (!(new_path = cat_path(tmp->name, path)))
@@ -107,7 +107,6 @@ t_bool	recursive_dir(t_lsop *lst, char *path)
 				return (free_lsop(tmp));
 			}
 			ft_strdel(&new_path);
-			folder++;
 		}
 		lst = (exist_flags(LS_R) ? lst->prev : lst->next);
 		ft_memdel((void**)&tmp);
@@ -115,7 +114,7 @@ t_bool	recursive_dir(t_lsop *lst, char *path)
 	return (TRUE);
 }
 
-void	print_folder_argv(t_lst *st)
+void			print_folder_argv(t_lst *st)
 {
 	t_lsop	*tmp;
 	int		folder;
@@ -138,4 +137,6 @@ void	print_folder_argv(t_lst *st)
 		folder++;
 		tmp = (exist_flags(LS_R) ? tmp->prev : tmp->next);
 	}
+	if (!st->folder)
+		get_folder(".");
 }

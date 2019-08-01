@@ -87,7 +87,7 @@ static void		add_folder(t_lst *st, t_stat *info, char *name)
 	padding_ls(lst, &(st->pad_folder));
 }
 
-static int		parse_argv(int argc, char **argv, int i)
+static int		parse_argv(char **argv, int i)
 {
 	t_lst	st;
 	t_stat	info;
@@ -118,10 +118,16 @@ int				main(int argc, char **argv)
 {
 	int	ret;
 
-	ret = init_flags(argv, "RaArfGFsTL|l;;m|g;l;m|d;a;|1;l;|\
-		n;l;m|m;;l1|p;;F|S;;t|t;;S|U;;uc|u;;Uc|c;:Uu", "", F_STOP);
+	ret = 0;
+	if (argc)
+		ret = init_flags(argv, "RaArfGFsTL|l;;m|g;l;m|d;a;|1;l;|\
+			n;l;m|m;;l1|p;;F|S;;t|t;;S|U;;uc|u;;Uc|c;:Uu", "", F_STOP);
+	if (exist_flags(LS_G_MAJ))
+		flags_base('G', F_RM);
+	else
+		flags_base('G', F_ADD);
 	if (ret != -1)
-		return (parse_argv(argc, argv, ret));
+		return (parse_argv(argv, ret));
 	else
 		ft_dprintf(2, "error generated.\n");
 	return (-1);

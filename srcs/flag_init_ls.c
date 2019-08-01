@@ -42,5 +42,5 @@ t_bool		print_folder(t_lsop *lst, t_pad *pad, char *path)
 		ft_stprintf(KEEP_PF, "total %d\n", pad->total);
 	if (!print_file(lst, pad, path))
 		return (FALSE);
-	return (recursive_dir(lst, path));
+	return (recursive_dir(lst, path, 0));
 }

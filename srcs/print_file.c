@@ -110,28 +110,22 @@ static t_bool	print_name(t_lsop *op, t_pad *pad, char *path)
 
 t_bool			print_file(t_lsop *lst, t_pad *pad, char *path)
 {
-	static t_winsize	win;
 	t_lsop				*mem;
 
-	ioctl(STDOUT_FILENO, TIOCGWINSZ, &win);
 	ls_sort(lst);
 	mem = (exist_flags(LS_R) && lst && lst->last ? lst->last : lst);
 	while (mem)
 	{
-		pad->col += (exist_flags(LS_M) ? ft_strlen(mem->name) + 2 : pad->name);
-		if (!print_name(mem, pad, path) || !print_link(mem, pad, path, win))
+		pad->col += (exist_flags(LS_M) ? (int)ft_strlen(mem->name) + 2 :
+				pad->name);
+		if (!print_name(mem, pad, path) ||
+				!print_link(mem, pad, path, get_winsize()))
 			return (FALSE);
-		if (exist_flags(LS_L) || exist_flags(LS_1) || !mem->next || !mem->last)
+		if (exist_flags(LS_L) || exist_flags(LS_1) ||
+		(!exist_flags(LS_R) && !mem->next) || (exist_flags(LS_R) && !mem->prev))
 			ft_stprintf(KEEP_PF, "\n");
 		else if (!exist_flags(LS_1) && !exist_flags(LS_L))
-		{
-			if (!exist_flags(LS_M) && (pad->col + pad->name + 1)
-				> win.ws_col && (pad->col = 0) != -1)
-				ft_stprintf(KEEP_PF, "\n");
-			else if (exist_flags(LS_M) && (pad->col +
-			ft_strlen(mem->name) + 2) > win.ws_col && (pad->col = 0) != -1)
-				ft_stprintf(KEEP_PF, "\n");
-		}
+			print_ioctl(mem, pad);
 		mem = (exist_flags(LS_R) ? mem->prev : mem->next);
 	}
 	return (TRUE);

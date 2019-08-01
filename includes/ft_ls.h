@@ -24,9 +24,6 @@
 # include <sys/xattr.h>
 # include <sys/acl.h>
 # define MONTH_SIX 15552000
-# define LS_FLAGS "RaArfGFsTL|l;;m|g;l;m|d;a;|1;l;|n;l;m|m;;l1|p;;F|S;;t|t;;S|U;;uc|u;;Uc|c;:Uu"
-# define LS_FLAGST #LS_FLAGS #LS_FLAGS2
-# define LS_MFLAGS ""
 
 typedef	struct dirent	t_dir;
 typedef	struct stat	t_stat;
@@ -121,17 +118,20 @@ typedef	struct	s_ls
 void			print_error_argv(t_lsop *lst);
 void			print_file_argv(t_lst *st);
 void			print_folder_argv(t_lst *st);
+t_bool			print_folder(t_lsop *lst, t_pad *pad, char *path);
 void			padding_ls(t_lsop *op, t_pad *pad);
-t_bool			recursive_dir(t_lsop *lst, char *path);
+t_bool			recursive_dir(t_lsop *lst, char *path, int folder);
 void			error_argv(t_lst *st, char *error);
 t_bool			free_lsop(t_lsop *mem);
-t_bool			error_ls(t_lsop *op, char *str);
+t_bool			error_ls(t_lsop *op, char *str, void *dir);
 t_bool			hidden_file(char *name);
 t_bool			recusive_file(t_lsop *lst);
 void			ls_sort_funct(t_lsop *op, int (*func)(t_lsop*, t_lsop*));
 t_bool			print_file(t_lsop *lst, t_pad *pad, char *path);
 t_bool			file_acl(t_lsop *op, char *path);
 t_bool			file_info(t_lsop *op, t_pad *pad, char *path);
+void			print_ioctl(t_lsop *mem, t_pad *pad);
+t_winsize		get_winsize(void);
 
 /*
 **	right_file

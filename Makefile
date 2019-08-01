@@ -53,7 +53,7 @@ CHEADER = $(addprefix $(DHEADER),$(HEADER)) libft/includes/libft.h
 
 SRC = main.c main_ls.c flag_init_ls.c \
 	  sort_ls.c sort_utils_ls.c padding_ls.c print_file.c \
-	 stat_ls.c utils_ls.c tools_bits.c
+	 stat_ls.c utils_ls.c utils_ls2.c tools_bits.c
 
 COUNT = "1"
 SPACE = "                    "
