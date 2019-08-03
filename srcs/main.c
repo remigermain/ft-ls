@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:41 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/07/20 16:30:21 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/08/03 16:34:49 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -122,8 +122,7 @@ static t_bool	parse_argv(char **argv, int i)
 	{
 		if (!lstat(argv[i], &info))
 		{
-			if ((S_ISDIR(info.st_mode) ||
-				S_ISLNK(info.st_mode)) && !exist_flags(LS_D))
+			if (S_ISDIR(info.st_mode) && !exist_flags(LS_D))
 				add_folder(&st, &info, argv[i]);
 			else
 				add_file(&st, &info, argv[i]);

@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/04/19 09:41:27 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/07/15 01:46:18 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/08/03 16:25:56 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -21,14 +21,13 @@
 
 void		sticky_byte(t_stat stat, char right[10])
 {
+	right[9] = (stat.st_mode & S_IXOTH) ? 'x' : '-';
 	if (stat.st_mode & S_ISUID)
 		right[3] = (stat.st_mode & S_IXUSR) ? 's' : 'S';
 	if (stat.st_mode & S_ISGID)
 		right[6] = (stat.st_mode & S_IXGRP) ? 's' : 'S';
 	if (stat.st_mode & S_ISVTX)
-		right[9] = 't';
-	else
-		right[9] = (stat.st_mode & S_IXOTH) ? 'x' : '-';
+		right[9] = (stat.st_mode & S_IXOTH) ? 't' : 'T';
 }
 
 /*

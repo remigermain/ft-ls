@@ -6,7 +6,7 @@
 /*   By: rgermain <marvin@le-101.fr>                +:+   +:    +:    +:+     */
 /*                                                 #+#   #+    #+    #+#      */
 /*   Created: 2019/07/20 16:19:09 by rgermain     #+#   ##    ##    #+#       */
-/*   Updated: 2019/07/20 16:26:06 by rgermain    ###    #+. /#+    ###.fr     */
+/*   Updated: 2019/08/03 16:34:42 by rgermain    ###    #+. /#+    ###.fr     */
 /*                                                         /                  */
 /*                                                        /                   */
 /* ************************************************************************** */
@@ -85,9 +85,9 @@ int			init_flags(char **argv, char *flag, char *mflag, enum e_flags mod)
 
 	i = 0;
 	while (argv[++i] && (j = 0) != 1)
-		while (argv[i][++j] || argv[i][0] != '-')
+		while (argv[i][++j] || argv[i][0] != '-' || !argv[i][1])
 		{
-			if (argv[i][0] != '-' && mod == F_STOP)
+			if ((argv[i][0] != '-' || !argv[i][1]) && mod == F_STOP)
 				return (unknow_flags(NULL, i, 0));
 			else if (argv[i][1] != '-')
 			{
