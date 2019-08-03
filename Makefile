@@ -25,13 +25,13 @@ LIBFT_N :
 LIBFT_R : 
 	@make -C libft/ re
 
-CFLAGS = -Wall -Wextra -g3
+CFLAGS = -Wall -Werror -Wextra
 
 INCLUDE = -Iincludes -Ilibft/includes
 
 HEADER = ft_ls.h
 
-COMPILE = ~/.brew/bin/gcc-9
+COMPILE = CC
 
 LIBFT = libft/libft.a
 
@@ -51,9 +51,9 @@ CHEADER = $(addprefix $(DHEADER),$(HEADER)) libft/includes/libft.h
 # 								ALL  SCRS									   #
 # *****************************************************************************#
 
-SRC = main.c main_ls.c flag_init_ls.c \
+SRC = main.c main_ls.c main_ls2.c \
 	  sort_ls.c sort_utils_ls.c padding_ls.c print_file.c \
-	 stat_ls.c utils_ls.c utils_ls2.c tools_bits.c
+	 stat_ls.c utils_ls.c utils_ls2.c
 
 COUNT = "1"
 SPACE = "                    "

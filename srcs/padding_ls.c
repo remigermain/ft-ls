@@ -46,6 +46,12 @@ static void	padding_groups(t_lsop *op, t_pad *pad)
 		pad->group2 = i_gid;
 }
 
+/*
+**-----------------------------------------------------------------------
+**			get padding form file name and file stat
+**-----------------------------------------------------------------------
+*/
+
 void		padding_ls(t_lsop *op, t_pad *pad)
 {
 	pad->total += op->file.st_blocks;

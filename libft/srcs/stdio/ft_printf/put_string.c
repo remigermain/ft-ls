@@ -26,7 +26,6 @@ void	convert_buff(t_pf *lst, void *tmp, size_t len)
 	t_uchar	*new;
 	size_t	len_malloc;
 
-	ft_printf("yobitch\n");
 	len_malloc = lst->count + lst->buff_count + len + 1;
 	if (!(new = (t_uchar*)ft_memalloc(len_malloc)))
 		ERROR(lst, "comvert_buff", 1);

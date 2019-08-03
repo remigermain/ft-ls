@@ -13,14 +13,29 @@
 
 #include "ft_ls.h"
 
-int			ls_sort_ctime(t_lsop *mem, t_lsop *mem2)
+/*
+**-----------------------------------------------------------------------
+**			sort by ascii
+**-----------------------------------------------------------------------
+*/
+
+int			ls_sort_ascii(t_lsop *mem, t_lsop *mem2)
 {
-	if (mem->file.st_ctime < mem2->file.st_ctime)
+	int	i;
+
+	i = 0;
+	while (mem->name[i] && mem2->name[i] && mem->name[i] == mem2->name[i])
+		i++;
+	if (mem->name[i] > mem2->name[i])
 		return (1);
-	else if (mem->file.st_ctime == mem2->file.st_ctime)
-		return (ls_sort_ascii(mem, mem2));
 	return (0);
 }
+
+/*
+**-----------------------------------------------------------------------
+**			swap elemnts
+**-----------------------------------------------------------------------
+*/
 
 static int	swap_elem(t_lsop *mem2, t_lsop *mem)
 {
@@ -38,30 +53,46 @@ static int	swap_elem(t_lsop *mem2, t_lsop *mem)
 	return (1);
 }
 
+/*
+**-----------------------------------------------------------------------
+**			sort function is a embeded buble sort ( yes is poor shit !)
+**-----------------------------------------------------------------------
+*/
+
 void		ls_sort_funct(t_lsop *op, int (*sort_function)(t_lsop*, t_lsop*))
 {
 	t_lsop	*mem;
 	t_lsop	*mem2;
 	int		i;
+	int		ret;
 
-	i = 1;
-	while (i && op)
+	ret = 1;
+	while (ret)
 	{
+		ret = 0;
 		mem = op;
-		mem2 = op->next;
-		i = 0;
-		while (mem2)
+		while (mem)
 		{
-			if (sort_function(mem, mem2))
-				i = swap_elem(mem2, mem);
-			else
+			i = 0;
+			mem2 = mem->next;
+			while (mem2)
 			{
-				mem = mem->next;
-				mem2 = mem2->next;
+				if (sort_function(mem, mem2))
+					i = swap_elem(mem2, mem);
+				else
+					mem2 = mem2->next;
 			}
+			ret = (i ? 1 : ret);
+			mem = mem->next;
 		}
 	}
 }
+
+/*
+**-----------------------------------------------------------------------
+**			change sort function
+**-----------------------------------------------------------------------
+*/
 
 void		ls_sort(t_lsop *op)
 {
@@ -73,8 +104,6 @@ void		ls_sort(t_lsop *op)
 			ls_sort_funct(op, ls_sort_atime);
 		else if (exist_flags(LS_U_MAJ))
 			ls_sort_funct(op, ls_sort_birthtime);
-		else if (exist_flags(LS_C))
-			ls_sort_funct(op, ls_sort_ctime);
 		else
 			ls_sort_funct(op, ls_sort_mtime);
 	}

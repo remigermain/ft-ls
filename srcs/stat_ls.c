@@ -13,6 +13,12 @@
 
 #include "ft_ls.h"
 
+/*
+**-----------------------------------------------------------------------
+**			change right for sticky byte
+**-----------------------------------------------------------------------
+*/
+
 void		sticky_byte(t_stat stat, char right[10])
 {
 	if (stat.st_mode & S_ISUID)
@@ -24,6 +30,12 @@ void		sticky_byte(t_stat stat, char right[10])
 	else
 		right[9] = (stat.st_mode & S_IXOTH) ? 'x' : '-';
 }
+
+/*
+**-----------------------------------------------------------------------
+**			put right setp by setp
+**-----------------------------------------------------------------------
+*/
 
 static void	file_right(t_stat stat, char right[10])
 {
@@ -51,6 +63,16 @@ static void	file_right(t_stat stat, char right[10])
 	sticky_byte(stat, right);
 }
 
+/*
+**-----------------------------------------------------------------------
+**			print name of user id and group id or
+**			if falg LS_G is set
+**				print  uid user
+**			if flag LS_N is set
+**				print  uid group
+**-----------------------------------------------------------------------
+*/
+
 static void	file_group(t_lsop *op, t_pad *pad)
 {
 	t_passwd	*uid;
@@ -70,6 +92,18 @@ static void	file_group(t_lsop *op, t_pad *pad)
 	else
 		ft_stprintf(KEEP_PF, " %-*d ", pad->group2, op->file.st_gid);
 }
+
+/*
+**-----------------------------------------------------------------------
+**			take time, comvert time by flags
+**			( creation time, acess time, birhtday time ... )
+**			print month, day, hour, second
+**			if date is up or less to MONTH_SIX ,
+**				print year replace by hour and seccond
+**			if flags LS_T is set
+**				print all date
+**-----------------------------------------------------------------------
+*/
 
 static void	file_date(t_lsop *op)
 {
@@ -99,6 +133,15 @@ static void	file_date(t_lsop *op)
 	if (i == 18)
 		ft_stprintf(KEEP_PF, "%.*s ", 4, t + 20);
 }
+
+/*
+**-----------------------------------------------------------------------
+**			print right
+**			print acl
+**			print size or minor/major
+**			print date
+**-----------------------------------------------------------------------
+*/
 
 t_bool		file_info(t_lsop *op, t_pad *pad, char *path)
 {

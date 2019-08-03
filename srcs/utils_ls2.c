@@ -13,6 +13,12 @@
 
 #include "ft_ls.h"
 
+/*
+**-----------------------------------------------------------------------
+**			get information form window size
+**-----------------------------------------------------------------------
+*/
+
 t_winsize	get_winsize(void)
 {
 	static t_winsize	win;
@@ -22,6 +28,12 @@ t_winsize	get_winsize(void)
 		ioctl(STDOUT_FILENO, TIOCGWINSZ, &win);
 	return (win);
 }
+
+/*
+**-----------------------------------------------------------------------
+**			print new line for ioctl
+**-----------------------------------------------------------------------
+*/
 
 void		print_ioctl(t_lsop *mem, t_pad *pad)
 {
@@ -35,6 +47,18 @@ void		print_ioctl(t_lsop *mem, t_pad *pad)
 	ft_strlen(mem->name) + 2) > win.ws_col && (pad->col = 0) != -1)
 		ft_stprintf(KEEP_PF, "\n");
 }
+
+void		print_folder_text(t_lsop *lst, char *str, char *str2)
+{
+	if (!(S_ISLNK(lst->file.st_mode) && exist_flags(LS_L_MAJ)))
+		ft_stprintf(KEEP_PF, str, str2);
+}
+
+/*
+**-----------------------------------------------------------------------
+**			error when i cant read file
+**-----------------------------------------------------------------------
+*/
 
 void		ft_lserror(char *name)
 {
@@ -53,6 +77,13 @@ void		ft_lserror(char *name)
 	if (exist_flags(LS_G_MAJ))
 		ft_dprintf(2, T_WHITE);
 }
+
+/*
+**-----------------------------------------------------------------------
+**			when he have a error on parse arguments
+**			free all list , and exit
+**-----------------------------------------------------------------------
+*/
 
 void		error_argv(t_lst *st, char *error)
 {

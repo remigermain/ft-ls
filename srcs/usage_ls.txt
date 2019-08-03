@@ -9,7 +9,6 @@ usage: ./ft_ls [ option ] source_file...
           -p	Write a slash (`/') after each filename if that file is a directory. 
           -T	option, display complete time information for the file, including month, day, hour, minute, secon ,and year.	
           -L	Follow all symbolic links 
-          -c	Use time when file status was last changed for sorting 
           -m	Stream output format; list files across the page, separated by commas 
           -n	Display user and group IDs numerically
           -G	Disable color 
@@ -29,8 +28,5 @@ usage: ./ft_ls [ option ] source_file...
             -U    Use time of file creation, instead of last modification for sort-
                   ing (-t) or long output (-l).
             
-            -c    Use time when file status was last changed for sorting (-t) or
-                  long printing (-l).
-      
           -r	Sort Reverse the order of the sort.
           -S	Sort files by size.

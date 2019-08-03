@@ -13,6 +13,13 @@
 
 #include "ft_ls.h"
 
+/*
+**-----------------------------------------------------------------------
+**			concat name with path
+**			if last char of path and name is not slash "/" i add one .
+**-----------------------------------------------------------------------
+*/
+
 char	*cat_path(char *name, char *path)
 {
 	char	path_mem[257];
@@ -22,11 +29,18 @@ char	*cat_path(char *name, char *path)
 	if (!path[0])
 		return (ft_strdup(name));
 	ft_bzero(path_mem, 2);
-	if (ft_strlen(path) > 0 && path[ft_strlen(path)] != '/')
+	if (ft_strlen(path) > 0 && path[ft_strlen(path)] != '/'
+				&& name[0] != '/')
 		path_mem[0] = '/';
 	ft_strcat(path_mem, name);
 	return (ft_strjoin(path, path_mem));
 }
+
+/*
+**-----------------------------------------------------------------------
+**			free lsop
+**-----------------------------------------------------------------------
+*/
 
 t_bool	free_lsop(t_lsop *op)
 {
@@ -35,11 +49,19 @@ t_bool	free_lsop(t_lsop *op)
 	while (op)
 	{
 		mem = op;
-		op = op->next;
+		op = (exist_flags(LS_R) ? op->prev : op->next);
 		ft_memdel((void**)&mem);
 	}
 	return (FALSE);
 }
+
+/*
+**-----------------------------------------------------------------------
+**			free lsop
+**			print error ( when malloc failed )
+**			if dir_ptr is no null , closedir ( fucking norminette !)
+**-----------------------------------------------------------------------
+*/
 
 t_bool	error_ls(t_lsop *lst, char *str, void *dir_ptr)
 {
@@ -50,14 +72,37 @@ t_bool	error_ls(t_lsop *lst, char *str, void *dir_ptr)
 	return (FALSE);
 }
 
+/*
+**-----------------------------------------------------------------------
+**		function for hidden_file
+**
+**		if falgs "LS_A" is set
+**			include directory and all file with a dot
+**		else if file name is not start with dot
+**
+**		else if falgs "LS_A" is set
+**			include directory and all file with a dot
+**-----------------------------------------------------------------------
+*/
+
 t_bool	hidden_file(char *name)
 {
-	if (exist_flags(LS_A) || exist_flags(LS_F) ||
+	if (exist_flags(LS_A) ||
 			name[0] != '.' || (exist_flags(LS_A_MAJ) &&
 				ft_strcmp(".", name) && ft_strcmp("..", name)))
 		return (TRUE);
 	return (FALSE);
 }
+
+/*
+**-----------------------------------------------------------------------
+**		function for recurisve_file
+**
+**		if falgs "LS_R_MAJ" is set and name of file is not "." and ".."
+**		and ( the file is directory or
+**			file is link and LS_L_MAJ flags is set )
+**-----------------------------------------------------------------------
+*/
 
 t_bool	recusive_file(t_lsop *lst)
 {

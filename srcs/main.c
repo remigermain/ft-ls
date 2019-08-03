@@ -13,6 +13,12 @@
 
 #include "ft_ls.h"
 
+/*
+**-----------------------------------------------------------------------
+**			add error from argv to t_lsop
+**-----------------------------------------------------------------------
+*/
+
 static void		add_error(t_lst *st, char *name)
 {
 	static	t_lsop	*last = NULL;
@@ -34,6 +40,12 @@ static void		add_error(t_lst *st, char *name)
 		last = last->next;
 	}
 }
+
+/*
+**-----------------------------------------------------------------------
+**			add file from argv to t_lsop
+**-----------------------------------------------------------------------
+*/
 
 static void		add_file(t_lst *st, t_stat *info, char *name)
 {
@@ -61,6 +73,12 @@ static void		add_file(t_lst *st, t_stat *info, char *name)
 	padding_ls(lst, &(st->pad_file));
 }
 
+/*
+**-----------------------------------------------------------------------
+**			add folder from argv to t_lsop
+**-----------------------------------------------------------------------
+*/
+
 static void		add_folder(t_lst *st, t_stat *info, char *name)
 {
 	static	t_lsop	*last = NULL;
@@ -87,7 +105,14 @@ static void		add_folder(t_lst *st, t_stat *info, char *name)
 	padding_ls(lst, &(st->pad_folder));
 }
 
-static int		parse_argv(char **argv, int i)
+/*
+**-----------------------------------------------------------------------
+**			add folder or file or error from argv to t_lsop
+**			and print error first , file and folder
+**-----------------------------------------------------------------------
+*/
+
+static t_bool	parse_argv(char **argv, int i)
 {
 	t_lst	st;
 	t_stat	info;
@@ -97,8 +122,8 @@ static int		parse_argv(char **argv, int i)
 	{
 		if (!lstat(argv[i], &info))
 		{
-			if (S_ISDIR(info.st_mode) &&
-				!S_ISLNK(info.st_mode) && !exist_flags(LS_D))
+			if ((S_ISDIR(info.st_mode) ||
+				S_ISLNK(info.st_mode)) && !exist_flags(LS_D))
 				add_folder(&st, &info, argv[i]);
 			else
 				add_file(&st, &info, argv[i]);
@@ -109,9 +134,7 @@ static int		parse_argv(char **argv, int i)
 	}
 	print_error_argv(st.error);
 	print_file_argv(&st);
-	print_folder_argv(&st);
-	ft_stprintf(OUT_PF, "");
-	return (0);
+	return (print_folder_argv(&st));
 }
 
 int				main(int argc, char **argv)
@@ -120,14 +143,16 @@ int				main(int argc, char **argv)
 
 	ret = 0;
 	if (argc)
-		ret = init_flags(argv, "RaArfGFsTL|l;;m|g;l;m|d;a;|1;l;|\
-			n;l;m|m;;l1|p;;F|S;;t|t;;S|U;;uc|u;;Uc|c;:Uu", "", F_STOP);
+		ret = init_flags(argv, "RaArfGFsTLt|l;;1m|g;l;m|d;a;|1;;l|\
+			n;l;m|m;;l1|p;;F|S;;t|U;;uc|u;;Uc|c;;Uu|", "", F_STOP);
 	if (exist_flags(LS_G_MAJ))
 		flags_base('G', F_RM);
 	else
 		flags_base('G', F_ADD);
-	if (ret != -1)
-		return (parse_argv(argv, ret));
+	if (exist_flags(LS_S_MAJ))
+		remove_flags(LS_T);
+	if (ret != -1 && parse_argv(argv, ret))
+		ft_stprintf(OUT_PF, "");
 	else
 		ft_dprintf(2, "error generated.\n");
 	return (-1);

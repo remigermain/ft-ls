@@ -13,17 +13,28 @@
 
 #include "ft_ls.h"
 
-int	ls_sort_ascii(t_lsop *mem, t_lsop *mem2)
-{
-	int	i;
+/*
+**-----------------------------------------------------------------------
+**			sort function for time of last file status change
+**			if is the same , sort by ascii
+**-----------------------------------------------------------------------
+*/
 
-	i = 0;
-	while (mem->name[i] && mem2->name[i] && mem->name[i] == mem2->name[i])
-		i++;
-	if (mem->name[i] > mem2->name[i])
+int	ls_sort_ctime(t_lsop *mem, t_lsop *mem2)
+{
+	if (mem->file.st_ctime < mem2->file.st_ctime)
 		return (1);
+	else if (mem->file.st_ctime == mem2->file.st_ctime)
+		return (ls_sort_ascii(mem, mem2));
 	return (0);
 }
+
+/*
+**-----------------------------------------------------------------------
+**			sort function for file size
+**			if is the same , sort by ascii
+**-----------------------------------------------------------------------
+*/
 
 int	ls_sort_size(t_lsop *mem, t_lsop *mem2)
 {
@@ -34,6 +45,13 @@ int	ls_sort_size(t_lsop *mem, t_lsop *mem2)
 	return (0);
 }
 
+/*
+**-----------------------------------------------------------------------
+**			sort function for time of last data modification
+**			if is the same , sort by ascii
+**-----------------------------------------------------------------------
+*/
+
 int	ls_sort_mtime(t_lsop *mem, t_lsop *mem2)
 {
 	if (mem->file.st_mtime < mem2->file.st_mtime)
@@ -43,6 +61,13 @@ int	ls_sort_mtime(t_lsop *mem, t_lsop *mem2)
 	return (0);
 }
 
+/*
+**-----------------------------------------------------------------------
+**			sort function for time of last access
+**			if is the same , sort by ascii
+**-----------------------------------------------------------------------
+*/
+
 int	ls_sort_atime(t_lsop *mem, t_lsop *mem2)
 {
 	if (mem->file.st_atime < mem2->file.st_atime)
@@ -51,6 +76,13 @@ int	ls_sort_atime(t_lsop *mem, t_lsop *mem2)
 		return (ls_sort_ascii(mem, mem2));
 	return (0);
 }
+
+/*
+**-----------------------------------------------------------------------
+**			sort function for time of file creation(birth)
+**			if is the same , sort by ascii
+**-----------------------------------------------------------------------
+*/
 
 int	ls_sort_birthtime(t_lsop *mem, t_lsop *mem2)
 {

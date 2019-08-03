@@ -13,6 +13,12 @@
 
 #include "ft_ls.h"
 
+/*
+**-----------------------------------------------------------------------
+**			take info form form acl
+**-----------------------------------------------------------------------
+*/
+
 t_bool			file_acl(t_lsop *op, char *path)
 {
 	acl_entry_t	dummy;
@@ -22,7 +28,7 @@ t_bool			file_acl(t_lsop *op, char *path)
 	if (exist_flags(LS_L))
 	{
 		if (!(path_total = cat_path(op->name, path)))
-			return (FALSE);
+			return (error_ls(NULL, "malloc from file_acl", NULL));
 		acl = acl_get_link_np(path_total, ACL_TYPE_EXTENDED);
 		if (op->xattr > 0)
 			ft_stprintf(KEEP_PF, "@");
@@ -35,6 +41,12 @@ t_bool			file_acl(t_lsop *op, char *path)
 	}
 	return (TRUE);
 }
+
+/*
+**-----------------------------------------------------------------------
+**			print more link name form file
+**-----------------------------------------------------------------------
+*/
 
 static t_bool	print_link(t_lsop *op, t_pad *pad, char *path, t_winsize win)
 {
@@ -59,6 +71,15 @@ static t_bool	print_link(t_lsop *op, t_pad *pad, char *path, t_winsize win)
 	}
 	return (TRUE);
 }
+
+/*
+**-----------------------------------------------------------------------
+**			print extra for flag ,
+**				add "/" is is a directory
+**				add "|" for fifo
+**				.. ect
+**-----------------------------------------------------------------------
+*/
 
 static void		print_extra(t_lsop *op)
 {
@@ -108,24 +129,47 @@ static t_bool	print_name(t_lsop *op, t_pad *pad, char *path)
 	return (TRUE);
 }
 
+/*
+**-----------------------------------------------------------------------
+**			sort lsop , if flag LS_R is set , is start with last chained
+**			and is not going to lst->next but lst->prev
+**
+**			is printing by this order :
+**				block file ( LS_S )
+**				right of file,
+**				acl of file,
+**				file link,
+**				user id,
+**				group id,
+**				size of file   or   major/minor
+**				file's date
+**				file's name
+**
+**			pad->col is for print by columns ( ioctl )
+**-----------------------------------------------------------------------
+*/
+
 t_bool			print_file(t_lsop *lst, t_pad *pad, char *path)
 {
-	t_lsop				*mem;
+	t_lsop	*mem;
 
 	ls_sort(lst);
 	mem = (exist_flags(LS_R) && lst && lst->last ? lst->last : lst);
 	while (mem)
 	{
-		pad->col += (exist_flags(LS_M) ? (int)ft_strlen(mem->name) + 2 :
-				pad->name);
-		if (!print_name(mem, pad, path) ||
-				!print_link(mem, pad, path, get_winsize()))
-			return (FALSE);
-		if (exist_flags(LS_L) || exist_flags(LS_1) ||
+		if (!(S_ISLNK(mem->file.st_mode) && exist_flags(LS_L_MAJ)))
+		{
+			pad->col += (exist_flags(LS_M) ? (int)ft_strlen(mem->name) + 2 :
+					pad->name);
+			if (!print_name(mem, pad, path) ||
+					!print_link(mem, pad, path, get_winsize()))
+				return (FALSE);
+			if (exist_flags(LS_L) || exist_flags(LS_1) ||
 		(!exist_flags(LS_R) && !mem->next) || (exist_flags(LS_R) && !mem->prev))
-			ft_stprintf(KEEP_PF, "\n");
-		else if (!exist_flags(LS_1) && !exist_flags(LS_L))
-			print_ioctl(mem, pad);
+				ft_stprintf(KEEP_PF, "\n");
+			else if (!exist_flags(LS_1) && !exist_flags(LS_L))
+				print_ioctl(mem, pad);
+		}
 		mem = (exist_flags(LS_R) ? mem->prev : mem->next);
 	}
 	return (TRUE);

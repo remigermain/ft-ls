@@ -31,6 +31,12 @@ typedef	struct passwd	t_passwd;
 typedef	struct group	t_group;
 typedef	struct winsize	t_winsize;
 
+/*
+**-----------------------------------------------------------------------
+**			enum from ls flags
+**-----------------------------------------------------------------------
+*/
+
 enum	e_flag_ls
 {
 	LS_L = 'l',
@@ -57,6 +63,12 @@ enum	e_flag_ls
 	LS_S = 's'
 };
 
+/*
+**-----------------------------------------------------------------------
+**		struct for each file
+**-----------------------------------------------------------------------
+*/
+
 typedef	struct	s_lsop
 {
 	char			name[256];
@@ -68,6 +80,12 @@ typedef	struct	s_lsop
 	struct s_lsop	*prev;
 	struct s_lsop	*last;
 }				t_lsop;
+
+/*
+**-----------------------------------------------------------------------
+**		struct for padding
+**-----------------------------------------------------------------------
+*/
 
 typedef	struct	s_pad
 {
@@ -84,6 +102,12 @@ typedef	struct	s_pad
 	int	col;
 }				t_pad;
 
+/*
+**-----------------------------------------------------------------------
+**		struct for parse arguments
+**-----------------------------------------------------------------------
+*/
+
 typedef struct	s_lst
 {
 	t_lsop	*error;
@@ -96,77 +120,78 @@ typedef struct	s_lst
 	int		nb_folder;
 }				t_lst;
 
-typedef	struct	s_infols
-{
-	int				total;
-	char			*path;
-	t_lsop			*op;
-	struct s_infols	*next;
-}				t_infols;
+/*
+**-----------------------------------------------------------------------
+**			main_ls.c
+**-----------------------------------------------------------------------
+*/
+t_bool			recursive_dir(t_lsop *lst, char *path, int folder);
+t_bool			print_folder_argv(t_lst *st);
 
-typedef	struct	s_ls
-{
-	t_winsize	w;
-	long		flag;
-	time_t		time;
-	char		*path;
-	int			len_argc;
-	int			error;
-	int			av;
-}				t_ls;
-
+/*
+**-----------------------------------------------------------------------
+**			main_ls2.c
+**-----------------------------------------------------------------------
+*/
 void			print_error_argv(t_lsop *lst);
 void			print_file_argv(t_lst *st);
-void			print_folder_argv(t_lst *st);
 t_bool			print_folder(t_lsop *lst, t_pad *pad, char *path);
+
+/*
+**-----------------------------------------------------------------------
+**			padding_ls.c
+**-----------------------------------------------------------------------
+*/
 void			padding_ls(t_lsop *op, t_pad *pad);
-t_bool			recursive_dir(t_lsop *lst, char *path, int folder);
-void			error_argv(t_lst *st, char *error);
-t_bool			free_lsop(t_lsop *mem);
-t_bool			error_ls(t_lsop *op, char *str, void *dir);
-t_bool			hidden_file(char *name);
-t_bool			recusive_file(t_lsop *lst);
-void			ls_sort_funct(t_lsop *op, int (*func)(t_lsop*, t_lsop*));
+
+/*
+**-----------------------------------------------------------------------
+**		print_file.c
+**-----------------------------------------------------------------------
+*/
 t_bool			print_file(t_lsop *lst, t_pad *pad, char *path);
 t_bool			file_acl(t_lsop *op, char *path);
-t_bool			file_info(t_lsop *op, t_pad *pad, char *path);
-void			print_ioctl(t_lsop *mem, t_pad *pad);
-t_winsize		get_winsize(void);
 
 /*
-**	right_file
-*/
-void			sort_ls(t_lsop **mem);
-int				ls_putflags(t_ls *data, int argc, char **argv);
-
-/*
-**	read-file && dir
-*/
-t_bool			read_dir(t_ls *data, char *path, char *name);
-t_bool			directory_file(t_ls *data, char *path, DIR *dir_ptr);
-t_bool			regular_file(t_ls *data, char *name, char *path);
-t_lsop			*info_file(t_ls *data, t_pad *pad, char *name, char *path_mem);
-t_bool			directory_print(t_ls *da, t_lsop *l, char *p, t_pad *pa);
-char			*cat_path(char *name, char *path);
-
-/*
-**	sort_ls
+**-----------------------------------------------------------------------
+**			sort_ls.c && sort_utils_ls.c
+**-----------------------------------------------------------------------
 */
 void			ls_sort(t_lsop *op);
+void			ls_sort_funct(t_lsop *op, int (*func)(t_lsop*, t_lsop*));
 int				ls_sort_ascii(t_lsop *m, t_lsop *p);
 int				ls_sort_size(t_lsop *m, t_lsop *p);
 int				ls_sort_mtime(t_lsop *m, t_lsop *p);
 int				ls_sort_atime(t_lsop *m, t_lsop *p);
-int				ls_sort_ctime(t_lsop *m, t_lsop *p);
 int				ls_sort_birthtime(t_lsop *m, t_lsop *p);
 
 /*
-**	tools.c
+**-----------------------------------------------------------------------
+**			file_info.c
+**-----------------------------------------------------------------------
 */
-void			usage_ls(void);
-void			set_bit(long *st, int i);
-void			clear_bit(long *st, int i);
-void			set_or_clear_bit(long *st, int i);
-t_bool			test_bit(long *st, int i);
+t_bool			file_info(t_lsop *op, t_pad *pad, char *path);
+
+/*
+**-----------------------------------------------------------------------
+**			utils_ls.c
+**-----------------------------------------------------------------------
+*/
+char			*cat_path(char *name, char *path);
+t_bool			free_lsop(t_lsop *mem);
+t_bool			error_ls(t_lsop *op, char *str, void *dir);
+t_bool			hidden_file(char *name);
+t_bool			recusive_file(t_lsop *lst);
+
+/*
+**-----------------------------------------------------------------------
+**			utils_ls2.c
+**-----------------------------------------------------------------------
+*/
+t_winsize		get_winsize(void);
+void			print_ioctl(t_lsop *mem, t_pad *pad);
+void			print_folder_text(t_lsop *lst, char *str, char *str2);
 void			ft_lserror(char *path);
+void			error_argv(t_lst *st, char *error);
+
 #endif

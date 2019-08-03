@@ -13,6 +13,13 @@
 
 #include "ft_ls.h"
 
+/*
+**-----------------------------------------------------------------------
+**			join new lsop form older
+**			last lsop is just for optimizing listing
+**-----------------------------------------------------------------------
+*/
+
 static void		ls_join(t_lsop **last, t_lsop **lst, t_lsop **op)
 {
 	if (!(*last))
@@ -30,7 +37,15 @@ static void		ls_join(t_lsop **last, t_lsop **lst, t_lsop **op)
 	}
 }
 
-static t_bool	add_file2(t_lsop **op, t_pad *pad, t_dir *dir_tmp, char *path)
+/*
+**-----------------------------------------------------------------------
+**			take information forn file
+**			and add this to t_lsop
+**			if file is link , take info from lstat otherwise stat
+**-----------------------------------------------------------------------
+*/
+
+static t_bool	add_all(t_lsop **op, t_pad *pad, t_dir *dir_tmp, char *path)
 {
 	static	t_lsop	*last = NULL;
 	t_lsop			*lst;
@@ -41,13 +56,9 @@ static t_bool	add_file2(t_lsop **op, t_pad *pad, t_dir *dir_tmp, char *path)
 		last = NULL;
 		return (TRUE);
 	}
-	if (!(lst = (t_lsop*)ft_memalloc(sizeof(t_lsop))))
-		return (FALSE);
-	if (!(path_name = cat_path(dir_tmp->d_name, path)))
-	{
-		ft_memdel((void**)&lst);
-		return (FALSE);
-	}
+	if (!(lst = (t_lsop*)ft_memalloc(sizeof(t_lsop))) ||
+		!(path_name = cat_path(dir_tmp->d_name, path)))
+		return (error_ls(lst, "malloc from add_filefoler", NULL));
 	ft_strcat(lst->name, dir_tmp->d_name);
 	lst->xattr = listxattr(path_name, NULL, 0, XATTR_NOFOLLOW);
 	lstat(path_name, &(lst->file));
@@ -59,6 +70,12 @@ static t_bool	add_file2(t_lsop **op, t_pad *pad, t_dir *dir_tmp, char *path)
 	return (TRUE);
 }
 
+/*
+**-----------------------------------------------------------------------
+**			add file/folder to t_lsop
+**-----------------------------------------------------------------------
+*/
+
 static t_bool	get_folder(char *path)
 {
 	DIR		*dir_ptr;
@@ -68,14 +85,14 @@ static t_bool	get_folder(char *path)
 
 	file = NULL;
 	ft_bzero(&pad, sizeof(t_pad));
-	add_file2(NULL, NULL, NULL, path);
+	add_all(NULL, NULL, NULL, path);
 	if ((dir_ptr = opendir(path)))
 	{
 		while ((dir_tmp = readdir(dir_ptr)))
 		{
 			if (hidden_file(dir_tmp->d_name) &&
-				!add_file2(&file, &pad, dir_tmp, path))
-				return (error_ls(file, "add_file2", dir_ptr));
+				!add_all(&file, &pad, dir_tmp, path))
+				return (error_ls(file, "add_all", dir_ptr));
 		}
 		if (closedir(dir_ptr) != 0)
 			return (error_ls(file, "can't close dir", NULL));
@@ -86,21 +103,29 @@ static t_bool	get_folder(char *path)
 	return (TRUE);
 }
 
+/*
+**-----------------------------------------------------------------------
+**			if recursive's flags is set ( LS_R_MAJ )
+**			get folder to this folder print get folderm, print ... ect
+**-----------------------------------------------------------------------
+*/
+
 t_bool			recursive_dir(t_lsop *lst, char *path, int folder)
 {
 	t_lsop	*tmp;
 	char	*new_path;
 
 	new_path = NULL;
+	lst = (exist_flags(LS_R) && lst && lst->last ? lst->last : lst);
 	while (lst)
 	{
-		tmp = (exist_flags(LS_R) && lst && lst->last ? lst->last : lst);
+		tmp = lst;
 		if (recusive_file(tmp) && (++folder))
 		{
-			ft_stprintf(KEEP_PF, "\n");
+			print_folder_text(lst, "\n", NULL);
 			if (!(new_path = cat_path(tmp->name, path)))
 				return (free_lsop(tmp));
-			ft_stprintf(KEEP_PF, "%s:\n", new_path);
+			print_folder_text(lst, "%s:\n", new_path);
 			if (!get_folder(new_path))
 			{
 				ft_strdel(&new_path);
@@ -114,7 +139,14 @@ t_bool			recursive_dir(t_lsop *lst, char *path, int folder)
 	return (TRUE);
 }
 
-void			print_folder_argv(t_lst *st)
+/*
+**-----------------------------------------------------------------------
+**			print folder from argv to t_lsop
+**			if not have arguments , is remplaced by "."
+**-----------------------------------------------------------------------
+*/
+
+t_bool			print_folder_argv(t_lst *st)
 {
 	t_lsop	*tmp;
 	int		folder;
@@ -130,13 +162,11 @@ void			print_folder_argv(t_lst *st)
 		if (st->nb_folder - 1)
 			ft_stprintf(KEEP_PF, "%s:\n", tmp->name);
 		if (!get_folder(tmp->name))
-		{
-			free_lsop(st->folder);
-			return ;
-		}
+			return (free_lsop(st->folder));
 		folder++;
 		tmp = (exist_flags(LS_R) ? tmp->prev : tmp->next);
 	}
-	if (!st->folder)
-		get_folder(".");
+	if (!st->folder && !st->nb_file && !st->nb_error)
+		return (get_folder("."));
+	return (TRUE);
 }
